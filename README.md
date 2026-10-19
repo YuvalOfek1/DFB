@@ -27,7 +27,7 @@ If the force word is already in the list, it **swaps** places with the item at t
 
 **Long-press the big "Notes" title** to open Setup:
 
-- **Lists**: each list is its own note. Built in: Charades ideas (100 celebrities), Movie night (100 movies), Travel bucket list (60 countries), Pictionary ideas (30 objects).
+- **Lists**: each list is its own note. Built in: Celebrities (100 celebrities), Movie night (100 movies), Travel bucket list (60 countries), Pictionary ideas (30 objects).
 - Per list: title, items (one per line), **force word** (pick from the list or type any word), and whether it shows in Notes.
 - Add your own lists, delete lists, or restore the defaults.
 - **How to Perform** and **Install & Welcome** guides.

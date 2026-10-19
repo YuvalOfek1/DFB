@@ -19,6 +19,18 @@ test('defaults are independent copies', () => {
   assert.notEqual(defaultSettings().lists[0].items.at(-1), 'x');
 });
 
+test('the old default title "Charades ideas" becomes "Celebrities", custom titles stay', () => {
+  assert.equal(defaultSettings().lists[0].title, 'Celebrities');
+  assert.equal(migrateV1({ title: 'Charades ideas', force: 'x', words: ['x'] }).lists[0].title, 'Celebrities');
+  const v2 = { version: 2, lists: [{ id: 'celebrities', title: 'Charades ideas', items: ['a'] }, { id: 'movies', title: 'Charades ideas', items: ['b'] }] };
+  const upgraded = normalize(v2);
+  assert.equal(upgraded.lists[0].title, 'Celebrities');
+  assert.equal(upgraded.lists[1].title, 'Charades ideas', 'only the built-in celebrities list is renamed');
+  assert.equal(normalize({ version: 2, lists: [{ id: 'celebrities', title: 'My stars', items: ['a'] }] }).lists[0].title, 'My stars');
+  // Once upgraded, a user who deliberately renames it back keeps their choice
+  assert.equal(normalize({ version: 3, lists: [{ id: 'celebrities', title: 'Charades ideas', items: ['a'] }] }).lists[0].title, 'Charades ideas');
+});
+
 test('migrateV1 keeps the old single list as the first list', () => {
   const s = migrateV1({ title: 'My list', force: 'Bob', words: ['Ann', 'Bob'] });
   assert.equal(s.lists[0].title, 'My list');
