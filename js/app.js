@@ -152,10 +152,13 @@ function renderDecoyBody(note) {
 }
 
 // ---------- Transitions (iOS-style push / pop / sheet) ----------
+// Animations use the Web Animations API on transform/opacity only, so the browser runs them
+// on the compositor thread instead of the main thread.
 
-const PUSH_MS = 420;
-const POP_MS = 360;
-const SHEET_MS = 400;
+const PUSH_MS = 500;
+const POP_MS = 450;
+const SHEET_MS = 500;
+const IOS_EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
 const PARALLAX = 30; // % the screen underneath shifts left while a note is pushed over it
 const SHADE = 0.12;
 
@@ -165,25 +168,15 @@ const settingsScreen = $('settings-screen');
 const shade = $('shade');
 let busy = false;
 
-const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-function tween(from, to, ms, apply) {
-  return new Promise((resolve) => {
-    const start = performance.now();
-    const step = (now) => {
-      const t = Math.min(1, (now - start) / ms);
-      apply(from + (to - from) * easeOut(t));
-      if (t < 1) requestAnimationFrame(step);
-      else resolve();
-    };
-    requestAnimationFrame(step);
-  });
-}
+const noteX = (p) => `translate3d(${(1 - p) * 100}%, 0, 0)`;
+const listX = (p) => `translate3d(${-PARALLAX * p}%, 0, 0)`;
 
 // p = how far the note is pushed on screen: 0 = off to the right, 1 = fully shown.
 function setPush(p) {
-  noteScreen.style.transform = `translate3d(${(1 - p) * 100}%, 0, 0)`;
-  listScreen.style.transform = `translate3d(${-PARALLAX * p}%, 0, 0)`;
+  noteScreen.style.transform = noteX(p);
+  listScreen.style.transform = listX(p);
   shade.style.opacity = SHADE * p;
 }
 
@@ -192,46 +185,79 @@ function clearTransforms() {
   shade.style.opacity = 0;
 }
 
+// Runs the animations; once they finish, `done` updates the DOM before the animations are
+// removed, so the final frame and the resting state match and nothing flickers.
+async function play(animations, done) {
+  await Promise.all(animations.map((a) => a.finished));
+  done();
+  for (const a of animations) a.cancel();
+}
+
+function animatePush(from, to, ms) {
+  const options = { duration: ms, easing: IOS_EASE, fill: 'forwards' };
+  return [
+    noteScreen.animate([{ transform: noteX(from) }, { transform: noteX(to) }], options),
+    listScreen.animate([{ transform: listX(from) }, { transform: listX(to) }], options),
+    shade.animate([{ opacity: SHADE * from }, { opacity: SHADE * to }], options),
+  ];
+}
+
 async function pushNote() {
   busy = true;
+  setPush(0);
   noteScreen.classList.add('active');
   shade.classList.add('active');
-  setPush(0);
-  await tween(0, 1, PUSH_MS, setPush);
-  listScreen.classList.remove('active');
-  shade.classList.remove('active');
-  clearTransforms();
+  await nextFrame(); // let the new note paint before it starts moving
+  await play(animatePush(0, 1, PUSH_MS), () => {
+    listScreen.classList.remove('active');
+    shade.classList.remove('active');
+    clearTransforms();
+  });
+  busy = false;
+}
+
+// Settle the note back on screen, starting from push progress `from` (used when a swipe is cancelled).
+async function settleNote(from, ms) {
+  busy = true;
+  await play(animatePush(from, 1, ms), () => {
+    listScreen.classList.remove('active');
+    shade.classList.remove('active');
+    clearTransforms();
+  });
   busy = false;
 }
 
 // Animate the note away starting from push progress `from` (1 for the back button, less mid-swipe).
 async function popNote(from = 1, ms = POP_MS) {
   busy = true;
+  setPush(from);
   listScreen.classList.add('active');
   shade.classList.add('active');
-  setPush(from);
-  await tween(from, 0, ms, setPush);
-  noteScreen.classList.remove('active');
-  shade.classList.remove('active');
-  clearTransforms();
+  await play(animatePush(from, 0, ms), () => {
+    noteScreen.classList.remove('active');
+    shade.classList.remove('active');
+    clearTransforms();
+  });
   busy = false;
 }
 
 async function presentSheet(screen) {
   busy = true;
+  screen.style.transform = 'translate3d(0, 100%, 0)';
   screen.classList.add('active');
-  const apply = (y) => { screen.style.transform = `translate3d(0, ${y}%, 0)`; };
-  apply(100);
-  await tween(100, 0, SHEET_MS, apply);
-  clearTransforms();
+  await nextFrame();
+  const options = { duration: SHEET_MS, easing: IOS_EASE, fill: 'forwards' };
+  await play([screen.animate([{ transform: 'translate3d(0, 100%, 0)' }, { transform: 'translate3d(0, 0, 0)' }], options)], clearTransforms);
   busy = false;
 }
 
 async function dismissSheet(screen) {
   busy = true;
-  await tween(0, 100, SHEET_MS - 60, (y) => { screen.style.transform = `translate3d(0, ${y}%, 0)`; });
-  screen.classList.remove('active');
-  clearTransforms();
+  const options = { duration: SHEET_MS - 80, easing: IOS_EASE, fill: 'forwards' };
+  await play([screen.animate([{ transform: 'translate3d(0, 0, 0)' }, { transform: 'translate3d(0, 100%, 0)' }], options)], () => {
+    screen.classList.remove('active');
+    clearTransforms();
+  });
   busy = false;
 }
 
@@ -271,15 +297,10 @@ function enableEdgeSwipe() {
     const p = 1 - Math.max(0, lastX - startX) / window.innerWidth;
     if (p < 0.6 || velocity > 0.4) {
       resetTrick();
-      await popNote(p, Math.max(140, POP_MS * p));
+      await popNote(p, Math.max(160, POP_MS * p));
       renderList();
     } else {
-      busy = true;
-      await tween(p, 1, Math.max(140, PUSH_MS * (1 - p)), setPush);
-      listScreen.classList.remove('active');
-      shade.classList.remove('active');
-      clearTransforms();
-      busy = false;
+      await settleNote(p, Math.max(160, PUSH_MS * (1 - p)));
     }
   };
   noteScreen.addEventListener('touchend', end);
