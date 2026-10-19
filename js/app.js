@@ -184,11 +184,11 @@ function clearInlineStyles() {
   shade.style.opacity = '';
 }
 
-let running = null; // { kind, animations, promise } for the transition in progress
+let running = null; // { animations, promise } for the transition in progress
 
 // Runs the animations; once they finish, `done` sets the resting state before the animations
 // are removed, so the last frame and the resting state match and nothing flickers.
-function play(animations, done, kind = '') {
+function play(animations, done) {
   busy = true;
   const promise = Promise.all(animations.map((a) => a.finished)).then(() => {
     done();
@@ -197,11 +197,12 @@ function play(animations, done, kind = '') {
     running = null;
     busy = false;
   });
-  running = { kind, animations, promise };
+  running = { animations, promise };
   return promise;
 }
 
-// Jump a running transition to its end (lets a tap during the slow tail of "back" go through).
+// Jump a running transition to its end. The iOS easing curve spends its last ~40% barely moving,
+// so a tap there must not be swallowed: finish the transition, then handle the tap.
 function finishRunning() {
   if (!running) return Promise.resolve();
   for (const a of running.animations) a.finish();
@@ -227,10 +228,11 @@ function pushNote(from = 0, ms = PUSH_MS) {
 
 function popNote(from = 1, ms = POP_MS) {
   deselectCell();
+  noteScreen.classList.add('leaving'); // taps fall through the departing note to the list
   return play(animatePush(from, 0, ms), () => {
-    noteScreen.classList.remove('active');
+    noteScreen.classList.remove('active', 'leaving');
     shade.classList.remove('active');
-  }, 'pop');
+  });
 }
 
 function sheetAnimation(screen, from, to, ms) {
@@ -296,8 +298,8 @@ let shownNote = null; // title of the note currently rendered in the note screen
 let selectedCell = null;
 
 async function openNote(note, cell) {
-  if (running?.kind === 'pop') await finishRunning();
-  if (busy) return;
+  await finishRunning();
+  if (busy || noteScreen.classList.contains('active')) return;
   openNoteIsTrick = !!note.trick;
   // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
   selectedCell = cell;
@@ -336,7 +338,8 @@ function deselectCell() {
 }
 
 async function closeNote() {
-  if (busy) return;
+  await finishRunning();
+  if (busy || !noteScreen.classList.contains('active')) return;
   if (secretActive) secret.blur();
   await popNote();
   afterClose();
