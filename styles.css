@@ -174,7 +174,7 @@ svg .fill { fill: currentColor; stroke: none; }
 .note-body ol li::before {
   content: counter(item) ".";
   flex: none;
-  min-width: 2.1em;
+  min-width: 2.6em;
   padding-right: 0.4em;
   text-align: right;
   font-variant-numeric: tabular-nums;
