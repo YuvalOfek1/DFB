@@ -184,15 +184,28 @@ function clearInlineStyles() {
   shade.style.opacity = '';
 }
 
+let running = null; // { kind, animations, promise } for the transition in progress
+
 // Runs the animations; once they finish, `done` sets the resting state before the animations
 // are removed, so the last frame and the resting state match and nothing flickers.
-async function play(animations, done) {
+function play(animations, done, kind = '') {
   busy = true;
-  await Promise.all(animations.map((a) => a.finished));
-  done();
-  clearInlineStyles();
-  for (const a of animations) a.cancel();
-  busy = false;
+  const promise = Promise.all(animations.map((a) => a.finished)).then(() => {
+    done();
+    clearInlineStyles();
+    for (const a of animations) a.cancel();
+    running = null;
+    busy = false;
+  });
+  running = { kind, animations, promise };
+  return promise;
+}
+
+// Jump a running transition to its end (lets a tap during the slow tail of "back" go through).
+function finishRunning() {
+  if (!running) return Promise.resolve();
+  for (const a of running.animations) a.finish();
+  return running.promise;
 }
 
 function animatePush(from, to, ms) {
@@ -213,10 +226,11 @@ function pushNote(from = 0, ms = PUSH_MS) {
 }
 
 function popNote(from = 1, ms = POP_MS) {
+  deselectCell();
   return play(animatePush(from, 0, ms), () => {
     noteScreen.classList.remove('active');
     shade.classList.remove('active');
-  });
+  }, 'pop');
 }
 
 function sheetAnimation(screen, from, to, ms) {
@@ -281,7 +295,8 @@ function enableEdgeSwipe() {
 let shownNote = null; // title of the note currently rendered in the note screen
 let selectedCell = null;
 
-function openNote(note, cell) {
+async function openNote(note, cell) {
+  if (running?.kind === 'pop') await finishRunning();
   if (busy) return;
   openNoteIsTrick = !!note.trick;
   // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
@@ -312,7 +327,11 @@ function trickNote() {
 function afterClose() {
   shownWords = [...settings.words];
   showNoteContent(trickNote());
-  selectedCell?.classList.remove('selected'); // fades out, like iOS deselecting the row
+}
+
+// Clear the row highlight instantly when leaving a note (a fade would repaint the list mid-slide).
+function deselectCell() {
+  selectedCell?.classList.remove('selected');
   selectedCell = null;
 }
 
