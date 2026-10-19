@@ -4,17 +4,17 @@ A PWA that looks exactly like the iPhone Notes app. It shows a numbered list of 
 
 ## Performing
 
-1. Open "Notes" from your home screen and tap the **Charades ideas** note (100 celebrities).
-2. Let the spectator scroll through the list.
-3. Ask them for a number (e.g. "pick a number from 1 to 100").
-4. **Tap the empty space below the list.** The keyboard opens and a cursor blinks after the last word, as if you were about to edit the note. Nothing you type appears.
-   - Type the number, e.g. `17`, and press **done** → your default force word is now #17.
-   - Or type a number and a word, e.g. `17 banana` → "banana" is now #17.
-5. Count down to their number together.
+1. Before you start, write **Leonardo DiCaprio** (the default force word) on a piece of paper as your prediction.
+2. Open "Notes" from your home screen and tap the **Charades ideas** note (100 celebrities). Let the spectator scroll through it.
+3. Ask them for any number from 1 to 100.
+4. While they're looking at the prediction, **tap anywhere on the note**. The number pad opens and a cursor blinks where you tapped, but nothing you type appears.
+   Type their number, then **tap the note again** (or press Done). That celebrity is now at their number.
+   - To force a different name on the spot, **long-press** instead of tapping. The letter keyboard opens; type `17 banana` and press return.
+5. Turn the screen toward them, scroll to their number, and let them read the name out loud.
 
 If the force word is already in the list, it **swaps** places with the word at that number, so the list still contains exactly the same words they saw. Otherwise it replaces that word.
 
-Tapping **‹ Notes** resets the list to its original order, ready for the next performance.
+Going back (the **‹ Notes** button or a swipe from the left edge) resets the list to its original order, ready for the next performance.
 
 ## Setup screen
 

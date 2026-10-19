@@ -45,6 +45,9 @@
     </footer>
   </section>
 
+  <!-- Dims the folder view while a note slides over it -->
+  <div id="shade" class="shade"></div>
+
   <!-- Single note -->
   <section id="note-screen" class="screen">
     <header class="note-nav">
@@ -63,8 +66,8 @@
     <div id="note-scroll" class="scroll note-scroll">
       <p id="note-date" class="note-date"></p>
       <article id="note-body" class="note-body"></article>
-      <!-- Tapping the empty space below the note opens the (invisible) secret input -->
-      <div id="tap-zone" class="tap-zone"></div>
+      <!-- Room below the list so there is always somewhere to tap -->
+      <div class="tap-zone"></div>
     </div>
     <footer class="toolbar note-toolbar">
       <button class="nav-icon" type="button" tabindex="-1" aria-label="Checklist">
@@ -80,7 +83,7 @@
         <svg viewBox="0 0 28 28"><path d="M22 14.5V22a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h7.5" /><path d="M21 3.5 24.5 7 14 17.5l-4.5 1 1-4.5z" /></svg>
       </button>
     </footer>
-    <form id="secret-form" class="secret-form" autocomplete="off">
+    <form id="secret-form" class="secret-form" autocomplete="off" novalidate>
       <input id="secret" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-hidden="true">
     </form>
   </section>
