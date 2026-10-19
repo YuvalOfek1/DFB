@@ -1,6 +1,6 @@
 // Cache-first app shell so the trick works with no signal.
 // Bump VERSION whenever you change any cached file.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const ASSETS = [
   './',
   'index.html',

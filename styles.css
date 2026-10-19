@@ -63,13 +63,32 @@ svg .fill { fill: currentColor; stroke: none; }
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  visibility: hidden;
   will-change: transform;
+  backface-visibility: hidden;
 }
-.screen.active { visibility: visible; }
 #list-screen { z-index: 1; }
 #note-screen { z-index: 3; background: var(--note-bg); }
-/* Edge shadow as a static gradient: it moves with the layer instead of being repainted every frame */
+#settings-screen { z-index: 5; }
+/* Resting positions: off screen but still painted, so transitions never wait for drawing */
+#note-screen:not(.active) { transform: translate3d(100%, 0, 0); }
+#settings-screen:not(.active) { transform: translate3d(0, 100%, 0); }
+
+.shade {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: opacity;
+}
+.shade.active { visibility: visible; }
+
+/* iOS-style press feedback: dim instantly on touch, fade back on release */
+button { transition: opacity 0.3s ease; }
+button:active { opacity: 0.3; transition: none; }
+
 #note-screen::before {
   content: "";
   position: absolute;
@@ -167,7 +186,7 @@ button:active { opacity: 0.3; transition: none; }
   border-top: 0.5px solid var(--separator);
 }
 .cell { transition: background-color 0.35s ease; }
-.cell:active { opacity: 1; background: var(--separator); transition: none; }
+.cell:active, .cell.selected { opacity: 1; background: var(--separator); transition: none; }
 .cell-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cell-sub { margin-top: 2px; font-size: 15px; color: var(--secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cell-sub time { color: var(--text); opacity: 0.85; margin-right: 8px; }
