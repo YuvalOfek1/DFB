@@ -3,10 +3,25 @@ import { DEFAULT_LISTS } from './lists.js';
 
 export const STORAGE_KEY = 'dfb.settings.v2';
 const LEGACY_KEY = 'dfb.settings.v1';
+const VERSION = 3;
+
+// Built-in titles that were later renamed. Lists still using the old default get the new one;
+// titles the user chose are left alone.
+const RENAMED_DEFAULT_TITLES = { celebrities: { from: 'Charades ideas', since: 3 } };
+
+function renameOldDefaults(lists, fromVersion) {
+  for (const list of lists) {
+    const rename = RENAMED_DEFAULT_TITLES[list.id];
+    if (rename && fromVersion < rename.since && list.title === rename.from) {
+      list.title = DEFAULT_LISTS.find((l) => l.id === list.id).title;
+    }
+  }
+  return lists;
+}
 
 export function defaultSettings() {
   return {
-    version: 2,
+    version: VERSION,
     welcomed: false,
     lists: DEFAULT_LISTS.map((list) => ({ ...list, items: [...list.items], visible: true })),
   };
@@ -23,6 +38,7 @@ export function migrateV1(v1) {
     force: String(v1.force ?? first.force),
     items: v1.words.map(String),
   });
+  renameOldDefaults(settings.lists, 1);
   return settings;
 }
 
@@ -46,7 +62,7 @@ export function normalize(raw) {
         visible: list.visible !== false,
       };
     });
-  return { version: 2, welcomed: !!raw.welcomed, lists };
+  return { version: VERSION, welcomed: !!raw.welcomed, lists: renameOldDefaults(lists, Number(raw.version) || 2) };
 }
 
 export function newList(settings) {

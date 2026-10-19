@@ -4,7 +4,7 @@
 export const DEFAULT_LISTS = [
   {
     id: 'celebrities',
-    title: 'Charades ideas',
+    title: 'Celebrities',
     force: 'Leonardo DiCaprio',
     ageMinutes: 47,
     items: [
