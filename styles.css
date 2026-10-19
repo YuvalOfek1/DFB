@@ -27,6 +27,9 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* No double-tap-zoom wait, so taps respond instantly */
+html, button, .scroll { touch-action: manipulation; }
+
 html, body {
   margin: 0;
   height: 100%;
@@ -65,7 +68,18 @@ svg .fill { fill: currentColor; stroke: none; }
 }
 .screen.active { visibility: visible; }
 #list-screen { z-index: 1; }
-#note-screen { z-index: 3; background: var(--note-bg); box-shadow: -6px 0 24px rgba(0, 0, 0, 0.12); }
+#note-screen { z-index: 3; background: var(--note-bg); }
+/* Edge shadow as a static gradient: it moves with the layer instead of being repainted every frame */
+#note-screen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -18px;
+  width: 18px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+  pointer-events: none;
+}
 #settings-screen { z-index: 5; }
 
 .shade {
