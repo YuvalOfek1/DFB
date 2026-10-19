@@ -190,7 +190,7 @@ let running = null; // { animations, promise } for the transition in progress
 // are removed, so the last frame and the resting state match and nothing flickers.
 function play(animations, done) {
   busy = true;
-  const promise = Promise.all(animations.map((a) => a.finished)).then(() => {
+  const promise = Promise.all(animations.map((a) => a.finished)).catch(() => {}).then(() => {
     done();
     clearInlineStyles();
     for (const a of animations) a.cancel();
@@ -294,8 +294,13 @@ function enableEdgeSwipe() {
 
 // ---------- Navigation ----------
 
-let shownNote = null; // title of the note currently rendered in the note screen
+const PRERENDER_DELAY_MS = 800;
+
+let renderedKey = null; // identifies what the note screen currently has drawn
 let selectedCell = null;
+let prerenderTimer = 0;
+
+const contentKey = (note) => (note.trick ? `trick:${settings.title}:${shownWords.join('|')}` : `note:${note.title}`);
 
 async function openNote(note, cell) {
   await finishRunning();
@@ -304,8 +309,9 @@ async function openNote(note, cell) {
   // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
   selectedCell = cell;
   cell.classList.add('selected');
+  clearTimeout(prerenderTimer);
   // The trick note is pre-rendered, so usually there is nothing to draw before sliding.
-  if (shownNote !== note.title) {
+  if (renderedKey !== contentKey(note)) {
     showNoteContent(note);
     requestAnimationFrame(() => pushNote());
   } else {
@@ -314,7 +320,7 @@ async function openNote(note, cell) {
 }
 
 function showNoteContent(note) {
-  shownNote = note.title;
+  renderedKey = contentKey(note);
   $('note-date').textContent = headerLabel(note.date);
   if (note.trick) renderTrickBody();
   else renderDecoyBody(note);
@@ -326,9 +332,17 @@ function trickNote() {
 }
 
 // Runs once the note is off screen: reset the trick for the next performance and pre-render it.
+// iOS Safari swallows a tap if new content appears while the finger is down (it treats the tap
+// as a "hover"), and taps often land right as the slide ends. So never redraw here when nothing
+// changed, and when something did, wait for a quiet moment.
 function afterClose() {
   shownWords = [...settings.words];
-  showNoteContent(trickNote());
+  const trick = trickNote();
+  if (renderedKey === contentKey(trick)) return;
+  clearTimeout(prerenderTimer);
+  prerenderTimer = setTimeout(() => {
+    if (!noteScreen.classList.contains('active') && !busy) showNoteContent(trick);
+  }, PRERENDER_DELAY_MS);
 }
 
 // Clear the row highlight instantly when leaving a note (a fade would repaint the list mid-slide).
@@ -382,7 +396,10 @@ function commitSecretInput() {
   const parsed = parseSecret(secret.value, settings.force);
   secret.value = '';
   if (parsed) shownWords = applyForce(shownWords, parsed.position, parsed.word);
-  if (openNoteIsTrick) renderTrickBody();
+  if (openNoteIsTrick) {
+    renderTrickBody();
+    renderedKey = contentKey(trickNote());
+  }
 }
 
 // Keep focus on the hidden input when tapping the note (desktop browsers would otherwise blur it).
