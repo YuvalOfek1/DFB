@@ -1,0 +1,220 @@
+:root {
+  --bg: #f2f2f7;
+  --cell: #ffffff;
+  --note-bg: #ffffff;
+  --text: #000000;
+  --secondary: #8a8a8e;
+  --separator: rgba(60, 60, 67, 0.18);
+  --search: rgba(118, 118, 128, 0.12);
+  --tint: #e0a30a;
+  --danger: #ff3b30;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --cell: #1c1c1e;
+    --note-bg: #000000;
+    --text: #ffffff;
+    --secondary: #8d8d93;
+    --separator: rgba(84, 84, 88, 0.6);
+    --search: rgba(118, 118, 128, 0.24);
+    --tint: #f5bd0b;
+  }
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button {
+  font: inherit;
+  color: var(--tint);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+svg .fill { fill: currentColor; stroke: none; }
+
+/* Screens */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background: var(--bg);
+}
+.screen.active { display: flex; }
+#note-screen { background: var(--note-bg); }
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Nav bars */
+.list-nav, .note-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--safe-top) + 6px) 12px 6px 8px;
+  min-height: calc(var(--safe-top) + 44px);
+}
+.nav-back { display: inline-flex; align-items: center; gap: 4px; font-size: 17px; }
+.nav-back.bold { font-weight: 600; }
+.chevron { width: 12px; height: 20px; stroke-width: 2.6; }
+.nav-right { display: flex; gap: 18px; }
+.nav-icon { display: inline-flex; width: 28px; height: 28px; }
+.nav-icon svg { width: 28px; height: 28px; }
+
+.large-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.37px;
+  margin: 2px 16px 8px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 16px 18px;
+  padding: 0 8px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--search);
+  color: var(--secondary);
+}
+.search svg { width: 18px; height: 18px; flex: none; }
+.search span { flex: 1; }
+
+/* Note list */
+.group-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 18px 16px 8px 20px;
+}
+.group {
+  margin: 0 16px;
+  border-radius: 10px;
+  background: var(--cell);
+  overflow: hidden;
+}
+.cell {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+  padding: 11px 16px 11px 20px;
+  position: relative;
+}
+.cell + .cell::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 20px; right: 0;
+  border-top: 0.5px solid var(--separator);
+}
+.cell:active { background: var(--separator); }
+.cell-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell-sub { margin-top: 2px; font-size: 15px; color: var(--secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell-sub time { color: var(--text); opacity: 0.85; margin-right: 8px; }
+.list-bottom-pad { height: 24px; }
+
+/* Toolbars */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px calc(var(--safe-bottom) + 8px);
+  min-height: calc(var(--safe-bottom) + 50px);
+  background: var(--bg);
+  border-top: 0.5px solid var(--separator);
+}
+#note-screen .toolbar { background: var(--note-bg); }
+.list-toolbar > span:first-child { width: 28px; }
+.count { font-size: 11px; color: var(--text); }
+
+/* Note view */
+.note-scroll { padding: 0 20px; }
+.note-date {
+  text-align: center;
+  font-size: 13px;
+  color: var(--secondary);
+  margin: 4px 0 14px;
+}
+.note-body {
+  font-size: 17px;
+  line-height: 1.32;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.note-body h2 { font-size: 28px; font-weight: 700; margin: 0 0 8px; line-height: 1.2; }
+.note-body p { margin: 0; min-height: 1.32em; }
+.note-body ol { margin: 0; padding-left: 0; list-style: none; counter-reset: item; }
+.note-body ol li { counter-increment: item; display: flex; }
+.note-body ol li::before {
+  content: counter(item) ".";
+  flex: none;
+  min-width: 2.1em;
+  padding-right: 0.4em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.tap-zone { min-height: 60vh; }
+
+/* Fake caret shown while the secret input is focused */
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--tint);
+  border-radius: 1px;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* The secret input: focusable (so the keyboard opens) but never visible */
+.secret-form { position: fixed; top: 50%; left: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+.secret-form input { font-size: 16px; width: 1px; height: 1px; border: 0; padding: 0; color: transparent; caret-color: transparent; background: transparent; }
+
+/* Settings */
+.settings-title { font-weight: 600; }
+.settings-scroll { padding: 8px 16px 40px; -webkit-user-select: text; user-select: text; }
+.field-label { display: block; margin: 18px 4px 6px; font-size: 13px; text-transform: uppercase; color: var(--secondary); }
+.field {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 17px;
+  color: var(--text);
+  background: var(--cell);
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 14px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.field.words { resize: vertical; line-height: 1.35; }
+.hint { font-size: 13px; color: var(--secondary); margin: 6px 4px 0; }
+.danger { display: block; margin: 28px auto 0; color: var(--danger); }
