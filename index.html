@@ -88,24 +88,9 @@
     </form>
   </section>
 
-  <!-- Hidden performer settings: long-press the "Notes" title -->
+  <!-- Hidden setup sheet: long-press the "Notes" title. Pages are built by js/setup.js -->
   <section id="settings-screen" class="screen">
-    <header class="note-nav">
-      <button id="settings-cancel" class="nav-back" type="button">Cancel</button>
-      <strong class="settings-title">Setup</strong>
-      <button id="settings-save" class="nav-back bold" type="button">Save</button>
-    </header>
-    <div class="scroll settings-scroll">
-      <label class="field-label" for="set-title">Note title</label>
-      <input id="set-title" class="field" type="text" autocomplete="off">
-      <label class="field-label" for="set-force">Default force word</label>
-      <input id="set-force" class="field" type="text" autocomplete="off" autocapitalize="words">
-      <p class="hint">Used when you type only a number. Type <b>17 banana</b> to force a different word on the fly.</p>
-      <label class="field-label" for="set-words">Words (one per line)</label>
-      <textarea id="set-words" class="field words" rows="14" autocapitalize="words"></textarea>
-      <p class="hint">If the force word is already in the list it swaps places, so the list always contains the same words. If it isn't, it replaces the word at that number.</p>
-      <button id="settings-reset" class="danger" type="button">Restore defaults</button>
-    </div>
+    <div id="setup-stack" class="setup-stack"></div>
   </section>
 
   <script type="module" src="js/app.js"></script>

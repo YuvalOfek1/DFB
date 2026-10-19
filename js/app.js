@@ -1,66 +1,16 @@
 import { parseSecret, applyForce } from './force.js';
+import { DECOYS } from './lists.js';
+import { IOS_EASE } from './motion.js';
+import * as store from './store.js';
+import { createSetup } from './setup.js';
 
-const STORAGE_KEY = 'dfb.settings.v1';
 const LONG_PRESS_MS = 700;
-
-const DEFAULTS = {
-  title: 'Charades ideas',
-  force: 'Leonardo DiCaprio',
-  words: [
-    'Taylor Swift', 'Leonardo DiCaprio', 'Beyoncé', 'Tom Hanks', 'Rihanna', 'Brad Pitt',
-    'Oprah Winfrey', 'Lionel Messi', 'Jennifer Aniston', 'Cristiano Ronaldo', 'Will Smith',
-    'Lady Gaga', 'Johnny Depp', 'Kim Kardashian', 'Dwayne Johnson', 'Adele', 'Barack Obama',
-    'Angelina Jolie', 'Elon Musk', 'Ed Sheeran', 'Michael Jordan', 'Scarlett Johansson',
-    'Justin Bieber', 'Morgan Freeman', 'Ariana Grande', 'Keanu Reeves', 'Serena Williams',
-    'Robert Downey Jr.', 'Selena Gomez', 'Bill Gates', 'Tom Cruise', 'Shakira',
-    'David Beckham', 'Emma Watson', 'Drake', 'Meryl Streep', 'LeBron James', 'Billie Eilish',
-    'Jackie Chan', 'Madonna', 'Harry Styles', 'Julia Roberts', 'Usain Bolt', 'Bruno Mars',
-    'Nicole Kidman', 'Ryan Reynolds', 'Jennifer Lopez', 'Roger Federer', 'Zendaya',
-    'Mark Zuckerberg', 'Eminem', 'Sandra Bullock', 'Tiger Woods', 'Katy Perry',
-    'Chris Hemsworth', 'Kylie Jenner', 'Denzel Washington', 'Dua Lipa',
-    'Arnold Schwarzenegger', 'Margot Robbie', 'Steve Jobs', 'Snoop Dogg', 'Anne Hathaway',
-    'Jim Carrey', 'Miley Cyrus', 'Brad Paisley', 'Nicki Minaj', 'Hugh Jackman', 'Elton John',
-    'Gal Gadot', 'Neymar', 'Kanye West', 'Natalie Portman', 'Mr. Bean', 'Pink', 'Matt Damon',
-    'Shaquille O\'Neal', 'Lionel Richie', 'Cardi B', 'George Clooney', 'Jennifer Lawrence',
-    'Paul McCartney', 'Kevin Hart', 'Mariah Carey', 'Rafael Nadal', 'Emma Stone',
-    'Justin Timberlake', 'Sylvester Stallone', 'Britney Spears', 'Kobe Bryant',
-    'Charlize Theron', 'The Weeknd', 'Mike Tyson', 'Cameron Diaz', 'Post Malone',
-    'Jason Statham', 'Céline Dion', 'Michael Jackson', 'Audrey Hepburn', 'Albert Einstein',
-  ],
-};
-
-// Decoy notes so the folder looks lived-in. `daysAgo` drives the date labels.
-const DECOYS = [
-  { title: 'Groceries', daysAgo: 1, lines: ['Milk', 'Eggs', 'Sourdough', 'Spinach', 'Coffee beans', 'Lemons', 'Paper towels'] },
-  { title: 'Gift ideas', daysAgo: 3, lines: ['Mom - cookbook / nice olive oil', 'Dan - board game?', 'Noa - headphones', ''] },
-  { title: 'Wifi', daysAgo: 6, lines: ['Home network - password on the router sticker', 'Guest: ask before sharing'] },
-  { title: 'Books to read', daysAgo: 12, lines: ['Project Hail Mary', 'The Midnight Library', 'Sapiens', 'Born a Crime'] },
-  { title: 'Packing list', daysAgo: 25, lines: ['Passport', 'Chargers', 'Adapter', 'Sunglasses', 'Swimsuit', 'Book'] },
-];
 
 const $ = (id) => document.getElementById(id);
 
-let settings = loadSettings();
-let shownWords = [...settings.words]; // what the trick note currently displays
-let openNoteIsTrick = false;
-
-// The trick note was "last edited" a little while ago today.
-const trickEdited = new Date(Date.now() - 47 * 60 * 1000);
-
-// ---------- Storage ----------
-
-function loadSettings() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (saved && Array.isArray(saved.words) && saved.words.length) return { ...DEFAULTS, ...saved };
-  } catch { /* storage unavailable or corrupt: fall back to defaults */ }
-  return structuredClone(DEFAULTS);
-}
-
-function saveSettings(next) {
-  settings = next;
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
-}
+let settings = store.load();
+let openList = null; // the trick list currently in the note screen (null for a decoy note)
+let shownWords = []; // what that list currently displays (changes when a force is applied)
 
 // ---------- Dates (mimic Notes' labels) ----------
 
@@ -68,12 +18,18 @@ const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2
 const weekdayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
 const shortFmt = new Intl.DateTimeFormat(undefined, { year: '2-digit', month: 'numeric', day: 'numeric' });
 const longFmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'long' });
+const bootTime = Date.now();
 
 function daysAgoDate(days) {
   const d = new Date();
   d.setDate(d.getDate() - days);
   d.setHours(9 + ((days * 7) % 11), (days * 13) % 60, 0, 0);
   return d;
+}
+
+function calendarDaysAgo(date) {
+  const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  return Math.round((startOfDay(new Date()) - startOfDay(date)) / 86400000);
 }
 
 function listLabel(date, daysAgo) {
@@ -89,10 +45,15 @@ function headerLabel(date) {
 
 // ---------- Rendering ----------
 
+function listNote(list) {
+  const date = new Date(bootTime - list.ageMinutes * 60000);
+  return { list, title: list.title, date, daysAgo: calendarDaysAgo(date), preview: list.items.slice(0, 4).join(' ') };
+}
+
 function allNotes() {
-  const trick = { trick: true, title: settings.title, daysAgo: 0, date: trickEdited, preview: shownWords.slice(0, 4).join(' ') };
+  const lists = settings.lists.filter((list) => list.visible).map(listNote);
   const decoys = DECOYS.map((n) => ({ ...n, date: daysAgoDate(n.daysAgo), preview: n.lines.filter(Boolean).join(' ') }));
-  return [trick, ...decoys];
+  return [...lists, ...decoys].sort((a, b) => b.date - a.date);
 }
 
 function el(tag, className, text) {
@@ -134,7 +95,7 @@ function renderList() {
 // `caretAt` is the index of the list item to show the fake cursor after (-1 for none).
 function renderTrickBody(caretAt = -1) {
   const body = $('note-body');
-  body.replaceChildren(el('h2', null, settings.title));
+  body.replaceChildren(el('h2', null, openList.title));
   const ol = el('ol');
   shownWords.forEach((word, i) => {
     const li = el('li');
@@ -159,7 +120,6 @@ function renderDecoyBody(note) {
 const PUSH_MS = 520;
 const POP_MS = 460;
 const SHEET_MS = 500;
-const IOS_EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
 const PARALLAX = 30; // % the screen underneath shifts left while a note is pushed over it
 const SHADE = 0.12;
 
@@ -300,48 +260,57 @@ let renderedKey = null; // identifies what the note screen currently has drawn
 let selectedCell = null;
 let prerenderTimer = 0;
 
-const contentKey = (note) => (note.trick ? `trick:${settings.title}:${shownWords.join('|')}` : `note:${note.title}`);
+function contentKey(note, words = note.list?.items) {
+  return note.list ? `list:${note.list.id}:${note.list.title}:${words.join('|')}` : `note:${note.title}`;
+}
 
 async function openNote(note, cell) {
   await finishRunning();
   if (busy || noteScreen.classList.contains('active')) return;
-  openNoteIsTrick = !!note.trick;
   // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
   selectedCell = cell;
   cell.classList.add('selected');
   clearTimeout(prerenderTimer);
-  // The trick note is pre-rendered, so usually there is nothing to draw before sliding.
+  // The most recent list is pre-rendered, so usually there is nothing to draw before sliding.
   if (renderedKey !== contentKey(note)) {
     showNoteContent(note);
     requestAnimationFrame(() => pushNote());
   } else {
+    openList = note.list ?? null;
+    if (openList) shownWords = [...openList.items];
     pushNote();
   }
 }
 
 function showNoteContent(note) {
+  openList = note.list ?? null;
   renderedKey = contentKey(note);
   $('note-date').textContent = headerLabel(note.date);
-  if (note.trick) renderTrickBody();
-  else renderDecoyBody(note);
+  if (openList) {
+    shownWords = [...openList.items];
+    renderTrickBody();
+  } else {
+    renderDecoyBody(note);
+  }
   $('note-scroll').scrollTop = 0;
 }
 
-function trickNote() {
-  return allNotes().find((n) => n.trick);
+// The note most likely to be opened next: the newest visible list.
+function primaryNote() {
+  return allNotes().find((n) => n.list) ?? null;
 }
 
-// Runs once the note is off screen: reset the trick for the next performance and pre-render it.
+// Runs once the note is off screen: reset the trick for the next performance and pre-render.
 // iOS Safari swallows a tap if new content appears while the finger is down (it treats the tap
 // as a "hover"), and taps often land right as the slide ends. So never redraw here when nothing
 // changed, and when something did, wait for a quiet moment.
 function afterClose() {
-  shownWords = [...settings.words];
-  const trick = trickNote();
-  if (renderedKey === contentKey(trick)) return;
+  if (openList) shownWords = [...openList.items];
+  const next = primaryNote();
+  if (!next || renderedKey === contentKey(next)) return;
   clearTimeout(prerenderTimer);
   prerenderTimer = setTimeout(() => {
-    if (!noteScreen.classList.contains('active') && !busy) showNoteContent(trick);
+    if (!noteScreen.classList.contains('active') && !busy) showNoteContent(next);
   }, PRERENDER_DELAY_MS);
 }
 
@@ -363,7 +332,7 @@ $('back').addEventListener('click', closeNote);
 enableEdgeSwipe();
 
 // ---------- Secret input ----------
-// Tap anywhere on the trick note: number pad opens (type the spectator's number).
+// Tap anywhere on a list note: number pad opens (type the spectator's number).
 // Long-press: letter keyboard opens (type "17 banana" to force a different word).
 // Nothing typed is shown. Tap the note again, or press Done/return, to apply.
 
@@ -393,17 +362,16 @@ function beginSecretInput(mode, target) {
 function commitSecretInput() {
   if (!secretActive) return;
   secretActive = false;
-  const parsed = parseSecret(secret.value, settings.force);
+  const parsed = parseSecret(secret.value, openList?.force);
   secret.value = '';
+  if (!openList) return;
   if (parsed) shownWords = applyForce(shownWords, parsed.position, parsed.word);
-  if (openNoteIsTrick) {
-    renderTrickBody();
-    renderedKey = contentKey(trickNote());
-  }
+  renderTrickBody();
+  renderedKey = contentKey({ list: openList }, shownWords);
 }
 
 // Keep focus on the hidden input when tapping the note (desktop browsers would otherwise blur it).
-noteScroll.addEventListener('mousedown', (e) => { if (openNoteIsTrick) e.preventDefault(); });
+noteScroll.addEventListener('mousedown', (e) => { if (openList) e.preventDefault(); });
 
 noteScroll.addEventListener('pointerdown', (e) => {
   press = { x: e.clientX, y: e.clientY, t: e.timeStamp, target: e.target };
@@ -415,7 +383,7 @@ noteScroll.addEventListener('pointercancel', () => { press = null; });
 noteScroll.addEventListener('pointerup', (e) => {
   const current = press;
   press = null;
-  if (!current || !openNoteIsTrick || busy) return;
+  if (!current || !openList || busy) return;
   if (secretActive) {
     secret.blur(); // second tap applies the force and hides the keyboard
     return;
@@ -429,7 +397,7 @@ $('secret-form').addEventListener('submit', (e) => {
 });
 secret.addEventListener('blur', commitSecretInput);
 
-// ---------- Hidden settings (long-press the "Notes" title) ----------
+// ---------- Setup (long-press the "Notes" title) ----------
 
 function onLongPress(target, callback) {
   let timer;
@@ -439,34 +407,30 @@ function onLongPress(target, callback) {
   target.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 
-function fillSettingsForm(values) {
-  $('set-title').value = values.title;
-  $('set-force').value = values.force;
-  $('set-words').value = values.words.join('\n');
+const setup = createSetup({
+  root: $('setup-stack'),
+  getSettings: () => settings,
+  setSettings(next) {
+    settings = next;
+    store.save(settings);
+  },
+  close: async () => {
+    if (busy) return;
+    document.activeElement?.blur();
+    await dismissSheet(settingsScreen);
+    renderList();
+    const next = primaryNote();
+    if (next) showNoteContent(next);
+  },
+});
+
+function openSetup(page) {
+  if (busy) return;
+  setup.show(page);
+  presentSheet(settingsScreen);
 }
 
-onLongPress($('folder-title'), () => {
-  if (busy) return;
-  fillSettingsForm(settings);
-  presentSheet(settingsScreen);
-});
-
-$('settings-cancel').addEventListener('click', () => { if (!busy) dismissSheet(settingsScreen); });
-$('settings-reset').addEventListener('click', () => fillSettingsForm(DEFAULTS));
-$('settings-save').addEventListener('click', () => {
-  if (busy) return;
-  const words = $('set-words').value.split('\n').map((w) => w.trim()).filter(Boolean);
-  saveSettings({
-    title: $('set-title').value.trim() || DEFAULTS.title,
-    force: $('set-force').value.trim(),
-    words: words.length ? words : DEFAULTS.words,
-  });
-  shownWords = [...settings.words];
-  renderList();
-  showNoteContent(trickNote());
-  document.activeElement?.blur();
-  dismissSheet(settingsScreen);
-});
+onLongPress($('folder-title'), () => openSetup('main'));
 
 // ---------- Boot ----------
 
@@ -474,7 +438,15 @@ $('settings-save').addEventListener('click', () => {
 document.addEventListener('touchstart', () => {}, { passive: true });
 
 renderList();
-showNoteContent(trickNote());
+const firstNote = primaryNote();
+if (firstNote) showNoteContent(firstNote);
+
+// First launch: explain how to install, open setup and perform.
+if (!settings.welcomed) {
+  settings.welcomed = true;
+  store.save(settings);
+  setTimeout(() => openSetup('welcome'), 400);
+}
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is best-effort */ });
