@@ -4,14 +4,28 @@ const STORAGE_KEY = 'dfb.settings.v1';
 const LONG_PRESS_MS = 700;
 
 const DEFAULTS = {
-  title: 'Pictionary ideas',
-  force: 'Elephant',
+  title: 'Charades ideas',
+  force: 'Leonardo DiCaprio',
   words: [
-    'Bicycle', 'Pineapple', 'Lighthouse', 'Volcano', 'Guitar', 'Umbrella',
-    'Penguin', 'Rocket', 'Snowman', 'Castle', 'Elephant', 'Telescope',
-    'Mermaid', 'Hammock', 'Tornado', 'Cactus', 'Octopus', 'Skateboard',
-    'Dragon', 'Waterfall', 'Robot', 'Igloo', 'Kangaroo', 'Treasure chest',
-    'Windmill', 'Spider web', 'Hot air balloon', 'Pirate', 'Unicorn', 'Toaster',
+    'Taylor Swift', 'Leonardo DiCaprio', 'Beyoncé', 'Tom Hanks', 'Rihanna', 'Brad Pitt',
+    'Oprah Winfrey', 'Lionel Messi', 'Jennifer Aniston', 'Cristiano Ronaldo', 'Will Smith',
+    'Lady Gaga', 'Johnny Depp', 'Kim Kardashian', 'Dwayne Johnson', 'Adele', 'Barack Obama',
+    'Angelina Jolie', 'Elon Musk', 'Ed Sheeran', 'Michael Jordan', 'Scarlett Johansson',
+    'Justin Bieber', 'Morgan Freeman', 'Ariana Grande', 'Keanu Reeves', 'Serena Williams',
+    'Robert Downey Jr.', 'Selena Gomez', 'Bill Gates', 'Tom Cruise', 'Shakira',
+    'David Beckham', 'Emma Watson', 'Drake', 'Meryl Streep', 'LeBron James', 'Billie Eilish',
+    'Jackie Chan', 'Madonna', 'Harry Styles', 'Julia Roberts', 'Usain Bolt', 'Bruno Mars',
+    'Nicole Kidman', 'Ryan Reynolds', 'Jennifer Lopez', 'Roger Federer', 'Zendaya',
+    'Mark Zuckerberg', 'Eminem', 'Sandra Bullock', 'Tiger Woods', 'Katy Perry',
+    'Chris Hemsworth', 'Kylie Jenner', 'Denzel Washington', 'Dua Lipa',
+    'Arnold Schwarzenegger', 'Margot Robbie', 'Steve Jobs', 'Snoop Dogg', 'Anne Hathaway',
+    'Jim Carrey', 'Miley Cyrus', 'Brad Paisley', 'Nicki Minaj', 'Hugh Jackman', 'Elton John',
+    'Gal Gadot', 'Neymar', 'Kanye West', 'Natalie Portman', 'Mr. Bean', 'Pink', 'Matt Damon',
+    'Shaquille O\'Neal', 'Lionel Richie', 'Cardi B', 'George Clooney', 'Jennifer Lawrence',
+    'Paul McCartney', 'Kevin Hart', 'Mariah Carey', 'Rafael Nadal', 'Emma Stone',
+    'Justin Timberlake', 'Sylvester Stallone', 'Britney Spears', 'Kobe Bryant',
+    'Charlize Theron', 'The Weeknd', 'Mike Tyson', 'Cameron Diaz', 'Post Malone',
+    'Jason Statham', 'Céline Dion', 'Michael Jackson', 'Audrey Hepburn', 'Albert Einstein',
   ],
 };
 
