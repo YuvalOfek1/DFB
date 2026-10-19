@@ -131,14 +131,15 @@ function renderList() {
   $('note-count').textContent = `${notes.length} Notes`;
 }
 
-function renderTrickBody(withCaret = false) {
+// `caretAt` is the index of the list item to show the fake cursor after (-1 for none).
+function renderTrickBody(caretAt = -1) {
   const body = $('note-body');
   body.replaceChildren(el('h2', null, settings.title));
   const ol = el('ol');
   shownWords.forEach((word, i) => {
     const li = el('li');
     const span = el('span', null, word);
-    if (withCaret && i === shownWords.length - 1) span.append(el('span', 'caret'));
+    if (i === caretAt) span.append(el('span', 'caret'));
     li.append(span);
     ol.append(li);
   });
@@ -150,56 +151,232 @@ function renderDecoyBody(note) {
   body.replaceChildren(el('h2', null, note.title), ...note.lines.map((line) => el('p', null, line)));
 }
 
-// ---------- Navigation ----------
+// ---------- Transitions (iOS-style push / pop / sheet) ----------
 
-function show(screenId) {
-  for (const screen of document.querySelectorAll('.screen')) {
-    screen.classList.toggle('active', screen.id === screenId);
-  }
+const PUSH_MS = 420;
+const POP_MS = 360;
+const SHEET_MS = 400;
+const PARALLAX = 30; // % the screen underneath shifts left while a note is pushed over it
+const SHADE = 0.12;
+
+const listScreen = $('list-screen');
+const noteScreen = $('note-screen');
+const settingsScreen = $('settings-screen');
+const shade = $('shade');
+let busy = false;
+
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+function tween(from, to, ms, apply) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / ms);
+      apply(from + (to - from) * easeOut(t));
+      if (t < 1) requestAnimationFrame(step);
+      else resolve();
+    };
+    requestAnimationFrame(step);
+  });
 }
 
+// p = how far the note is pushed on screen: 0 = off to the right, 1 = fully shown.
+function setPush(p) {
+  noteScreen.style.transform = `translate3d(${(1 - p) * 100}%, 0, 0)`;
+  listScreen.style.transform = `translate3d(${-PARALLAX * p}%, 0, 0)`;
+  shade.style.opacity = SHADE * p;
+}
+
+function clearTransforms() {
+  for (const node of [listScreen, noteScreen, settingsScreen]) node.style.transform = '';
+  shade.style.opacity = 0;
+}
+
+async function pushNote() {
+  busy = true;
+  noteScreen.classList.add('active');
+  shade.classList.add('active');
+  setPush(0);
+  await tween(0, 1, PUSH_MS, setPush);
+  listScreen.classList.remove('active');
+  shade.classList.remove('active');
+  clearTransforms();
+  busy = false;
+}
+
+// Animate the note away starting from push progress `from` (1 for the back button, less mid-swipe).
+async function popNote(from = 1, ms = POP_MS) {
+  busy = true;
+  listScreen.classList.add('active');
+  shade.classList.add('active');
+  setPush(from);
+  await tween(from, 0, ms, setPush);
+  noteScreen.classList.remove('active');
+  shade.classList.remove('active');
+  clearTransforms();
+  busy = false;
+}
+
+async function presentSheet(screen) {
+  busy = true;
+  screen.classList.add('active');
+  const apply = (y) => { screen.style.transform = `translate3d(0, ${y}%, 0)`; };
+  apply(100);
+  await tween(100, 0, SHEET_MS, apply);
+  clearTransforms();
+  busy = false;
+}
+
+async function dismissSheet(screen) {
+  busy = true;
+  await tween(0, 100, SHEET_MS - 60, (y) => { screen.style.transform = `translate3d(0, ${y}%, 0)`; });
+  screen.classList.remove('active');
+  clearTransforms();
+  busy = false;
+}
+
+// Swipe from the left edge of a note to go back, following the finger like iOS.
+function enableEdgeSwipe() {
+  const EDGE = 24;
+  let swipe = null;
+
+  noteScreen.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    if (busy || e.touches.length > 1 || touch.clientX > EDGE) return;
+    swipe = { startX: touch.clientX, lastX: touch.clientX, lastT: e.timeStamp, velocity: 0, started: false };
+  }, { passive: true });
+
+  noteScreen.addEventListener('touchmove', (e) => {
+    if (!swipe) return;
+    const x = e.touches[0].clientX;
+    if (!swipe.started) {
+      swipe.started = true;
+      $('secret').blur();
+      listScreen.classList.add('active');
+      shade.classList.add('active');
+    }
+    e.preventDefault(); // stop the note scrolling while dragging sideways
+    const dt = Math.max(1, e.timeStamp - swipe.lastT);
+    swipe.velocity = (x - swipe.lastX) / dt;
+    swipe.lastX = x;
+    swipe.lastT = e.timeStamp;
+    setPush(1 - Math.max(0, x - swipe.startX) / window.innerWidth);
+  }, { passive: false });
+
+  const end = async () => {
+    if (!swipe) return;
+    const { started, lastX, startX, velocity } = swipe;
+    swipe = null;
+    if (!started) return;
+    const p = 1 - Math.max(0, lastX - startX) / window.innerWidth;
+    if (p < 0.6 || velocity > 0.4) {
+      resetTrick();
+      await popNote(p, Math.max(140, POP_MS * p));
+      renderList();
+    } else {
+      busy = true;
+      await tween(p, 1, Math.max(140, PUSH_MS * (1 - p)), setPush);
+      listScreen.classList.remove('active');
+      shade.classList.remove('active');
+      clearTransforms();
+      busy = false;
+    }
+  };
+  noteScreen.addEventListener('touchend', end);
+  noteScreen.addEventListener('touchcancel', end);
+}
+
+// ---------- Navigation ----------
+
 function openNote(note) {
+  if (busy) return;
   openNoteIsTrick = !!note.trick;
   $('note-date').textContent = headerLabel(note.date);
   if (note.trick) renderTrickBody();
   else renderDecoyBody(note);
   $('note-scroll').scrollTop = 0;
-  show('note-screen');
+  pushNote();
 }
 
-function closeNote() {
+// Leaving the note resets the trick for the next performance.
+function resetTrick() {
   $('secret').blur();
-  // Leaving the note resets the trick for the next performance.
   shownWords = [...settings.words];
-  renderList();
-  show('list-screen');
 }
+
+async function closeNote() {
+  if (busy) return;
+  resetTrick();
+  await popNote();
+  renderList();
+}
+
+$('back').addEventListener('click', closeNote);
+enableEdgeSwipe();
 
 // ---------- Secret input ----------
+// Tap anywhere on the trick note: number pad opens (type the spectator's number).
+// Long-press: letter keyboard opens (type "17 banana" to force a different word).
+// Nothing typed is shown. Tap the note again, or press Done/return, to apply.
 
-function beginSecretInput() {
-  if (!openNoteIsTrick) return;
-  const input = $('secret');
-  input.value = '';
-  input.focus({ preventScroll: true }); // must run inside the tap handler for iOS to open the keyboard
-  renderTrickBody(true);
+const secret = $('secret');
+const noteScroll = $('note-scroll');
+let secretActive = false;
+let press = null;
+
+function beginSecretInput(mode, target) {
+  if (mode === 'numeric') {
+    secret.setAttribute('inputmode', 'numeric');
+    secret.setAttribute('pattern', '[0-9]*');
+  } else {
+    secret.setAttribute('inputmode', 'text');
+    secret.removeAttribute('pattern');
+  }
+  secret.value = '';
+  secret.focus({ preventScroll: true }); // must run inside a touch handler for iOS to open the keyboard
+  secretActive = true;
+
+  // Show the cursor where a real note would put it: the tapped line, or the end of the list.
+  const items = [...$('note-body').querySelectorAll('li')];
+  const tapped = target.closest?.('li');
+  renderTrickBody(tapped ? items.indexOf(tapped) : items.length - 1);
 }
 
 function commitSecretInput() {
-  const input = $('secret');
-  const parsed = parseSecret(input.value, settings.force);
-  input.value = '';
+  if (!secretActive) return;
+  secretActive = false;
+  const parsed = parseSecret(secret.value, settings.force);
+  secret.value = '';
   if (parsed) shownWords = applyForce(shownWords, parsed.position, parsed.word);
-  renderTrickBody(false);
+  if (openNoteIsTrick) renderTrickBody();
 }
 
-$('tap-zone').addEventListener('click', beginSecretInput);
+// Keep focus on the hidden input when tapping the note (desktop browsers would otherwise blur it).
+noteScroll.addEventListener('mousedown', (e) => { if (openNoteIsTrick) e.preventDefault(); });
+
+noteScroll.addEventListener('pointerdown', (e) => {
+  press = { x: e.clientX, y: e.clientY, t: e.timeStamp, target: e.target };
+});
+noteScroll.addEventListener('pointermove', (e) => {
+  if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 10) press = null; // it's a scroll
+});
+noteScroll.addEventListener('pointercancel', () => { press = null; });
+noteScroll.addEventListener('pointerup', (e) => {
+  const current = press;
+  press = null;
+  if (!current || !openNoteIsTrick || busy) return;
+  if (secretActive) {
+    secret.blur(); // second tap applies the force and hides the keyboard
+    return;
+  }
+  beginSecretInput(e.timeStamp - current.t >= LONG_PRESS_MS ? 'text' : 'numeric', current.target);
+});
+
 $('secret-form').addEventListener('submit', (e) => {
   e.preventDefault();
-  $('secret').blur(); // blur triggers the commit
+  secret.blur();
 });
-$('secret').addEventListener('blur', commitSecretInput);
-$('back').addEventListener('click', closeNote);
+secret.addEventListener('blur', commitSecretInput);
 
 // ---------- Hidden settings (long-press the "Notes" title) ----------
 
@@ -218,13 +395,15 @@ function fillSettingsForm(values) {
 }
 
 onLongPress($('folder-title'), () => {
+  if (busy) return;
   fillSettingsForm(settings);
-  show('settings-screen');
+  presentSheet(settingsScreen);
 });
 
-$('settings-cancel').addEventListener('click', () => show('list-screen'));
+$('settings-cancel').addEventListener('click', () => { if (!busy) dismissSheet(settingsScreen); });
 $('settings-reset').addEventListener('click', () => fillSettingsForm(DEFAULTS));
 $('settings-save').addEventListener('click', () => {
+  if (busy) return;
   const words = $('set-words').value.split('\n').map((w) => w.trim()).filter(Boolean);
   saveSettings({
     title: $('set-title').value.trim() || DEFAULTS.title,
@@ -233,10 +412,14 @@ $('settings-save').addEventListener('click', () => {
   });
   shownWords = [...settings.words];
   renderList();
-  show('list-screen');
+  document.activeElement?.blur();
+  dismissSheet(settingsScreen);
 });
 
 // ---------- Boot ----------
+
+// iOS only applies :active styles (button press dimming) when a touch listener exists.
+document.addEventListener('touchstart', () => {}, { passive: true });
 
 renderList();
 
