@@ -122,7 +122,7 @@ function renderList() {
       const sub = el('div', 'cell-sub');
       sub.append(el('time', null, listLabel(note.date, note.daysAgo)), note.preview || 'No additional text');
       cell.append(el('div', 'cell-title', note.title), sub);
-      cell.addEventListener('click', () => openNote(note));
+      cell.addEventListener('click', () => openNote(note, cell));
       group.append(cell);
     }
     container.append(group);
@@ -152,11 +152,12 @@ function renderDecoyBody(note) {
 }
 
 // ---------- Transitions (iOS-style push / pop / sheet) ----------
-// Animations use the Web Animations API on transform/opacity only, so the browser runs them
-// on the compositor thread instead of the main thread.
+// Screens are never hidden: the note and the setup sheet rest just off screen (see styles.css),
+// so they stay painted and a transition is pure compositing. Animations use the Web Animations
+// API on transform/opacity only, which iOS runs on the compositor, off the main thread.
 
-const PUSH_MS = 500;
-const POP_MS = 450;
+const PUSH_MS = 520;
+const POP_MS = 460;
 const SHEET_MS = 500;
 const IOS_EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
 const PARALLAX = 30; // % the screen underneath shifts left while a note is pushed over it
@@ -168,8 +169,6 @@ const settingsScreen = $('settings-screen');
 const shade = $('shade');
 let busy = false;
 
-const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
 const noteX = (p) => `translate3d(${(1 - p) * 100}%, 0, 0)`;
 const listX = (p) => `translate3d(${-PARALLAX * p}%, 0, 0)`;
 
@@ -180,21 +179,25 @@ function setPush(p) {
   shade.style.opacity = SHADE * p;
 }
 
-function clearTransforms() {
+function clearInlineStyles() {
   for (const node of [listScreen, noteScreen, settingsScreen]) node.style.transform = '';
-  shade.style.opacity = 0;
+  shade.style.opacity = '';
 }
 
-// Runs the animations; once they finish, `done` updates the DOM before the animations are
-// removed, so the final frame and the resting state match and nothing flickers.
+// Runs the animations; once they finish, `done` sets the resting state before the animations
+// are removed, so the last frame and the resting state match and nothing flickers.
 async function play(animations, done) {
+  busy = true;
   await Promise.all(animations.map((a) => a.finished));
   done();
+  clearInlineStyles();
   for (const a of animations) a.cancel();
+  busy = false;
 }
 
 function animatePush(from, to, ms) {
   const options = { duration: ms, easing: IOS_EASE, fill: 'forwards' };
+  shade.classList.add('active');
   return [
     noteScreen.animate([{ transform: noteX(from) }, { transform: noteX(to) }], options),
     listScreen.animate([{ transform: listX(from) }, { transform: listX(to) }], options),
@@ -202,63 +205,31 @@ function animatePush(from, to, ms) {
   ];
 }
 
-async function pushNote() {
-  busy = true;
-  setPush(0);
-  noteScreen.classList.add('active');
-  shade.classList.add('active');
-  await nextFrame(); // let the new note paint before it starts moving
-  await play(animatePush(0, 1, PUSH_MS), () => {
-    listScreen.classList.remove('active');
+function pushNote(from = 0, ms = PUSH_MS) {
+  return play(animatePush(from, 1, ms), () => {
+    noteScreen.classList.add('active');
     shade.classList.remove('active');
-    clearTransforms();
   });
-  busy = false;
 }
 
-// Settle the note back on screen, starting from push progress `from` (used when a swipe is cancelled).
-async function settleNote(from, ms) {
-  busy = true;
-  await play(animatePush(from, 1, ms), () => {
-    listScreen.classList.remove('active');
-    shade.classList.remove('active');
-    clearTransforms();
-  });
-  busy = false;
-}
-
-// Animate the note away starting from push progress `from` (1 for the back button, less mid-swipe).
-async function popNote(from = 1, ms = POP_MS) {
-  busy = true;
-  setPush(from);
-  listScreen.classList.add('active');
-  shade.classList.add('active');
-  await play(animatePush(from, 0, ms), () => {
+function popNote(from = 1, ms = POP_MS) {
+  return play(animatePush(from, 0, ms), () => {
     noteScreen.classList.remove('active');
     shade.classList.remove('active');
-    clearTransforms();
   });
-  busy = false;
 }
 
-async function presentSheet(screen) {
-  busy = true;
-  screen.style.transform = 'translate3d(0, 100%, 0)';
-  screen.classList.add('active');
-  await nextFrame();
-  const options = { duration: SHEET_MS, easing: IOS_EASE, fill: 'forwards' };
-  await play([screen.animate([{ transform: 'translate3d(0, 100%, 0)' }, { transform: 'translate3d(0, 0, 0)' }], options)], clearTransforms);
-  busy = false;
+function sheetAnimation(screen, from, to, ms) {
+  const y = (v) => `translate3d(0, ${v}%, 0)`;
+  return screen.animate([{ transform: y(from) }, { transform: y(to) }], { duration: ms, easing: IOS_EASE, fill: 'forwards' });
 }
 
-async function dismissSheet(screen) {
-  busy = true;
-  const options = { duration: SHEET_MS - 80, easing: IOS_EASE, fill: 'forwards' };
-  await play([screen.animate([{ transform: 'translate3d(0, 0, 0)' }, { transform: 'translate3d(0, 100%, 0)' }], options)], () => {
-    screen.classList.remove('active');
-    clearTransforms();
-  });
-  busy = false;
+function presentSheet(screen) {
+  return play([sheetAnimation(screen, 100, 0, SHEET_MS)], () => screen.classList.add('active'));
+}
+
+function dismissSheet(screen) {
+  return play([sheetAnimation(screen, 0, 100, SHEET_MS - 80)], () => screen.classList.remove('active'));
 }
 
 // Swipe from the left edge of a note to go back, following the finger like iOS.
@@ -277,8 +248,7 @@ function enableEdgeSwipe() {
     const x = e.touches[0].clientX;
     if (!swipe.started) {
       swipe.started = true;
-      $('secret').blur();
-      listScreen.classList.add('active');
+      if (secretActive) secret.blur();
       shade.classList.add('active');
     }
     e.preventDefault(); // stop the note scrolling while dragging sideways
@@ -296,11 +266,10 @@ function enableEdgeSwipe() {
     if (!started) return;
     const p = 1 - Math.max(0, lastX - startX) / window.innerWidth;
     if (p < 0.6 || velocity > 0.4) {
-      resetTrick();
       await popNote(p, Math.max(160, POP_MS * p));
-      renderList();
+      afterClose();
     } else {
-      await settleNote(p, Math.max(160, PUSH_MS * (1 - p)));
+      await pushNote(p, Math.max(160, PUSH_MS * (1 - p)));
     }
   };
   noteScreen.addEventListener('touchend', end);
@@ -309,27 +278,49 @@ function enableEdgeSwipe() {
 
 // ---------- Navigation ----------
 
-function openNote(note) {
+let shownNote = null; // title of the note currently rendered in the note screen
+let selectedCell = null;
+
+function openNote(note, cell) {
   if (busy) return;
   openNoteIsTrick = !!note.trick;
+  // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
+  selectedCell = cell;
+  cell.classList.add('selected');
+  // The trick note is pre-rendered, so usually there is nothing to draw before sliding.
+  if (shownNote !== note.title) {
+    showNoteContent(note);
+    requestAnimationFrame(() => pushNote());
+  } else {
+    pushNote();
+  }
+}
+
+function showNoteContent(note) {
+  shownNote = note.title;
   $('note-date').textContent = headerLabel(note.date);
   if (note.trick) renderTrickBody();
   else renderDecoyBody(note);
   $('note-scroll').scrollTop = 0;
-  pushNote();
 }
 
-// Leaving the note resets the trick for the next performance.
-function resetTrick() {
-  $('secret').blur();
+function trickNote() {
+  return allNotes().find((n) => n.trick);
+}
+
+// Runs once the note is off screen: reset the trick for the next performance and pre-render it.
+function afterClose() {
   shownWords = [...settings.words];
+  showNoteContent(trickNote());
+  selectedCell?.classList.remove('selected'); // fades out, like iOS deselecting the row
+  selectedCell = null;
 }
 
 async function closeNote() {
   if (busy) return;
-  resetTrick();
+  if (secretActive) secret.blur();
   await popNote();
-  renderList();
+  afterClose();
 }
 
 $('back').addEventListener('click', closeNote);
@@ -433,6 +424,7 @@ $('settings-save').addEventListener('click', () => {
   });
   shownWords = [...settings.words];
   renderList();
+  showNoteContent(trickNote());
   document.activeElement?.blur();
   dismissSheet(settingsScreen);
 });
@@ -443,6 +435,7 @@ $('settings-save').addEventListener('click', () => {
 document.addEventListener('touchstart', () => {}, { passive: true });
 
 renderList();
+showNoteContent(trickNote());
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is best-effort */ });
