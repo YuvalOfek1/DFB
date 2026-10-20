@@ -1,0 +1,13 @@
+{
+  "appId": "io.github.yuvalofek.dfb",
+  "appName": "Notes",
+  "webDir": "www",
+  "backgroundColor": "#f2f2f7",
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": false
+  },
+  "android": {
+    "backgroundColor": "#f2f2f7"
+  }
+}

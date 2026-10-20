@@ -1,16 +1,11 @@
-// Cache-first app shell so the trick works with no signal.
+// Cache-first app shell so the trick works with no signal (js/app.js is the bundled build).
 // Bump VERSION whenever you change any cached file.
-const VERSION = 'v10';
+const VERSION = 'v11';
 const ASSETS = [
   './',
   'index.html',
   'styles.css',
   'js/app.js',
-  'js/force.js',
-  'js/lists.js',
-  'js/motion.js',
-  'js/setup.js',
-  'js/store.js',
   'manifest.webmanifest',
   'icons/icon-180.png',
   'icons/icon-512.png',

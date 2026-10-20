@@ -361,3 +361,21 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 }
 .switch:checked { background: #34c759; }
 .switch:checked::after { transform: translateX(20px); }
+
+/* Paywall */
+.paywall-features { margin: 0; padding: 12px 16px 12px 36px; line-height: 1.5; }
+.paywall-buy {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  padding: 15px;
+  border-radius: 14px;
+  background: var(--tint);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+}
+.paywall-buy:disabled { opacity: 0.5; }
+.paywall-trial { text-align: center; font-size: 15px; color: var(--secondary); margin: 10px 0 0; min-height: 1em; }
+.paywall-links { display: flex; gap: 16px; justify-content: center; }
+.paywall-links a { color: var(--tint); text-decoration: none; }

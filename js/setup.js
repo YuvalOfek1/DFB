@@ -2,6 +2,7 @@
 // Styled like iOS Settings, with its own push/pop page stack inside the sheet.
 import { IOS_EASE } from './motion.js';
 import { defaultSettings, newList, parseItems } from './store.js';
+import { CONFIG } from './config.js';
 
 const PAGE_MS = 450;
 
@@ -59,7 +60,7 @@ function navButton({ label, onClick, back, bold }) {
   return button;
 }
 
-export function createSetup({ root, getSettings, setSettings, close }) {
+export function createSetup({ root, purchases, getSettings, setSettings, close }) {
   let stack = []; // [{ node, refresh }]
   let animating = false;
 
@@ -166,6 +167,20 @@ export function createSetup({ root, getSettings, setSettings, close }) {
       body: [
         el('p', 'set-intro', 'Spectators never see this screen. Long-press the “Notes” title to open it again.'),
         section({ header: 'Lists', children: [...listRows, add], footer: 'Each list appears as its own note. Tap a list to change its items or force word.' }),
+        ...(purchases.isNative ? [section({
+          header: 'Subscription',
+          children: [
+            row({
+              label: 'Manage Subscription',
+              chevron: true,
+              onClick: async () => {
+                const url = await purchases.managementUrl();
+                if (url) window.open(url, '_blank');
+              },
+            }),
+            row({ label: 'Restore Purchases', onClick: () => restore() }),
+          ],
+        })] : []),
         section({
           header: 'Help',
           children: [
@@ -345,7 +360,7 @@ export function createSetup({ root, getSettings, setSettings, close }) {
       body: [
         el('h2', 'set-hero', 'A magic trick hidden in Notes'),
         el('p', 'set-intro', 'This app looks exactly like the iPhone Notes app. Spectators see ordinary lists, and pick any number. Secretly, the item at their number becomes the word you predicted.'),
-        section({
+        ...(purchases.isNative ? [] : [section({
           header: installed ? 'Installed' : 'Install on your iPhone',
           children: [installed
             ? el('p', 'set-text', 'You’re running from the Home Screen, so it opens full screen and works offline.')
@@ -354,7 +369,7 @@ export function createSetup({ root, getSettings, setSettings, close }) {
               ['Tap Share, then “Add to Home Screen”.', 'It’s already named “Notes” with a Notes icon.'],
               ['Open it once while online.', 'After that it works with no signal.'],
             ])],
-        }),
+        })]),
         section({
           header: 'The secret menu',
           children: [el('p', 'set-text', 'Long-press the big “Notes” title to open Setup. There you choose each list’s force word, edit lists, or add your own.')],
@@ -362,16 +377,97 @@ export function createSetup({ root, getSettings, setSettings, close }) {
         section({
           children: [
             row({ label: 'How to Perform', chevron: true, onClick: () => push(() => howToPage('Welcome')) }),
-            ...(pushed ? [] : [row({ label: 'Set Up Lists', chevron: true, onClick: () => push(mainPage) })]),
+            ...(pushed ? [] : [row({
+              label: purchases.isEntitled() ? 'Set Up Lists' : 'Get Started',
+              chevron: true,
+              onClick: () => push(purchases.isEntitled() ? mainPage : paywallPage),
+            })]),
           ],
         }),
       ],
     };
   }
 
+  async function restore() {
+    try {
+      const unlocked = await purchases.restore();
+      alert(unlocked ? 'Your subscription has been restored.' : 'No active subscription was found for this account.');
+      if (unlocked) reset(mainPage);
+    } catch {
+      alert('Could not restore purchases. Check your connection and try again.');
+    }
+  }
+
+  function paywallPage() {
+    const store = purchases.platform === 'android' ? 'Google Play' : 'Apple ID';
+    const buy = el('button', 'paywall-buy', 'Loading…');
+    buy.type = 'button';
+    buy.disabled = true;
+    const trial = el('p', 'paywall-trial');
+
+    let pkg = null;
+    purchases.getPackage().then((found) => {
+      pkg = found;
+      if (!pkg) {
+        buy.textContent = purchases.canPurchase() ? 'Unavailable right now' : 'Subscriptions unavailable';
+        return;
+      }
+      const product = pkg.product;
+      buy.textContent = `Subscribe for ${product.priceString} / month`;
+      buy.disabled = false;
+      if (product.introPrice) {
+        const intro = product.introPrice;
+        const length = `${intro.periodNumberOfUnits} ${intro.periodUnit.toLowerCase()}${intro.periodNumberOfUnits > 1 ? 's' : ''}`;
+        trial.textContent = intro.price === 0 ? `Free for ${length}, then ${product.priceString} / month.` : `${intro.priceString} for ${length}, then ${product.priceString} / month.`;
+      }
+    });
+    buy.addEventListener('click', async () => {
+      if (!pkg) return;
+      buy.disabled = true;
+      try {
+        if (await purchases.purchase(pkg)) reset(mainPage);
+      } catch {
+        alert('The purchase could not be completed. Please try again.');
+      } finally {
+        buy.disabled = false;
+      }
+    });
+
+    const features = el('ul', 'paywall-features');
+    for (const text of [
+      'Every built-in list: celebrities, movies, countries and more',
+      'Choose the force word for each list',
+      'Create your own lists',
+      'Secret number entry and on-the-fly forcing',
+    ]) features.append(el('li', null, text));
+
+    const legal = el('p', 'set-footer paywall-legal',
+      `Payment is charged to your ${store} account. The subscription renews automatically each month unless cancelled at least 24 hours before the end of the current period. Manage or cancel it in your account settings.`);
+    const links = el('p', 'set-footer paywall-links');
+    const link = (label, url) => { const a = el('a', null, label); a.href = url; a.target = '_blank'; return a; };
+    if (CONFIG.termsUrl) links.append(link('Terms of Use', CONFIG.termsUrl));
+    if (CONFIG.privacyUrl) links.append(link('Privacy Policy', CONFIG.privacyUrl));
+
+    return {
+      title: 'Subscribe',
+      right: { label: 'Close', onClick: () => close() },
+      body: [
+        el('h2', 'set-hero', 'Unlock the trick'),
+        el('p', 'set-intro', 'One subscription, everything included.'),
+        section({ children: [features] }),
+        buy,
+        trial,
+        section({ children: [row({ label: 'Restore Purchases', tone: 'accent', onClick: () => restore() })] }),
+        legal,
+        links,
+      ],
+    };
+  }
+
   return {
     show(name) {
-      reset(name === 'welcome' ? () => welcomePage(false) : mainPage);
+      if (name === 'welcome') reset(() => welcomePage(false));
+      else reset(purchases.isEntitled() ? mainPage : paywallPage);
     },
   };
 }

@@ -3,6 +3,7 @@ import { DECOYS } from './lists.js';
 import { IOS_EASE } from './motion.js';
 import * as store from './store.js';
 import { createSetup } from './setup.js';
+import * as purchases from './purchases.js';
 
 const LONG_PRESS_MS = 700;
 
@@ -365,7 +366,8 @@ function commitSecretInput() {
   const parsed = parseSecret(secret.value, openList?.force);
   secret.value = '';
   if (!openList) return;
-  if (parsed) shownWords = applyForce(shownWords, parsed.position, parsed.word);
+  // Without a subscription the app is just Notes: the force does nothing.
+  if (parsed && purchases.isEntitled()) shownWords = applyForce(shownWords, parsed.position, parsed.word);
   renderTrickBody();
   renderedKey = contentKey({ list: openList }, shownWords);
 }
@@ -409,6 +411,7 @@ function onLongPress(target, callback) {
 
 const setup = createSetup({
   root: $('setup-stack'),
+  purchases,
   getSettings: () => settings,
   setSettings(next) {
     settings = next;
@@ -448,6 +451,9 @@ if (!settings.welcomed) {
   setTimeout(() => openSetup('welcome'), 400);
 }
 
-if ('serviceWorker' in navigator) {
+purchases.init();
+
+// The native apps bundle their files, so only the web version needs the offline cache.
+if ('serviceWorker' in navigator && !purchases.isNative) {
   navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is best-effort */ });
 }

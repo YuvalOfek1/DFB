@@ -22,6 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm test
 
   deploy:
@@ -32,11 +34,15 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Collect site files
-        run: |
-          mkdir _site
-          cp -r index.html styles.css sw.js manifest.webmanifest js icons _site/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
+        with:
+          path: www
       - id: deployment
         uses: actions/deploy-pages@v4
