@@ -32,7 +32,6 @@ export default {
   restorePurchases: 'Restaurar compras',
   help: 'Ajuda',
   howToPerform: 'Como apresentar',
-  installWelcome: 'Instalação e boas-vindas',
   language: 'Idioma',
   restoreDefaults: 'Restaurar listas padrão',
   restoreDefaultsConfirm: 'Substituir todas as listas pelas listas padrão? Suas alterações serão perdidas.',
@@ -83,14 +82,6 @@ export default {
   welcome: 'Boas-vindas',
   welcomeHero: 'Boas-vindas ao Foldwise',
   welcomeIntro: 'Truques de mágica escondidos em apps que parecem comuns. Seu primeiro truque é igualzinho ao app Notas: os espectadores veem listas normais e escolhem qualquer número, e em segredo o item desse número vira a palavra que você previu.',
-  installed: 'Instalado',
-  installedText: 'O app está rodando pela Tela de Início, então abre em tela cheia e funciona offline.',
-  installHeader: 'Instalar no iPhone',
-  installSteps: [
-    ['Abra esta página no Safari.', 'Outros navegadores não conseguem adicionar à Tela de Início.'],
-    ['Toque em Compartilhar e depois em “Adicionar à Tela de Início”.', 'Ele já se chama “Notas” e tem um ícone de Notas.'],
-    ['Abra uma vez com internet.', 'Depois ele funciona sem sinal.'],
-  ],
   secretMenu: 'O menu secreto',
   secretMenuText: 'Toque e segure o título grande “Notas” para abrir os ajustes. Lá você escolhe a palavra forçada de cada lista, edita as listas ou cria as suas.',
   setUpLists: 'Configurar listas',
@@ -124,7 +115,7 @@ export default {
   restoreFailed: 'Não foi possível restaurar as compras. Verifique a conexão e tente de novo.',
   purchaseFailed: 'Não foi possível concluir a compra. Tente de novo.',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: 'Boas-vindas e primeiros passos',
   gettingStarted: 'Primeiros passos',
   gettingStartedSteps: [

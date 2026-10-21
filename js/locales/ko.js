@@ -32,7 +32,6 @@ export default {
   restorePurchases: '구입 내역 복원',
   help: '도움말',
   howToPerform: '공연 방법',
-  installWelcome: '설치 및 시작하기',
   language: '언어',
   restoreDefaults: '기본 목록으로 복원',
   restoreDefaultsConfirm: '모든 목록을 기본 목록으로 바꾸시겠습니까? 변경 사항은 사라집니다.',
@@ -83,14 +82,6 @@ export default {
   welcome: '환영합니다',
   welcomeHero: 'Foldwise에 오신 것을 환영합니다',
   welcomeIntro: '평범해 보이는 앱 속에 숨은 마술. 첫 번째 마술은 메모 앱과 똑같이 생겼습니다. 관객은 평범한 목록을 보고 아무 번호나 고르지만, 그 번호의 항목은 몰래 당신이 예언한 단어로 바뀝니다.',
-  installed: '설치됨',
-  installedText: '홈 화면에서 실행 중이므로 전체 화면으로 열리고 오프라인에서도 작동합니다.',
-  installHeader: 'iPhone에 설치하기',
-  installSteps: [
-    ['Safari에서 이 페이지를 여세요.', '다른 브라우저에서는 홈 화면에 추가할 수 없습니다.'],
-    ['공유를 탭한 다음 ‘홈 화면에 추가’를 선택하세요.', '이미 ‘메모’라는 이름과 메모 아이콘으로 되어 있습니다.'],
-    ['인터넷에 연결된 상태로 한 번 여세요.', '그다음부터는 신호가 없어도 작동합니다.'],
-  ],
   secretMenu: '비밀 메뉴',
   secretMenuText: '큰 ‘메모’ 제목을 길게 누르면 설정이 열립니다. 여기서 각 목록의 포스 단어를 고르고, 목록을 편집하거나 직접 만들 수 있습니다.',
   setUpLists: '목록 설정',
@@ -121,7 +112,7 @@ export default {
   restoreFailed: '구입 내역을 복원할 수 없습니다. 연결을 확인한 후 다시 시도하세요.',
   purchaseFailed: '구입을 완료할 수 없습니다. 다시 시도하세요.',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: '환영 및 시작하기',
   gettingStarted: '시작하기',
   gettingStartedSteps: [

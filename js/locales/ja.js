@@ -32,7 +32,6 @@ export default {
   restorePurchases: '購入を復元',
   help: 'ヘルプ',
   howToPerform: '演じ方',
-  installWelcome: 'インストールとはじめに',
   language: '言語',
   restoreDefaults: '標準のリストに戻す',
   restoreDefaultsConfirm: 'すべてのリストを標準のリストに置き換えますか?変更内容は失われます。',
@@ -83,14 +82,6 @@ export default {
   welcome: 'ようこそ',
   welcomeHero: 'Foldwiseへようこそ',
   welcomeIntro: '普通のアプリにしか見えないマジック。最初のマジックは「メモ」アプリそっくりです。観客は普通のリストを見て好きな番号を選びますが、その番号の項目は、あなたが予言した言葉にこっそり入れ替わります。',
-  installed: 'インストール済み',
-  installedText: 'ホーム画面から起動しているので、全画面で開き、オフラインでも動作します。',
-  installHeader: 'iPhoneにインストール',
-  installSteps: [
-    ['このページをSafariで開く。', 'ほかのブラウザではホーム画面に追加できません。'],
-    ['共有をタップし、「ホーム画面に追加」を選ぶ。', 'すでに「メモ」という名前とメモのアイコンになっています。'],
-    ['オンラインで一度開く。', 'そのあとは電波がなくても使えます。'],
-  ],
   secretMenu: '秘密のメニュー',
   secretMenuText: '大きな「メモ」のタイトルを長押しすると設定が開きます。各リストのフォースする言葉の選択、リストの編集や追加ができます。',
   setUpLists: 'リストを設定',
@@ -121,7 +112,7 @@ export default {
   restoreFailed: '購入を復元できませんでした。接続を確認して、もう一度お試しください。',
   purchaseFailed: '購入を完了できませんでした。もう一度お試しください。',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: 'ようこそ・はじめかた',
   gettingStarted: 'はじめかた',
   gettingStartedSteps: [

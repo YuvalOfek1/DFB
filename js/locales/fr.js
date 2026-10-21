@@ -32,7 +32,6 @@ export default {
   restorePurchases: 'Restaurer les achats',
   help: 'Aide',
   howToPerform: 'Comment présenter le tour',
-  installWelcome: 'Installation et bienvenue',
   language: 'Langue',
   restoreDefaults: 'Restaurer les listes par défaut',
   restoreDefaultsConfirm: 'Remplacer toutes les listes par les listes intégrées ? Vos modifications seront perdues.',
@@ -83,14 +82,6 @@ export default {
   welcome: 'Bienvenue',
   welcomeHero: 'Bienvenue dans Foldwise',
   welcomeIntro: 'Des tours de magie cachés dans des apps tout à fait ordinaires. Votre premier tour ressemble exactement à l’app Notes : les spectateurs voient des listes ordinaires et choisissent un numéro, et en secret l’élément à ce numéro devient le mot que vous avez prédit.',
-  installed: 'Installée',
-  installedText: 'L’app est ouverte depuis l’écran d’accueil : elle s’affiche en plein écran et fonctionne hors ligne.',
-  installHeader: 'Installer sur votre iPhone',
-  installSteps: [
-    ['Ouvrez cette page dans Safari.', 'Les autres navigateurs ne peuvent pas l’ajouter à l’écran d’accueil.'],
-    ['Touchez Partager, puis « Sur l’écran d’accueil ».', 'Elle s’appelle déjà « Notes » avec une icône de Notes.'],
-    ['Ouvrez-la une fois avec Internet.', 'Ensuite, elle fonctionne sans réseau.'],
-  ],
   secretMenu: 'Le menu secret',
   secretMenuText: 'Maintenez le doigt sur le grand titre « Notes » pour ouvrir les réglages. Vous y choisissez le mot à forcer de chaque liste, modifiez les listes ou créez les vôtres.',
   setUpLists: 'Configurer les listes',
@@ -124,7 +115,7 @@ export default {
   restoreFailed: 'Impossible de restaurer les achats. Vérifiez votre connexion et réessayez.',
   purchaseFailed: 'L’achat n’a pas pu aboutir. Veuillez réessayer.',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: 'Bienvenue et premiers pas',
   gettingStarted: 'Premiers pas',
   gettingStartedSteps: [

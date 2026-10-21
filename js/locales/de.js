@@ -32,7 +32,6 @@ export default {
   restorePurchases: 'Käufe wiederherstellen',
   help: 'Hilfe',
   howToPerform: 'So führst du den Trick vor',
-  installWelcome: 'Installation & Willkommen',
   language: 'Sprache',
   restoreDefaults: 'Standardlisten wiederherstellen',
   restoreDefaultsConfirm: 'Alle Listen durch die mitgelieferten ersetzen? Deine Änderungen gehen verloren.',
@@ -83,14 +82,6 @@ export default {
   welcome: 'Willkommen',
   welcomeHero: 'Willkommen bei Foldwise',
   welcomeIntro: 'Zaubertricks, versteckt in ganz gewöhnlich aussehenden Apps. Dein erster Trick sieht genau aus wie die Notizen-App: Zuschauer sehen ganz normale Listen und wählen eine beliebige Zahl – und heimlich wird der Eintrag an dieser Zahl zu dem Wort, das du vorhergesagt hast.',
-  installed: 'Installiert',
-  installedText: 'Die App läuft vom Home-Bildschirm, öffnet sich also im Vollbild und funktioniert offline.',
-  installHeader: 'Auf dem iPhone installieren',
-  installSteps: [
-    ['Öffne diese Seite in Safari.', 'Andere Browser können sie nicht zum Home-Bildschirm hinzufügen.'],
-    ['Tippe auf „Teilen“ und dann auf „Zum Home-Bildschirm“.', 'Sie heißt schon „Notizen“ und hat ein Notizen-Symbol.'],
-    ['Öffne sie einmal mit Internet.', 'Danach funktioniert sie auch ohne Empfang.'],
-  ],
   secretMenu: 'Das geheime Menü',
   secretMenuText: 'Halte den großen Titel „Notizen“ gedrückt, um die Einstellungen zu öffnen. Dort wählst du das Zielwort jeder Liste, bearbeitest Listen oder legst eigene an.',
   setUpLists: 'Listen einrichten',
@@ -124,7 +115,7 @@ export default {
   restoreFailed: 'Käufe konnten nicht wiederhergestellt werden. Prüfe deine Verbindung und versuche es erneut.',
   purchaseFailed: 'Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut.',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: 'Willkommen & erste Schritte',
   gettingStarted: 'Erste Schritte',
   gettingStartedSteps: [

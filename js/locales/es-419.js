@@ -18,15 +18,10 @@ export default {
     ['Ingrésalo en secreto.', 'Mientras miran la predicción, toca cualquier parte de la nota. Se abre el teclado numérico, pero no aparece nada de lo que escribes. Escribe su número y vuelve a tocar la nota.'],
     ['Revela.', 'Gira la pantalla hacia ellos, baja hasta su número y deja que lean el elemento en voz alta. Después abre la predicción.'],
   ],
-  installSteps: [
-    ['Abre esta página en Safari.', 'Otros navegadores no pueden agregarla a la pantalla de inicio.'],
-    ['Toca Compartir y luego “Agregar a inicio”.', 'Ya se llama “Notas” y tiene un ícono de Notas.'],
-    ['Ábrela una vez con conexión.', 'Después funciona sin señal.'],
-  ],
   secretMenuText: 'Mantén presionado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra a forzar de cada lista, editas las listas o creas las tuyas.',
   legal: (store) => `El pago se carga a tu ${store}. La suscripción se renueva automáticamente cada mes, a menos que la canceles al menos 24 horas antes de que termine el periodo actual. Puedes administrarla o cancelarla en la configuración de tu cuenta.`,
 
-  // Native app: replaces the install steps
+  // Welcome page
   gettingStartedSteps: [
     ['Abre Foldwise antes del truco.', 'Ábrela antes de que alguien esté mirando. Se abre directamente con el aspecto de Notas, así nadie ve el ícono de Foldwise.'],
     ['Elige tu lista y tu palabra.', 'Mantén presionado el título grande “Notas” para abrir la configuración y elige una lista y la palabra que vas a predecir.'],

@@ -35,7 +35,6 @@ export default {
   restorePurchases: 'Restore Purchases',
   help: 'Help',
   howToPerform: 'How to Perform',
-  installWelcome: 'Install & Welcome',
   language: 'Language',
   restoreDefaults: 'Restore Default Lists',
   restoreDefaultsConfirm: 'Replace all lists with the built-in ones? Your changes will be lost.',
@@ -91,14 +90,6 @@ export default {
   welcome: 'Welcome',
   welcomeHero: 'Welcome to Foldwise',
   welcomeIntro: 'Magic tricks hidden in ordinary-looking apps. Your first trick looks exactly like the Notes app: spectators see ordinary lists and pick any number, and secretly the item at their number becomes the word you predicted.',
-  installed: 'Installed',
-  installedText: 'You’re running from the Home Screen, so it opens full screen and works offline.',
-  installHeader: 'Install on your iPhone',
-  installSteps: [
-    ['Open this page in Safari.', 'Other browsers can’t add it to the Home Screen.'],
-    ['Tap Share, then “Add to Home Screen”.', 'It’s already named “Notes” with a Notes icon.'],
-    ['Open it once while online.', 'After that it works with no signal.'],
-  ],
   secretMenu: 'The secret menu',
   secretMenuText: 'Long-press the big “Notes” title to open Setup. There you choose each list’s force word, edit lists, or add your own.',
   setUpLists: 'Set Up Lists',
@@ -130,7 +121,7 @@ export default {
   restoreFailed: 'Could not restore purchases. Check your connection and try again.',
   purchaseFailed: 'The purchase could not be completed. Please try again.',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: 'Welcome & Getting Started',
   gettingStarted: 'Getting started',
   gettingStartedSteps: [

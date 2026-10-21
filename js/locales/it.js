@@ -32,7 +32,6 @@ export default {
   restorePurchases: 'Ripristina acquisti',
   help: 'Aiuto',
   howToPerform: 'Come eseguire il trucco',
-  installWelcome: 'Installazione e benvenuto',
   language: 'Lingua',
   restoreDefaults: 'Ripristina liste predefinite',
   restoreDefaultsConfirm: 'Sostituire tutte le liste con quelle predefinite? Le tue modifiche andranno perse.',
@@ -83,14 +82,6 @@ export default {
   welcome: 'Benvenuto',
   welcomeHero: 'Benvenuto in Foldwise',
   welcomeIntro: 'Trucchi di magia nascosti in app dall’aspetto normalissimo. Il tuo primo trucco sembra proprio l’app Note: gli spettatori vedono liste normali e scelgono un numero qualsiasi, e in segreto l’elemento di quel numero diventa la parola che hai previsto.',
-  installed: 'Installata',
-  installedText: 'L’app è aperta dalla schermata Home, quindi si apre a tutto schermo e funziona offline.',
-  installHeader: 'Installa su iPhone',
-  installSteps: [
-    ['Apri questa pagina in Safari.', 'Gli altri browser non possono aggiungerla alla schermata Home.'],
-    ['Tocca Condividi, poi “Aggiungi alla schermata Home”.', 'Si chiama già “Note” e ha un’icona di Note.'],
-    ['Aprila una volta con internet.', 'Dopo funziona anche senza rete.'],
-  ],
   secretMenu: 'Il menu segreto',
   secretMenuText: 'Tieni premuto il titolo grande “Note” per aprire le impostazioni. Lì scegli la parola da forzare di ogni lista, modifichi le liste o ne crei di tue.',
   setUpLists: 'Configura le liste',
@@ -124,7 +115,7 @@ export default {
   restoreFailed: 'Impossibile ripristinare gli acquisti. Controlla la connessione e riprova.',
   purchaseFailed: 'Impossibile completare l’acquisto. Riprova.',
 
-  // Native app: replaces the install steps
+  // Welcome page
   welcomeGuide: 'Benvenuto e primi passi',
   gettingStarted: 'Primi passi',
   gettingStartedSteps: [

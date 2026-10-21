@@ -8,13 +8,9 @@ The store apps (iOS and Android) are branded **Foldwise**; the web version keeps
 
 ## Install
 
-**Store apps (iOS and Android):** install **Foldwise** from the App Store or Google Play once it is published (until then, test builds: TestFlight on iPhone, the debug APK from CI on Android). Open it before anyone is watching: it starts straight in the Notes look. The first launch shows a short welcome and getting-started guide.
+Foldwise is distributed only as the iOS and Android store apps. Until they are published, test with TestFlight on iPhone or the debug APK from CI on Android. The first launch shows a short welcome and getting-started guide.
 
-**Web version (personal use, to be taken down):**
-
-1. Open the link in **Safari**.
-2. Share → **Add to Home Screen**. It's already named "Notes" with a Notes-style icon.
-3. Open it once while online; after that it works offline.
+The GitHub Pages web version is a personal preview for development only (always unlocked, no store features) and will be taken down.
 
 ## Performing
 

@@ -69,8 +69,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   let stack = []; // [{ node, refresh }]
   let animating = false;
 
-  const isStandalone = () => window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-
   function update(mutate) {
     const next = structuredClone(getSettings());
     mutate(next);
@@ -201,7 +199,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
           children: [
             row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(languagePage) }),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
-            row({ label: t(purchases.isNative ? 'welcomeGuide' : 'installWelcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
+            row({ label: t('welcomeGuide'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
           ],
         }),
         section({
@@ -385,7 +383,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   }
 
   function welcomePage(pushed = false) {
-    const installed = isStandalone();
     return {
       title: t('welcome'),
       left: pushed ? back(t('setup')) : null,
@@ -393,13 +390,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       body: [
         el('h2', 'set-hero', t('welcomeHero')),
         el('p', 'set-intro', t('welcomeIntro')),
-        // The store apps need no install steps; they get a getting-started guide instead.
-        ...(purchases.isNative ? [section({ header: t('gettingStarted'), children: [steps(t('gettingStartedSteps'))] })] : [section({
-          header: installed ? t('installed') : t('installHeader'),
-          children: [installed
-            ? el('p', 'set-text', t('installedText'))
-            : steps(t('installSteps'))],
-        })]),
+        section({ header: t('gettingStarted'), children: [steps(t('gettingStartedSteps'))] }),
         section({
           header: t('secretMenu'),
           children: [el('p', 'set-text', t('secretMenuText'))],
