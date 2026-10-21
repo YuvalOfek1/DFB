@@ -25,4 +25,11 @@ export default {
   ],
   secretMenuText: 'Mantén presionado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra a forzar de cada lista, editas las listas o creas las tuyas.',
   legal: (store) => `El pago se carga a tu ${store}. La suscripción se renueva automáticamente cada mes, a menos que la canceles al menos 24 horas antes de que termine el periodo actual. Puedes administrarla o cancelarla en la configuración de tu cuenta.`,
+
+  // Native app: replaces the install steps
+  gettingStartedSteps: [
+    ['Abre Foldwise antes del truco.', 'Ábrela antes de que alguien esté mirando. Se abre directamente con el aspecto de Notas, así nadie ve el ícono de Foldwise.'],
+    ['Elige tu lista y tu palabra.', 'Mantén presionado el título grande “Notas” para abrir la configuración y elige una lista y la palabra que vas a predecir.'],
+    ['Practica una vez.', 'Prueba la entrada secreta unas cuantas veces a solas antes de hacerla frente a alguien.'],
+  ],
 };

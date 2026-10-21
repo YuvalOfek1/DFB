@@ -123,4 +123,13 @@ export default {
   nothingToRestore: 'Non è stato trovato nessun abbonamento attivo per questo account.',
   restoreFailed: 'Impossibile ripristinare gli acquisti. Controlla la connessione e riprova.',
   purchaseFailed: 'Impossibile completare l’acquisto. Riprova.',
+
+  // Native app: replaces the install steps
+  welcomeGuide: 'Benvenuto e primi passi',
+  gettingStarted: 'Primi passi',
+  gettingStartedSteps: [
+    ['Apri Foldwise prima del trucco.', 'Avviala prima che qualcuno guardi. Si apre direttamente con l’aspetto di Note, così nessuno vede l’icona di Foldwise.'],
+    ['Scegli la lista e la parola.', 'Tieni premuto il titolo grande “Note” per aprire le impostazioni, poi scegli una lista e la parola che prevederai.'],
+    ['Esercitati una volta.', 'Prova l’inserimento segreto qualche volta da solo prima di eseguirlo davanti a qualcuno.'],
+  ],
 };

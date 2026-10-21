@@ -123,4 +123,13 @@ export default {
   nothingToRestore: 'Für diesen Account wurde kein aktives Abo gefunden.',
   restoreFailed: 'Käufe konnten nicht wiederhergestellt werden. Prüfe deine Verbindung und versuche es erneut.',
   purchaseFailed: 'Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut.',
+
+  // Native app: replaces the install steps
+  welcomeGuide: 'Willkommen & erste Schritte',
+  gettingStarted: 'Erste Schritte',
+  gettingStartedSteps: [
+    ['Öffne Foldwise vor dem Trick.', 'Starte die App, bevor jemand zuschaut. Sie öffnet sich direkt im Notizen-Look, sodass niemand das Foldwise-Symbol sieht.'],
+    ['Wähle Liste und Wort.', 'Halte den großen Titel „Notizen“ gedrückt, um die Einstellungen zu öffnen, und wähle eine Liste und das Wort, das du vorhersagst.'],
+    ['Übe einmal.', 'Probiere die geheime Eingabe ein paar Mal allein aus, bevor du den Trick jemandem vorführst.'],
+  ],
 };

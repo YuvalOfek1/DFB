@@ -123,4 +123,13 @@ export default {
   nothingToRestore: 'Aucun abonnement actif n’a été trouvé pour ce compte.',
   restoreFailed: 'Impossible de restaurer les achats. Vérifiez votre connexion et réessayez.',
   purchaseFailed: 'L’achat n’a pas pu aboutir. Veuillez réessayer.',
+
+  // Native app: replaces the install steps
+  welcomeGuide: 'Bienvenue et premiers pas',
+  gettingStarted: 'Premiers pas',
+  gettingStartedSteps: [
+    ['Ouvrez Foldwise avant le tour.', 'Lancez-la avant que quiconque regarde. Elle s’ouvre directement sur l’apparence de Notes : personne ne voit l’icône de Foldwise.'],
+    ['Choisissez votre liste et votre mot.', 'Maintenez le doigt sur le grand titre « Notes » pour ouvrir les réglages, puis choisissez une liste et le mot que vous allez prédire.'],
+    ['Entraînez-vous une fois.', 'Essayez la saisie secrète plusieurs fois seul avant de présenter le tour à quelqu’un.'],
+  ],
 };

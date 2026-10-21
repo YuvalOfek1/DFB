@@ -129,4 +129,13 @@ export default {
   nothingToRestore: 'No active subscription was found for this account.',
   restoreFailed: 'Could not restore purchases. Check your connection and try again.',
   purchaseFailed: 'The purchase could not be completed. Please try again.',
+
+  // Native app: replaces the install steps
+  welcomeGuide: 'Welcome & Getting Started',
+  gettingStarted: 'Getting started',
+  gettingStartedSteps: [
+    ['Open Foldwise before the trick.', 'Launch it before anyone is watching. It opens straight into the Notes look, so nobody sees the Foldwise icon.'],
+    ['Choose your list and word.', 'Long-press the big “Notes” title to open Setup, then pick a list and the word you’ll predict.'],
+    ['Practice once.', 'Try the secret entry a few times on your own before you perform it for anyone.'],
+  ],
 };

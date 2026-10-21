@@ -201,7 +201,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
           children: [
             row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(languagePage) }),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
-            row({ label: t('installWelcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
+            row({ label: t(purchases.isNative ? 'welcomeGuide' : 'installWelcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
           ],
         }),
         section({
@@ -393,7 +393,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       body: [
         el('h2', 'set-hero', t('welcomeHero')),
         el('p', 'set-intro', t('welcomeIntro')),
-        ...(purchases.isNative ? [] : [section({
+        // The store apps need no install steps; they get a getting-started guide instead.
+        ...(purchases.isNative ? [section({ header: t('gettingStarted'), children: [steps(t('gettingStartedSteps'))] })] : [section({
           header: installed ? t('installed') : t('installHeader'),
           children: [installed
             ? el('p', 'set-text', t('installedText'))

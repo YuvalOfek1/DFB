@@ -120,4 +120,13 @@ export default {
   nothingToRestore: '이 계정에서 활성 구독을 찾을 수 없습니다.',
   restoreFailed: '구입 내역을 복원할 수 없습니다. 연결을 확인한 후 다시 시도하세요.',
   purchaseFailed: '구입을 완료할 수 없습니다. 다시 시도하세요.',
+
+  // Native app: replaces the install steps
+  welcomeGuide: '환영 및 시작하기',
+  gettingStarted: '시작하기',
+  gettingStartedSteps: [
+    ['마술 전에 Foldwise를 여세요.', '아무도 보지 않을 때 미리 실행해 두세요. 처음부터 메모 앱 모습으로 열리므로 Foldwise 아이콘을 아무도 보지 못합니다.'],
+    ['목록과 단어를 고르세요.', '큰 ‘메모’ 제목을 길게 눌러 설정을 열고, 목록과 예언할 단어를 고르세요.'],
+    ['한 번 연습하세요.', '다른 사람 앞에서 하기 전에 혼자 몰래 입력하기를 몇 번 연습해 보세요.'],
+  ],
 };

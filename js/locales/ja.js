@@ -120,4 +120,13 @@ export default {
   nothingToRestore: 'このアカウントで有効なサブスクリプションが見つかりませんでした。',
   restoreFailed: '購入を復元できませんでした。接続を確認して、もう一度お試しください。',
   purchaseFailed: '購入を完了できませんでした。もう一度お試しください。',
+
+  // Native app: replaces the install steps
+  welcomeGuide: 'ようこそ・はじめかた',
+  gettingStarted: 'はじめかた',
+  gettingStartedSteps: [
+    ['マジックの前にFoldwiseを開く。', '誰も見ていないうちに起動しておきます。最初から「メモ」の見た目で開くので、Foldwiseのアイコンは見られません。'],
+    ['リストと言葉を選ぶ。', '大きな「メモ」のタイトルを長押しして設定を開き、リストと予言する言葉を選びます。'],
+    ['一度練習する。', '人前で演じる前に、ひとりで何度かこっそり入力を試してみましょう。'],
+  ],
 };

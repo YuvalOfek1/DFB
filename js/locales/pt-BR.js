@@ -123,4 +123,13 @@ export default {
   nothingToRestore: 'Nenhuma assinatura ativa foi encontrada nesta conta.',
   restoreFailed: 'Não foi possível restaurar as compras. Verifique a conexão e tente de novo.',
   purchaseFailed: 'Não foi possível concluir a compra. Tente de novo.',
+
+  // Native app: replaces the install steps
+  welcomeGuide: 'Boas-vindas e primeiros passos',
+  gettingStarted: 'Primeiros passos',
+  gettingStartedSteps: [
+    ['Abra o Foldwise antes do truque.', 'Abra antes de alguém estar olhando. Ele já abre com a cara do Notas, então ninguém vê o ícone do Foldwise.'],
+    ['Escolha a lista e a palavra.', 'Toque e segure o título grande “Notas” para abrir os ajustes e escolha uma lista e a palavra que você vai prever.'],
+    ['Treine uma vez.', 'Faça a entrada secreta algumas vezes sozinho antes de apresentar para alguém.'],
+  ],
 };

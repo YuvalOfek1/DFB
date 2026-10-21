@@ -17,7 +17,7 @@ test('Latin American overrides only use known keys', () => {
 });
 
 test('step lists have the same number of steps in every language', () => {
-  for (const key of ['routineSteps', 'goodToKnowSteps', 'installSteps', 'features']) {
+  for (const key of ['routineSteps', 'goodToKnowSteps', 'installSteps', 'gettingStartedSteps', 'features']) {
     const n = STRINGS.en[key].length;
     for (const locale of LOCALES) assert.equal(translate(locale, key).length, n, `${locale}.${key}`);
   }
