@@ -132,7 +132,7 @@ export default {
 
   // Home screen (without a subscription)
   homeHero: 'Magia en tu bolsillo',
-  homeIntro: 'Trucos de adivinación escondidos en apps de apariencia normal. Mira cómo se ve cada uno, aprende a hacerlo y desbloquea Foldwise para empezar.',
+  homeIntro: 'Trucos de adivinación escondidos en apps de apariencia normal. Mira lo que vive tu público y desbloquea Foldwise para ver el vídeo de demostración, el método y el truco.',
   unlockFoldwise: 'Desbloquear Foldwise',
   tricks: 'Trucos',
   notesTrick: 'El truco de Notas',
@@ -140,4 +140,13 @@ export default {
   notesTrickDescription: 'Parece una nota normal: una lista numerada de famosos, películas o lugares. Un espectador la recorre y dice libremente cualquier número, y el elemento de ese número es la palabra que predijiste. Sin preparación ni juegos de manos.',
   moreTricksSoon: 'Pronto llegarán más trucos. All Access incluye cada truco nuevo.',
   demoCaption: 'Así se ve en tu teléfono',
+  trickTutorial: 'Vídeo de demostración y cómo hacerlo',
+  effectHeader: 'Lo que ve tu público',
+  notesEffectSteps: [
+    ['Una predicción.', 'Antes de empezar, le das a alguien un papel doblado.'],
+    ['Una nota normal.', 'Muestras una nota en tu teléfono: una lista numerada de 100 famosos. La recorren ellos mismos.'],
+    ['Una elección libre.', 'Dicen el número que quieran y pueden cambiarlo tantas veces como quieran.'],
+    ['Su nombre.', 'Van hasta su número y leen en voz alta el nombre que aparece.'],
+    ['La revelación.', 'Abren la predicción. Es el mismo nombre.'],
+  ],
 };

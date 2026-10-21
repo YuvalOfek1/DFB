@@ -132,7 +132,7 @@ export default {
 
   // Home screen (without a subscription)
   homeHero: 'Mágica no seu bolso',
-  homeIntro: 'Truques de ler mentes escondidos em apps que parecem comuns. Veja como cada um fica, aprenda a apresentar e desbloqueie o Foldwise para começar.',
+  homeIntro: 'Truques de ler mentes escondidos em apps que parecem comuns. Veja o que a sua plateia vive e desbloqueie o Foldwise para ver o vídeo de demonstração, o método e o truque.',
   unlockFoldwise: 'Desbloquear o Foldwise',
   tricks: 'Truques',
   notesTrick: 'O truque das Notas',
@@ -140,4 +140,13 @@ export default {
   notesTrickDescription: 'Parece uma nota comum: uma lista numerada de famosos, filmes ou lugares. O espectador rola a lista e fala livremente qualquer número, e o item desse número é a palavra que você previu. Sem preparação, sem habilidade manual.',
   moreTricksSoon: 'Mais truques estão chegando. O All Access inclui cada truque novo.',
   demoCaption: 'Como fica no seu celular',
+  trickTutorial: 'Vídeo de demonstração e como apresentar',
+  effectHeader: 'O que a plateia vê',
+  notesEffectSteps: [
+    ['Uma previsão.', 'Antes de tudo, você entrega um papel dobrado para alguém.'],
+    ['Uma nota comum.', 'Você mostra uma nota no celular: uma lista numerada de 100 famosos. A pessoa rola a lista sozinha.'],
+    ['Uma escolha livre.', 'Ela fala qualquer número e pode mudar de ideia quantas vezes quiser.'],
+    ['O nome dela.', 'Ela rola até o número e lê o nome em voz alta.'],
+    ['A revelação.', 'Ela abre a previsão. É o mesmo nome.'],
+  ],
 };

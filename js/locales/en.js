@@ -138,7 +138,7 @@ export default {
 
   // Home screen (without a subscription)
   homeHero: 'Magic in your pocket',
-  homeIntro: 'Mind-reading tricks hidden in ordinary-looking apps. Watch how each one looks, learn how to perform it, and unlock Foldwise to start.',
+  homeIntro: 'Mind-reading tricks hidden in ordinary-looking apps. See what your audience experiences, then unlock Foldwise for the demo video, the method and the trick itself.',
   unlockFoldwise: 'Unlock Foldwise',
   tricks: 'Tricks',
   notesTrick: 'The Notes Trick',
@@ -146,4 +146,13 @@ export default {
   notesTrickDescription: 'It looks like an ordinary note: a numbered list of celebrities, movies or places. A spectator scrolls through it and freely names any number, and the item at that number is the word you predicted. Nothing to set up, no sleight of hand.',
   moreTricksSoon: 'More tricks are on the way. All Access includes every new one.',
   demoCaption: 'How it looks on your phone',
+  trickTutorial: 'Demo video and how to perform',
+  effectHeader: 'What your audience sees',
+  notesEffectSteps: [
+    ['A prediction.', 'You hand a friend a folded piece of paper before anything happens.'],
+    ['An ordinary note.', 'You show a note on your phone: a numbered list of 100 celebrities. They scroll through it themselves.'],
+    ['A free choice.', 'They name any number they like, and can change their mind as often as they want.'],
+    ['Their name.', 'They scroll to their number and read the name there out loud.'],
+    ['The reveal.', 'They open the prediction. It’s the same name.'],
+  ],
 };

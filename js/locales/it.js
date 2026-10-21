@@ -132,7 +132,7 @@ export default {
 
   // Home screen (without a subscription)
   homeHero: 'La magia in tasca',
-  homeIntro: 'Trucchi di lettura del pensiero nascosti in app dall’aspetto normalissimo. Guarda come appare ogni trucco, impara a eseguirlo e sblocca Foldwise per iniziare.',
+  homeIntro: 'Trucchi di lettura del pensiero nascosti in app dall’aspetto normalissimo. Scopri cosa vive il tuo pubblico, poi sblocca Foldwise per il video dimostrativo, il metodo e il trucco.',
   unlockFoldwise: 'Sblocca Foldwise',
   tricks: 'Trucchi',
   notesTrick: 'Il trucco delle Note',
@@ -140,4 +140,13 @@ export default {
   notesTrickDescription: 'Sembra una nota qualsiasi: una lista numerata di celebrità, film o luoghi. Uno spettatore la scorre e sceglie liberamente un numero, e l’elemento di quel numero è la parola che avevi previsto. Nessuna preparazione, nessuna abilità manuale.',
   moreTricksSoon: 'Altri trucchi sono in arrivo. All Access li include tutti.',
   demoCaption: 'Ecco come appare sul tuo telefono',
+  trickTutorial: 'Video dimostrativo e come eseguirlo',
+  effectHeader: 'Cosa vede il tuo pubblico',
+  notesEffectSteps: [
+    ['Una previsione.', 'Prima di tutto, consegni a qualcuno un foglietto piegato.'],
+    ['Una nota qualunque.', 'Mostri una nota sul telefono: un elenco numerato di 100 celebrità. Lo scorrono da soli.'],
+    ['Una scelta libera.', 'Dicono il numero che vogliono e possono cambiare idea tutte le volte che vogliono.'],
+    ['Il loro nome.', 'Scorrono fino al loro numero e leggono ad alta voce il nome.'],
+    ['La rivelazione.', 'Aprono la previsione. È lo stesso nome.'],
+  ],
 };

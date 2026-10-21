@@ -132,7 +132,7 @@ export default {
 
   // Home screen (without a subscription)
   homeHero: 'Magie für die Hosentasche',
-  homeIntro: 'Gedankenlese-Tricks, versteckt in ganz gewöhnlich aussehenden Apps. Sieh dir an, wie jeder Trick aussieht, lerne die Vorführung und schalte Foldwise frei, um loszulegen.',
+  homeIntro: 'Gedankenlese-Tricks, versteckt in ganz gewöhnlich aussehenden Apps. Sieh dir an, was dein Publikum erlebt, und schalte Foldwise frei für das Demovideo, die Methode und den Trick selbst.',
   unlockFoldwise: 'Foldwise freischalten',
   tricks: 'Tricks',
   notesTrick: 'Der Notizen-Trick',
@@ -140,4 +140,13 @@ export default {
   notesTrickDescription: 'Es sieht aus wie eine ganz normale Notiz: eine nummerierte Liste mit Promis, Filmen oder Orten. Ein Zuschauer scrollt durch, nennt frei eine Zahl – und der Eintrag an dieser Stelle ist das Wort, das du vorhergesagt hast. Keine Vorbereitung, keine Fingerfertigkeit.',
   moreTricksSoon: 'Weitere Tricks sind in Arbeit. All Access enthält jeden neuen.',
   demoCaption: 'So sieht es auf deinem Handy aus',
+  trickTutorial: 'Demovideo und Vorführung',
+  effectHeader: 'Was dein Publikum sieht',
+  notesEffectSteps: [
+    ['Eine Vorhersage.', 'Bevor es losgeht, gibst du jemandem einen gefalteten Zettel.'],
+    ['Eine gewöhnliche Notiz.', 'Du zeigst eine Notiz auf deinem Handy: eine nummerierte Liste mit 100 Prominenten. Sie scrollen selbst hindurch.'],
+    ['Eine freie Wahl.', 'Sie nennen eine beliebige Zahl und dürfen es sich so oft anders überlegen, wie sie wollen.'],
+    ['Ihr Name.', 'Sie scrollen zu ihrer Zahl und lesen den Namen dort laut vor.'],
+    ['Die Enthüllung.', 'Sie öffnen die Vorhersage. Es ist derselbe Name.'],
+  ],
 };

@@ -188,6 +188,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
           header: t('help'),
           children: [
             row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(languagePage) }),
+            ...CONFIG.tricks.map((trick) => row({ label: t(`${trick.id}Trick`), sublabel: t('trickTutorial'), chevron: true, onClick: () => push(() => trickPage(trick, t('setup'))) })),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
             row({ label: t('welcomeGuide'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
           ],
@@ -387,6 +388,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         }),
         section({
           children: [
+            ...CONFIG.tricks.map((trick) => row({ label: t(`${trick.id}Trick`), sublabel: t('trickTutorial'), chevron: true, onClick: () => push(() => trickPage(trick, t('welcome'))) })),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(t('welcome'))) }),
             ...(pushed ? [] : [row({ label: t('setUpLists'), chevron: true, onClick: () => push(mainPage) })]),
           ],
@@ -432,7 +434,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         section({
           header: t('help'),
           children: [
-            row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(BRAND)) }),
             row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(() => languagePage(BRAND)) }),
             row({ label: t('restorePurchases'), tone: 'accent', onClick: () => restore() }),
           ],
@@ -441,7 +442,21 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     };
   }
 
-  function trickPage(trick) {
+  // A trick's page. Before paying it shows only what the audience experiences (never the method);
+  // after paying, the demo video and How to Perform.
+  function trickPage(trick, backLabel = BRAND) {
+    const name = t(`${trick.id}Trick`);
+    if (!purchases.hasAllAccess()) {
+      return {
+        title: name,
+        left: back(backLabel),
+        body: [
+          el('p', 'set-intro', t(`${trick.id}TrickDescription`)),
+          section({ header: t('effectHeader'), children: [steps(t(`${trick.id}EffectSteps`))] }),
+          unlockButton(),
+        ],
+      };
+    }
     const body = [];
     if (trick.video) {
       const video = el('video', 'demo-video');
@@ -451,10 +466,9 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     }
     body.push(
       el('p', 'set-intro', t(`${trick.id}TrickDescription`)),
-      unlockButton(),
-      section({ children: [row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(t(`${trick.id}Trick`))) })] }),
+      section({ children: [row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(name)) })] }),
     );
-    return { title: t(`${trick.id}Trick`), left: back(BRAND), body };
+    return { title: name, left: back(backLabel), body };
   }
 
   function paywallPage(pushed = false, backLabel = t('setup')) {

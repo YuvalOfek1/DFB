@@ -132,7 +132,7 @@ export default {
 
   // Home screen (without a subscription)
   homeHero: 'La magie dans votre poche',
-  homeIntro: 'Des tours de mentalisme cachés dans des apps tout à fait ordinaires. Voyez à quoi ressemble chacun, apprenez à le présenter et débloquez Foldwise pour commencer.',
+  homeIntro: 'Des tours de mentalisme cachés dans des apps tout à fait ordinaires. Découvrez ce que vit votre public, puis débloquez Foldwise pour la vidéo de démonstration, la méthode et le tour lui-même.',
   unlockFoldwise: 'Débloquer Foldwise',
   tricks: 'Tours',
   notesTrick: 'Le tour des Notes',
@@ -140,4 +140,13 @@ export default {
   notesTrickDescription: 'On dirait une note ordinaire : une liste numérotée de célébrités, de films ou de lieux. Un spectateur la fait défiler et nomme librement un numéro : l’élément à ce numéro est le mot que vous aviez prédit. Aucune préparation, aucune manipulation.',
   moreTricksSoon: 'D’autres tours arrivent. All Access inclut chaque nouveau tour.',
   demoCaption: 'Ce que ça donne sur votre téléphone',
+  trickTutorial: 'Vidéo de démonstration et présentation',
+  effectHeader: 'Ce que voit votre public',
+  notesEffectSteps: [
+    ['Une prédiction.', 'Avant toute chose, vous confiez un papier plié à quelqu’un.'],
+    ['Une note ordinaire.', 'Vous montrez une note sur votre téléphone : une liste numérotée de 100 célébrités. Le spectateur la fait défiler lui-même.'],
+    ['Un choix libre.', 'Il nomme le numéro qu’il veut et peut changer d’avis autant qu’il le souhaite.'],
+    ['Son nom.', 'Il fait défiler jusqu’à son numéro et lit le nom à voix haute.'],
+    ['La révélation.', 'Il ouvre la prédiction. C’est le même nom.'],
+  ],
 };
