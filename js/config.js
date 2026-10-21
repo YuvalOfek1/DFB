@@ -11,7 +11,8 @@ export const CONFIG = {
   allAccessEntitlement: 'all_access',
   // Tricks shown on the home screen: a demo video bundled with the app (media/) and its cover image.
   tricks: [{ id: 'notes', video: 'media/notes-demo.mp4', poster: 'media/notes-demo.jpg' }],
-  // Required on the paywall by Apple and Google.
-  termsUrl: 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/',
-  privacyUrl: '',
+  // Required on the paywall by Apple and Google. Served from legal/ on GitHub Pages; on iOS the
+  // terms point to Apple's standard EULA as well.
+  termsUrl: 'https://yuvalofek1.github.io/DFB/legal/terms.html',
+  privacyUrl: 'https://yuvalofek1.github.io/DFB/legal/privacy.html',
 };
