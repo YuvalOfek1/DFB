@@ -63,9 +63,9 @@ export default {
   routine: 'Le tour',
   routineSteps: [
     ['Faites une prédiction.', 'Écrivez sur un papier le mot à forcer de la liste que vous allez utiliser et confiez-le à quelqu’un.'],
-    ['Montrez la liste.', 'Ouvrez la note et laissez le spectateur la faire défiler. Tous les éléments sont différents.'],
+    ['Montrez la liste.', 'Ouvrez la note et laissez le spectateur faire défiler toute la liste. Tous les éléments sont différents.'],
     ['Demandez un numéro.', 'Reprenez d’abord le téléphone, pour qu’il choisisse sans voir la liste. Demandez n’importe quel numéro entre 1 et la longueur de la liste. Laissez-le changer d’avis.'],
-    ['Saisissez-le en secret.', 'Pendant qu’on regarde la prédiction, touchez la note n’importe où. Le pavé numérique s’ouvre, mais rien de ce que vous tapez ne s’affiche. Tapez le numéro, puis touchez à nouveau la note.'],
+    ['Saisissez-le en secret.', 'Juste après qu’il a donné son numéro, montrez la prédiction pliée et rappelez à tous qu’elle a été écrite avant son choix. Pendant que tous les regards sont dessus, touchez la note n’importe où. Le pavé numérique s’ouvre, mais rien de ce que vous tapez ne s’affiche. Tapez le numéro, puis touchez à nouveau la note.'],
     ['Révélez.', 'Tournez l’écran vers le spectateur, faites défiler jusqu’à son numéro et laissez-le lire l’élément à voix haute. Ouvrez ensuite la prédiction.'],
   ],
   goodToKnow: 'Bon à savoir',

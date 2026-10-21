@@ -63,9 +63,9 @@ export default {
   routine: 'Il trucco',
   routineSteps: [
     ['Fai una previsione.', 'Scrivi su un foglio la parola da forzare della lista che userai e dallo da tenere a qualcuno.'],
-    ['Mostra la lista.', 'Apri la nota e lascia che lo spettatore la scorra. Tutti gli elementi sono diversi.'],
+    ['Mostra la lista.', 'Apri la nota e lascia che lo spettatore scorra tutta la lista. Tutti gli elementi sono diversi.'],
     ['Chiedi un numero.', 'Prima riprendi il telefono, così sceglie senza vedere la lista. Chiedi un numero qualsiasi da 1 alla lunghezza della lista. Lascia che cambi idea.'],
-    ['Inseriscilo di nascosto.', 'Mentre tutti guardano la previsione, tocca un punto qualsiasi della nota. Si apre il tastierino numerico, ma non appare niente di ciò che scrivi. Scrivi il numero e tocca di nuovo la nota.'],
+    ['Inseriscilo di nascosto.', 'Subito dopo che ha detto il numero, indica la previsione piegata e ricorda a tutti che è stata scritta prima della scelta. Mentre tutti la guardano, tocca un punto qualsiasi della nota. Si apre il tastierino numerico, ma niente di ciò che digiti compare. Digita il numero, poi tocca di nuovo la nota.'],
     ['Rivela.', 'Gira lo schermo verso lo spettatore, scorri fino al suo numero e fagli leggere l’elemento ad alta voce. Poi apri la previsione.'],
   ],
   goodToKnow: 'Buono a sapersi',

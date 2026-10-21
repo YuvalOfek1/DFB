@@ -70,9 +70,9 @@ export default {
   routine: 'The routine',
   routineSteps: [
     ['Make a prediction.', 'Write the force word of the list you’ll use on a piece of paper and give it to someone to hold.'],
-    ['Show the list.', 'Open the note and let the spectator scroll through it. All the items are different.'],
+    ['Show the list.', 'Open the note and let the spectator scroll through the whole list. All the items are different.'],
     ['Get a number.', 'Take the phone back first, so they choose without seeing the list. Ask for any number from 1 to the length of the list. Let them change their mind.'],
-    ['Enter it secretly.', 'While they look at the prediction, tap anywhere on the note. The number pad opens but nothing you type appears. Type their number, then tap the note again.'],
+    ['Enter it secretly.', 'Right after they say their number, point to the folded prediction and remind everyone it was written before they chose. While all eyes are on it, tap anywhere on the note. The number pad opens but nothing you type appears. Type their number, then tap the note again.'],
     ['Reveal.', 'Turn the screen to them, scroll to their number and let them read the item out loud. Then open the prediction.'],
   ],
   goodToKnow: 'Good to know',

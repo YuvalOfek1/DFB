@@ -13,9 +13,9 @@ export default {
   ],
   routineSteps: [
     ['Haz una predicción.', 'Escribe en un papel la palabra a forzar de la lista que vas a usar y dáselo a alguien para que lo guarde.'],
-    ['Muestra la lista.', 'Abre la nota y deja que el espectador la recorra. Todos los elementos son distintos.'],
+    ['Muestra la lista.', 'Abre la nota y deja que el espectador recorra toda la lista. Todos los elementos son distintos.'],
     ['Pide un número.', 'Primero recupera el teléfono, para que elija sin ver la lista. Pide cualquier número del 1 al total de la lista. Deja que cambie de opinión.'],
-    ['Ingrésalo en secreto.', 'Mientras miran la predicción, toca cualquier parte de la nota. Se abre el teclado numérico, pero no aparece nada de lo que escribes. Escribe su número y vuelve a tocar la nota.'],
+    ['Ingrésalo en secreto.', 'Justo después de que diga el número, señala la predicción doblada y recuérdales a todos que se escribió antes de que eligiera. Mientras todos la miran, toca cualquier parte de la nota. Se abre el teclado numérico, pero no aparece nada de lo que escribes. Escribe su número y vuelve a tocar la nota.'],
     ['Revela.', 'Gira la pantalla hacia ellos, baja hasta su número y deja que lean el elemento en voz alta. Después abre la predicción.'],
   ],
   secretMenuText: 'Mantén presionado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra a forzar de cada lista, editas las listas o creas las tuyas.',

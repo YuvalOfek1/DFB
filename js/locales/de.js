@@ -63,9 +63,9 @@ export default {
   routine: 'Der Ablauf',
   routineSteps: [
     ['Schreib eine Vorhersage.', 'Schreib das Zielwort der Liste, die du verwendest, auf einen Zettel und gib ihn jemandem zum Festhalten.'],
-    ['Zeig die Liste.', 'Öffne die Notiz und lass den Zuschauer durchscrollen. Alle Einträge sind verschieden.'],
+    ['Zeig die Liste.', 'Öffne die Notiz und lass den Zuschauer selbst durch die ganze Liste scrollen. Alle Einträge sind verschieden.'],
     ['Lass eine Zahl nennen.', 'Nimm zuerst das Handy zurück, damit der Zuschauer wählt, ohne die Liste zu sehen. Bitte um eine beliebige Zahl von 1 bis zur Länge der Liste. Der Zuschauer darf es sich anders überlegen.'],
-    ['Gib sie heimlich ein.', 'Während alle auf die Vorhersage schauen, tippe irgendwo auf die Notiz. Der Ziffernblock öffnet sich, aber nichts von dem, was du tippst, erscheint. Gib die Zahl ein und tippe erneut auf die Notiz.'],
+    ['Gib sie heimlich ein.', 'Direkt nachdem die Zahl genannt wurde, zeigst du auf die gefaltete Vorhersage und erinnerst alle daran, dass sie vor der Wahl geschrieben wurde. Während alle darauf schauen, tippst du irgendwo auf die Notiz. Der Ziffernblock öffnet sich, aber nichts, was du tippst, wird angezeigt. Tippe die Zahl ein und tippe dann erneut auf die Notiz.'],
     ['Enthülle.', 'Dreh den Bildschirm zum Zuschauer, scrolle zu seiner Zahl und lass ihn den Eintrag laut vorlesen. Dann wird die Vorhersage geöffnet.'],
   ],
   goodToKnow: 'Gut zu wissen',

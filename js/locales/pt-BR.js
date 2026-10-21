@@ -63,9 +63,9 @@ export default {
   routine: 'O truque',
   routineSteps: [
     ['Faça uma previsão.', 'Escreva num papel a palavra forçada da lista que você vai usar e entregue para alguém segurar.'],
-    ['Mostre a lista.', 'Abra a nota e deixe o espectador rolar por ela. Todos os itens são diferentes.'],
+    ['Mostre a lista.', 'Abra a nota e deixe o espectador rolar a lista inteira. Todos os itens são diferentes.'],
     ['Peça um número.', 'Primeiro pegue o celular de volta, para ele escolher sem ver a lista. Peça qualquer número de 1 até o tamanho da lista. Deixe ele mudar de ideia.'],
-    ['Digite em segredo.', 'Enquanto todos olham para a previsão, toque em qualquer lugar da nota. O teclado numérico abre, mas nada do que você digita aparece. Digite o número e toque na nota de novo.'],
+    ['Digite em segredo.', 'Logo depois que ele falar o número, aponte para a previsão dobrada e lembre a todos que ela foi escrita antes da escolha. Enquanto todos olham para ela, toque em qualquer lugar da nota. O teclado numérico abre, mas nada do que você digita aparece. Digite o número e toque na nota de novo.'],
     ['Revele.', 'Vire a tela para o espectador, role até o número dele e deixe ele ler o item em voz alta. Depois abra a previsão.'],
   ],
   goodToKnow: 'Bom saber',
