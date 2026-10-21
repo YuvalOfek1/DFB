@@ -16,8 +16,6 @@ export default {
   setup: 'Réglages',
 
   setupIntro: 'Les spectateurs ne voient jamais cet écran. Maintenez le doigt sur le titre « Notes » pour le rouvrir.',
-  unlockEverything: 'Tout débloquer',
-  freeFooter: (n) => `Essayez tout gratuitement pendant ${n} utilisations : chaque tour présenté compte pour une. All Access les rend illimitées.`,
   lists: 'Listes',
   listsFooter: 'Chaque liste apparaît comme une note. Touchez une liste pour modifier ses éléments ou son mot à forcer.',
   itemCount: (n) => `${n} éléments`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'Choisissez une formule. Tous les tours et toutes les listes inclus.',
   features: [
-    'Utilisations illimitées',
     'Toutes les listes intégrées : célébrités, films, pays et plus',
     'Choisissez le mot à forcer de chaque liste, ou tapez-le sur le moment',
     'Créez vos propres listes',
@@ -125,8 +122,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => n === 1 ? '1 utilisation gratuite restante' : `${n} utilisations gratuites restantes`,
-  freeUsesGone: 'Vos utilisations gratuites sont épuisées',
   planMonthly: 'Mensuel',
   planLifetime: 'À vie',
   perMonth: (price) => `${price} par mois`,
@@ -134,4 +129,15 @@ export default {
   lifetimeNote: 'Payez une fois, gardez tout pour toujours, nouveaux tours compris.',
   buyLifetime: (price) => `Acheter pour ${price}`,
   lifetimeLegal: 'L’accès à vie est un achat unique, pas un abonnement.',
+
+  // Home screen (without a subscription)
+  homeHero: 'La magie dans votre poche',
+  homeIntro: 'Des tours de mentalisme cachés dans des apps tout à fait ordinaires. Voyez à quoi ressemble chacun, apprenez à le présenter et débloquez Foldwise pour commencer.',
+  unlockFoldwise: 'Débloquer Foldwise',
+  tricks: 'Tours',
+  notesTrick: 'Le tour des Notes',
+  notesTrickTagline: 'Ils choisissent un numéro. Votre prédiction y est.',
+  notesTrickDescription: 'On dirait une note ordinaire : une liste numérotée de célébrités, de films ou de lieux. Un spectateur la fait défiler et nomme librement un numéro : l’élément à ce numéro est le mot que vous aviez prédit. Aucune préparation, aucune manipulation.',
+  moreTricksSoon: 'D’autres tours arrivent. All Access inclut chaque nouveau tour.',
+  demoCaption: 'Ce que ça donne sur votre téléphone',
 };

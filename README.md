@@ -49,8 +49,8 @@ English, Spanish (Spain `es-ES` and Latin America `es-419`), French, German, Ita
 
 The app is wrapped with [Capacitor](https://capacitorjs.com): the same code runs as the web app and inside the native `ios/` and `android/` projects. Subscriptions are handled by [RevenueCat](https://www.revenuecat.com).
 
-- **Free uses, then Foldwise All Access (native apps only):** every user gets 3 free forces on any list (`CONFIG.freeForces`), counted per force. Once they are used, tapping a list note opens the paywall instead, so a trick never fails silently in front of spectators. All Access (RevenueCat entitlement `all_access`) comes as a **monthly subscription** or a **lifetime** one-time purchase: the current offering's Monthly and Lifetime packages, both attached to `all_access`. Each trick also checks `trick_<id>`, so single tricks can be sold later. The web version is always unlocked. Rules live in `js/access.js`.
-- **Configure before publishing:** `js/config.js` holds the RevenueCat public SDK keys (iOS `appl_…`, Android `goog_…`), the entitlement id, the number of free uses, and the Terms/Privacy links shown on the paywall. With no key set, a native build runs unlocked (development only).
+- **Paid only (native apps):** the tricks work only with Foldwise All Access (RevenueCat entitlement `all_access`), sold as a **monthly subscription** or a **lifetime** one-time purchase: the current offering's Monthly and Lifetime packages, both attached to `all_access`. Without it, the app opens on its **home screen** instead of the disguise: the tricks list, each trick's demo video (`media/`, listed in `CONFIG.tricks`), How to Perform, language, the plans and Restore Purchases. The last known access is kept on the phone, so subscribers open straight into the disguise with no flash and stay unlocked offline. Each trick also checks `trick_<id>`, so single tricks can be sold later. The web version is always unlocked.
+- **Configure before publishing:** `js/config.js` holds the RevenueCat public SDK keys (iOS `appl_…`, Android `goog_…`), the entitlement id, the tricks shown on the home screen with their demo videos, and the Terms/Privacy links shown on the paywall. With no key set, a native build runs unlocked (development only).
 - **App id:** `com.foldwise.app` (`capacitor.config.json`). It can't change after the first store upload.
 - **Cloud builds:** `.github/workflows/native.yml` builds a debug Android APK (downloadable from the workflow run) and an iOS Simulator build on every push and pull request. Signed release builds and store upload are the next step.
 - **Icons and launch screens:** `python3 scripts/make_icons.py` regenerates the Notes-style web icon, the Foldwise icon for iOS/Android (`icons/foldwise-1024.png` for store listings) and the plain launch screens.
@@ -77,7 +77,8 @@ npm start         # build www/ and serve it on http://localhost:8080
 - `js/app.js`: Notes imitation, transitions, secret input
 - `js/setup.js`: the hidden Setup sheet and the paywall
 - `js/purchases.js`: RevenueCat subscription state
-- `js/access.js`: what works with and without All Access
+- `scripts/record-demo.mjs`: records a trick's demo video from the built app (wordless overlay, so one video serves every language)
+- `media/`: demo videos and their cover images, bundled into the apps
 - `js/config.js`: keys and links to fill in before publishing
 - `scripts/build-web.mjs`: bundles the app into `www/` with esbuild
 - `sw.js`: offline cache. **Bump `VERSION` whenever you change a file**, or installed copies keep the old version.

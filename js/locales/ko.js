@@ -16,8 +16,6 @@ export default {
   setup: '설정',
 
   setupIntro: '관객은 이 화면을 볼 수 없습니다. 다시 열려면 ‘메모’ 제목을 길게 누르세요.',
-  unlockEverything: '모두 잠금 해제',
-  freeFooter: (n) => `${n}회까지 모든 기능을 무료로 써 보세요. 마술을 한 번 공연할 때마다 1회가 차감됩니다. All Access는 무제한입니다.`,
   lists: '목록',
   listsFooter: '각 목록은 메모 하나로 표시됩니다. 목록을 탭하면 항목이나 포스 단어를 바꿀 수 있습니다.',
   itemCount: (n) => `${n}개 항목`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: '플랜을 선택하세요. 모든 마술과 목록이 포함됩니다.',
   features: [
-    '무제한 사용',
     '모든 기본 목록: 유명인, 영화, 나라 등',
     '목록마다 포스 단어 선택, 즉석 입력도 가능',
     '나만의 목록 만들기',
@@ -122,8 +119,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => `무료 사용 ${n}회 남음`,
-  freeUsesGone: '무료 사용 횟수를 모두 사용했습니다',
   planMonthly: '월간',
   planLifetime: '평생',
   perMonth: (price) => `월 ${price}`,
@@ -131,4 +126,15 @@ export default {
   lifetimeNote: '한 번 결제로 새로운 마술까지 평생 이용하세요.',
   buyLifetime: (price) => `${price}에 구입하기`,
   lifetimeLegal: '평생 이용권은 구독이 아닌 1회 구매입니다.',
+
+  // Home screen (without a subscription)
+  homeHero: '주머니 속 마술',
+  homeIntro: '평범해 보이는 앱 속에 숨은 마음을 읽는 마술. 각 마술이 어떻게 보이는지 확인하고, 공연 방법을 배운 뒤 Foldwise를 잠금 해제하여 시작하세요.',
+  unlockFoldwise: 'Foldwise 잠금 해제',
+  tricks: '마술',
+  notesTrick: '메모 마술',
+  notesTrickTagline: '아무 번호나 고르게 하세요. 거기에 예언이 있습니다.',
+  notesTrickDescription: '평범한 메모처럼 보입니다. 유명인, 영화, 장소가 번호와 함께 적힌 목록이죠. 관객이 목록을 넘겨 보고 자유롭게 번호를 말하면, 그 번호의 항목이 바로 당신이 예언한 단어입니다. 준비도, 손기술도 필요 없습니다.',
+  moreTricksSoon: '새로운 마술이 곧 추가됩니다. All Access에는 모든 새 마술이 포함됩니다.',
+  demoCaption: '휴대폰에서는 이렇게 보입니다',
 };

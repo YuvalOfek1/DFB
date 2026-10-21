@@ -16,8 +16,6 @@ export default {
   setup: 'Configuración',
 
   setupIntro: 'Los espectadores nunca ven esta pantalla. Mantén pulsado el título “Notas” para volver a abrirla.',
-  unlockEverything: 'Desbloquear todo',
-  freeFooter: (n) => `Prueba todo gratis durante ${n} usos: cada truco que haces cuenta como uno. Con All Access no hay límite.`,
   lists: 'Listas',
   listsFooter: 'Cada lista aparece como una nota. Toca una lista para cambiar sus elementos o la palabra a forzar.',
   itemCount: (n) => `${n} elementos`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'Elige un plan. Todos los trucos y listas incluidos.',
   features: [
-    'Usos ilimitados',
     'Todas las listas incluidas: famosos, películas, países y más',
     'Elige la palabra a forzar de cada lista o escríbela en el momento',
     'Crea tus propias listas',
@@ -125,8 +122,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => n === 1 ? 'Te queda 1 uso gratis' : `Te quedan ${n} usos gratis`,
-  freeUsesGone: 'Has agotado tus usos gratis',
   planMonthly: 'Mensual',
   planLifetime: 'De por vida',
   perMonth: (price) => `${price} al mes`,
@@ -134,4 +129,15 @@ export default {
   lifetimeNote: 'Pagas una vez y lo tienes todo para siempre, trucos nuevos incluidos.',
   buyLifetime: (price) => `Comprar por ${price}`,
   lifetimeLegal: 'De por vida es una compra única, no una suscripción.',
+
+  // Home screen (without a subscription)
+  homeHero: 'Magia en tu bolsillo',
+  homeIntro: 'Trucos de adivinación escondidos en apps de apariencia normal. Mira cómo se ve cada uno, aprende a hacerlo y desbloquea Foldwise para empezar.',
+  unlockFoldwise: 'Desbloquear Foldwise',
+  tricks: 'Trucos',
+  notesTrick: 'El truco de Notas',
+  notesTrickTagline: 'Elige cualquier número. Ahí está tu predicción.',
+  notesTrickDescription: 'Parece una nota normal: una lista numerada de famosos, películas o lugares. Un espectador la recorre y dice libremente cualquier número, y el elemento de ese número es la palabra que predijiste. Sin preparación ni juegos de manos.',
+  moreTricksSoon: 'Pronto llegarán más trucos. All Access incluye cada truco nuevo.',
+  demoCaption: 'Así se ve en tu teléfono',
 };

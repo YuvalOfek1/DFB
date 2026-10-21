@@ -16,8 +16,6 @@ export default {
   setup: 'Einstellungen',
 
   setupIntro: 'Zuschauer sehen diesen Bildschirm nie. Halte den Titel „Notizen“ gedrückt, um ihn wieder zu öffnen.',
-  unlockEverything: 'Alles freischalten',
-  freeFooter: (n) => `Teste alles kostenlos für ${n} Nutzungen: Jeder vorgeführte Trick zählt als eine. Mit All Access unbegrenzt.`,
   lists: 'Listen',
   listsFooter: 'Jede Liste erscheint als eigene Notiz. Tippe auf eine Liste, um ihre Einträge oder ihr Zielwort zu ändern.',
   itemCount: (n) => `${n} Einträge`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'Wähle ein Paket. Alle Tricks und Listen inklusive.',
   features: [
-    'Unbegrenzte Nutzung',
     'Alle mitgelieferten Listen: Promis, Filme, Länder und mehr',
     'Wähle das Zielwort jeder Liste oder tippe es spontan ein',
     'Erstelle eigene Listen',
@@ -125,8 +122,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => n === 1 ? 'Noch 1 kostenlose Nutzung' : `Noch ${n} kostenlose Nutzungen`,
-  freeUsesGone: 'Deine kostenlosen Nutzungen sind aufgebraucht',
   planMonthly: 'Monatlich',
   planLifetime: 'Lebenslang',
   perMonth: (price) => `${price}/Monat`,
@@ -134,4 +129,15 @@ export default {
   lifetimeNote: 'Einmal zahlen, alles für immer behalten – inklusive neuer Tricks.',
   buyLifetime: (price) => `Für ${price} kaufen`,
   lifetimeLegal: 'Lebenslang ist ein einmaliger Kauf, kein Abo.',
+
+  // Home screen (without a subscription)
+  homeHero: 'Magie für die Hosentasche',
+  homeIntro: 'Gedankenlese-Tricks, versteckt in ganz gewöhnlich aussehenden Apps. Sieh dir an, wie jeder Trick aussieht, lerne die Vorführung und schalte Foldwise frei, um loszulegen.',
+  unlockFoldwise: 'Foldwise freischalten',
+  tricks: 'Tricks',
+  notesTrick: 'Der Notizen-Trick',
+  notesTrickTagline: 'Sie nennen eine Zahl. Dort steht deine Vorhersage.',
+  notesTrickDescription: 'Es sieht aus wie eine ganz normale Notiz: eine nummerierte Liste mit Promis, Filmen oder Orten. Ein Zuschauer scrollt durch, nennt frei eine Zahl – und der Eintrag an dieser Stelle ist das Wort, das du vorhergesagt hast. Keine Vorbereitung, keine Fingerfertigkeit.',
+  moreTricksSoon: 'Weitere Tricks sind in Arbeit. All Access enthält jeden neuen.',
+  demoCaption: 'So sieht es auf deinem Handy aus',
 };

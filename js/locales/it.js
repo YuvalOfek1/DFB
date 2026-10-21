@@ -16,8 +16,6 @@ export default {
   setup: 'Impostazioni',
 
   setupIntro: 'Gli spettatori non vedono mai questa schermata. Tieni premuto il titolo “Note” per riaprirla.',
-  unlockEverything: 'Sblocca tutto',
-  freeFooter: (n) => `Prova tutto gratis per ${n} utilizzi: ogni trucco eseguito ne conta uno. Con All Access sono illimitati.`,
   lists: 'Liste',
   listsFooter: 'Ogni lista appare come una nota. Tocca una lista per cambiarne gli elementi o la parola da forzare.',
   itemCount: (n) => `${n} elementi`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'Scegli un piano. Tutti i trucchi e le liste inclusi.',
   features: [
-    'Utilizzi illimitati',
     'Tutte le liste incluse: celebrità, film, paesi e altro',
     'Scegli la parola da forzare di ogni lista o scrivila al momento',
     'Crea le tue liste',
@@ -125,8 +122,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => n === 1 ? '1 utilizzo gratuito rimasto' : `${n} utilizzi gratuiti rimasti`,
-  freeUsesGone: 'Hai esaurito gli utilizzi gratuiti',
   planMonthly: 'Mensile',
   planLifetime: 'A vita',
   perMonth: (price) => `${price} al mese`,
@@ -134,4 +129,15 @@ export default {
   lifetimeNote: 'Paghi una volta e tieni tutto per sempre, nuovi trucchi inclusi.',
   buyLifetime: (price) => `Acquista a ${price}`,
   lifetimeLegal: 'L’accesso a vita è un acquisto unico, non un abbonamento.',
+
+  // Home screen (without a subscription)
+  homeHero: 'La magia in tasca',
+  homeIntro: 'Trucchi di lettura del pensiero nascosti in app dall’aspetto normalissimo. Guarda come appare ogni trucco, impara a eseguirlo e sblocca Foldwise per iniziare.',
+  unlockFoldwise: 'Sblocca Foldwise',
+  tricks: 'Trucchi',
+  notesTrick: 'Il trucco delle Note',
+  notesTrickTagline: 'Scelgono un numero. Lì c’è la tua previsione.',
+  notesTrickDescription: 'Sembra una nota qualsiasi: una lista numerata di celebrità, film o luoghi. Uno spettatore la scorre e sceglie liberamente un numero, e l’elemento di quel numero è la parola che avevi previsto. Nessuna preparazione, nessuna abilità manuale.',
+  moreTricksSoon: 'Altri trucchi sono in arrivo. All Access li include tutti.',
+  demoCaption: 'Ecco come appare sul tuo telefono',
 };

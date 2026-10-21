@@ -16,8 +16,6 @@ export default {
   setup: 'Ajustes',
 
   setupIntro: 'Os espectadores nunca veem esta tela. Toque e segure o título “Notas” para abri-la de novo.',
-  unlockEverything: 'Desbloquear tudo',
-  freeFooter: (n) => `Teste tudo grátis por ${n} usos: cada truque apresentado conta como um. Com o All Access é ilimitado.`,
   lists: 'Listas',
   listsFooter: 'Cada lista aparece como uma nota. Toque numa lista para mudar os itens ou a palavra forçada.',
   itemCount: (n) => `${n} itens`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'Escolha um plano. Todos os truques e listas incluídos.',
   features: [
-    'Usos ilimitados',
     'Todas as listas prontas: famosos, filmes, países e mais',
     'Escolha a palavra forçada de cada lista, ou digite na hora',
     'Crie suas próprias listas',
@@ -125,8 +122,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => n === 1 ? '1 uso grátis restante' : `${n} usos grátis restantes`,
-  freeUsesGone: 'Seus usos grátis acabaram',
   planMonthly: 'Mensal',
   planLifetime: 'Vitalício',
   perMonth: (price) => `${price}/mês`,
@@ -134,4 +129,15 @@ export default {
   lifetimeNote: 'Pague uma vez e fique com tudo para sempre, incluindo truques novos.',
   buyLifetime: (price) => `Comprar por ${price}`,
   lifetimeLegal: 'O vitalício é uma compra única, não uma assinatura.',
+
+  // Home screen (without a subscription)
+  homeHero: 'Mágica no seu bolso',
+  homeIntro: 'Truques de ler mentes escondidos em apps que parecem comuns. Veja como cada um fica, aprenda a apresentar e desbloqueie o Foldwise para começar.',
+  unlockFoldwise: 'Desbloquear o Foldwise',
+  tricks: 'Truques',
+  notesTrick: 'O truque das Notas',
+  notesTrickTagline: 'Escolhem qualquer número. Sua previsão está lá.',
+  notesTrickDescription: 'Parece uma nota comum: uma lista numerada de famosos, filmes ou lugares. O espectador rola a lista e fala livremente qualquer número, e o item desse número é a palavra que você previu. Sem preparação, sem habilidade manual.',
+  moreTricksSoon: 'Mais truques estão chegando. O All Access inclui cada truque novo.',
+  demoCaption: 'Como fica no seu celular',
 };

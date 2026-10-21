@@ -5,7 +5,6 @@ import { IOS_EASE } from './motion.js';
 import * as store from './store.js';
 import { createSetup } from './setup.js';
 import * as purchases from './purchases.js';
-import { canForce, needsPaywall } from './access.js';
 
 const LONG_PRESS_MS = 700;
 
@@ -305,11 +304,6 @@ function contentKey(note, words = note.list?.items) {
 async function openNote(note, cell) {
   await finishRunning();
   if (busy || noteScreen.classList.contains('active')) return;
-  // Free forces used up: show the paywall now, while preparing, rather than let a trick fail later.
-  if (note.list && needsPaywall(settings, purchases.hasAllAccess())) {
-    openSetup('paywall');
-    return;
-  }
   // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
   selectedCell = cell;
   cell.classList.add('selected');
@@ -409,13 +403,7 @@ function commitSecretInput() {
   secret.value = '';
   if (!openList) return;
   const inRange = parsed && parsed.position <= shownWords.length;
-  if (inRange && canForce(settings, purchases.hasAllAccess())) {
-    shownWords = applyForce(shownWords, parsed.position, parsed.word);
-    if (!purchases.hasAllAccess()) {
-      settings = { ...settings, freeForcesUsed: (settings.freeForcesUsed ?? 0) + 1 };
-      store.save(settings);
-    }
-  }
+  if (inRange) shownWords = applyForce(shownWords, parsed.position, parsed.word);
   renderTrickBody();
   renderedKey = contentKey({ list: openList }, shownWords);
 }
@@ -482,7 +470,7 @@ const setup = createSetup({
     }
   },
   close: async () => {
-    if (busy) return;
+    if (busy || homeShown) return;
     document.activeElement?.blur();
     await dismissSheet(settingsScreen);
     renderList();
@@ -509,21 +497,47 @@ renderList();
 const firstNote = primaryNote();
 if (firstNote) showNoteContent(firstNote);
 
-// First launch: explain how to install, open setup and perform.
-if (!settings.welcomed) {
-  settings.welcomed = true;
-  store.save(settings);
-  setTimeout(() => openSetup('welcome'), 400);
+// ---------- Without a subscription: the home screen ----------
+// The tricks only work with All Access. Without it the app opens on its home screen (tricks, demo
+// videos, how to perform, plans) instead of the disguise. It is the sheet, shown at once with no
+// way to dismiss it.
+let homeShown = false;
+
+function showHome() {
+  if (homeShown) return;
+  homeShown = true;
+  if (secretActive) secret.blur();
+  noteScreen.classList.remove('active');
+  setup.show('home');
+  settingsScreen.classList.add('active');
 }
 
-// Subscribing (or a subscription ending) changes which lists are shown.
+// Just unlocked: explain how to start, then the sheet's Done reveals the disguise.
+function leaveHome() {
+  homeShown = false;
+  settings = { ...settings, welcomed: true };
+  store.save(settings);
+  setup.show('welcome');
+}
+
 purchases.onChange(() => {
+  if (!purchases.hasAllAccess()) return showHome();
+  if (homeShown) return leaveHome();
   if (noteScreen.classList.contains('active')) return;
   renderList();
   const next = primaryNote();
   if (next) showNoteContent(next);
 });
 purchases.init();
+
+if (!purchases.hasAllAccess()) {
+  showHome();
+} else if (!settings.welcomed) {
+  // First launch with access: explain how to start, open setup and perform.
+  settings.welcomed = true;
+  store.save(settings);
+  setTimeout(() => openSetup('welcome'), 400);
+}
 
 // The native apps bundle their files, so only the web version needs the offline cache.
 if ('serviceWorker' in navigator && !purchases.isNative) {

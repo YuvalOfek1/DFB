@@ -27,5 +27,4 @@ export default {
     ['Elige tu lista y tu palabra.', 'Mantén presionado el título grande “Notas” para abrir la configuración y elige una lista y la palabra que vas a predecir.'],
     ['Practica una vez.', 'Prueba la entrada secreta unas cuantas veces a solas antes de hacerla frente a alguien.'],
   ],
-  freeUsesGone: 'Ya usaste tus usos gratis',
 };

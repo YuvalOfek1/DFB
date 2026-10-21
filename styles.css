@@ -403,3 +403,15 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 .paywall-buy:disabled { opacity: 0.5; }
 .paywall-links { display: flex; gap: 16px; justify-content: center; }
 .paywall-links a { color: var(--tint); text-decoration: none; }
+
+/* Home screen demo video */
+.demo-video {
+  display: block;
+  width: 100%;
+  max-height: 62vh;
+  margin-top: 12px;
+  border-radius: 14px;
+  background: #000;
+  object-fit: contain;
+}
+.demo-caption { text-align: center; }

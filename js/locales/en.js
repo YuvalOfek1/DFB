@@ -19,8 +19,6 @@ export default {
 
   // Setup
   setupIntro: 'Spectators never see this screen. Long-press the “Notes” title to open it again.',
-  unlockEverything: 'Unlock Everything',
-  freeFooter: (n) => `Try everything free for ${n} uses: each trick you perform counts as one. All Access makes it unlimited.`,
   lists: 'Lists',
   listsFooter: 'Each list appears as its own note. Tap a list to change its items or force word.',
   itemCount: (n) => `${n} items`,
@@ -98,7 +96,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'Choose a plan. Every trick and list included.',
   features: [
-    'Unlimited uses',
     'Every built-in list: celebrities, movies, countries and more',
     'Choose the force word for each list, or type one on the spot',
     'Create your own lists',
@@ -131,8 +128,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => n === 1 ? '1 free use left' : `${n} free uses left`,
-  freeUsesGone: 'Your free uses are used up',
   planMonthly: 'Monthly',
   planLifetime: 'Lifetime',
   perMonth: (price) => `${price} / month`,
@@ -140,4 +135,15 @@ export default {
   lifetimeNote: 'Pay once, keep everything forever, including new tricks.',
   buyLifetime: (price) => `Buy for ${price}`,
   lifetimeLegal: 'Lifetime is a one-time purchase, not a subscription.',
+
+  // Home screen (without a subscription)
+  homeHero: 'Magic in your pocket',
+  homeIntro: 'Mind-reading tricks hidden in ordinary-looking apps. Watch how each one looks, learn how to perform it, and unlock Foldwise to start.',
+  unlockFoldwise: 'Unlock Foldwise',
+  tricks: 'Tricks',
+  notesTrick: 'The Notes Trick',
+  notesTrickTagline: 'They pick any number. Your prediction is there.',
+  notesTrickDescription: 'It looks like an ordinary note: a numbered list of celebrities, movies or places. A spectator scrolls through it and freely names any number, and the item at that number is the word you predicted. Nothing to set up, no sleight of hand.',
+  moreTricksSoon: 'More tricks are on the way. All Access includes every new one.',
+  demoCaption: 'How it looks on your phone',
 };

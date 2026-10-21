@@ -16,8 +16,6 @@ export default {
   setup: '設定',
 
   setupIntro: '観客にはこの画面は見えません。もう一度開くには「メモ」のタイトルを長押しします。',
-  unlockEverything: 'すべてをアンロック',
-  freeFooter: (n) => `${n}回まで無料ですべて試せます(マジックを1回演じるごとに1回)。All Accessなら無制限です。`,
   lists: 'リスト',
   listsFooter: 'リストはそれぞれ1つのメモとして表示されます。タップすると項目やフォースする言葉を変更できます。',
   itemCount: (n) => `${n}項目`,
@@ -89,7 +87,6 @@ export default {
   allAccessHero: 'Foldwise All Access',
   allAccessIntro: 'プランを選んでください。すべてのマジックとリストが使えます。',
   features: [
-    '無制限に使える',
     '標準リストすべて:有名人、映画、国など',
     'リストごとにフォースする言葉を選べる、その場で入力も可能',
     '自分だけのリストを作成',
@@ -122,8 +119,6 @@ export default {
   ],
 
   // Free uses and plans
-  freeUsesLeft: (n) => `無料であと${n}回使えます`,
-  freeUsesGone: '無料の回数を使い切りました',
   planMonthly: '月額',
   planLifetime: '買い切り',
   perMonth: (price) => `${price}/月`,
@@ -131,4 +126,15 @@ export default {
   lifetimeNote: '一度の支払いで、新しいマジックも含めてずっと使えます。',
   buyLifetime: (price) => `${price}で購入`,
   lifetimeLegal: '買い切りは1回限りの購入で、サブスクリプションではありません。',
+
+  // Home screen (without a subscription)
+  homeHero: 'ポケットの中のマジック',
+  homeIntro: '普通のアプリにしか見えない画面に隠れた、心を読むマジック。どう見えるかを確かめ、演じ方を覚えて、Foldwiseをアンロックして始めましょう。',
+  unlockFoldwise: 'Foldwiseをアンロック',
+  tricks: 'マジック',
+  notesTrick: 'メモのマジック',
+  notesTrickTagline: '好きな番号を選んでもらう。そこに予言が。',
+  notesTrickDescription: '見た目は普通のメモ。有名人や映画、場所が番号付きで並んだリストです。観客がスクロールして好きな番号を自由に言うと、その番号の項目はあなたが予言した言葉。準備も手先の技術もいりません。',
+  moreTricksSoon: '新しいマジックを準備中です。All Accessなら新しいマジックもすべて使えます。',
+  demoCaption: 'スマホではこう見えます',
 };

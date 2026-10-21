@@ -4,7 +4,6 @@ import { IOS_EASE } from './motion.js';
 import { defaultLists, newList, parseItems } from './store.js';
 import { t, getLocale, LOCALES, LANGUAGE_NAMES, resolveLocale } from './i18n.js';
 import { CONFIG } from './config.js';
-import { freeForcesLeft } from './access.js';
 
 const PAGE_MS = 450;
 
@@ -145,8 +144,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   function mainPage() {
     const { lists } = getSettings();
     const allAccess = purchases.hasAllAccess();
-    const toPaywall = () => push(() => paywallPage(true));
-    const left = freeForcesLeft(getSettings());
     const listRows = lists.map((list) => row({
       label: list.title,
       sublabel: [
@@ -172,10 +169,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       right: done(),
       body: [
         el('p', 'set-intro', t('setupIntro')),
-        ...(allAccess ? [] : [section({
-          children: [row({ label: t('unlockEverything'), sublabel: left > 0 ? t('freeUsesLeft', left) : t('freeUsesGone'), tone: 'accent', chevron: true, onClick: toPaywall })],
-          footer: t('freeFooter', CONFIG.freeForces),
-        })]),
         section({ header: t('lists'), children: [...listRows, add], footer: t('listsFooter') }),
         ...(purchases.isNative && allAccess ? [section({
           header: t('subscription'),
@@ -327,7 +320,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
   const languageLabel = (pref) => (LOCALES.includes(pref) ? LANGUAGE_NAMES[pref] : t('automatic'));
 
-  function languagePage() {
+  function languagePage(backLabel = t('setup')) {
     const current = getSettings().language;
     const choose = (pref) => {
       if (pref === current) return pop();
@@ -347,7 +340,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     }));
     return {
       title: t('language'),
-      left: back(t('setup')),
+      left: back(backLabel),
       body: [section({ children: options, footer: t('languageFooter') })],
     };
   }
@@ -406,13 +399,65 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     try {
       const unlocked = await purchases.restore();
       alert(unlocked ? t('restored') : t('nothingToRestore'));
-      if (unlocked) reset(mainPage);
     } catch {
       alert(t('restoreFailed'));
     }
   }
 
-  function paywallPage(pushed = false) {
+  // ----- Home (no subscription): tricks, demos, how-to and the plans -----
+
+  const BRAND = 'Foldwise';
+
+  function unlockButton() {
+    const button = el('button', 'paywall-buy', t('unlockFoldwise'));
+    button.type = 'button';
+    button.addEventListener('click', () => push(() => paywallPage(true, BRAND)));
+    return button;
+  }
+
+  function homePage() {
+    const tricks = CONFIG.tricks.map((trick) => row({
+      label: t(`${trick.id}Trick`),
+      sublabel: t(`${trick.id}TrickTagline`),
+      chevron: true,
+      onClick: () => push(() => trickPage(trick)),
+    }));
+    return {
+      title: BRAND,
+      body: [
+        el('h2', 'set-hero', t('homeHero')),
+        el('p', 'set-intro', t('homeIntro')),
+        unlockButton(),
+        section({ header: t('tricks'), children: tricks, footer: t('moreTricksSoon') }),
+        section({
+          header: t('help'),
+          children: [
+            row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(BRAND)) }),
+            row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(() => languagePage(BRAND)) }),
+            row({ label: t('restorePurchases'), tone: 'accent', onClick: () => restore() }),
+          ],
+        }),
+      ],
+    };
+  }
+
+  function trickPage(trick) {
+    const body = [];
+    if (trick.video) {
+      const video = el('video', 'demo-video');
+      Object.assign(video, { src: trick.video, poster: trick.poster ?? '', controls: true, playsInline: true, preload: 'metadata' });
+      video.setAttribute('playsinline', '');
+      body.push(video, el('p', 'set-footer demo-caption', t('demoCaption')));
+    }
+    body.push(
+      el('p', 'set-intro', t(`${trick.id}TrickDescription`)),
+      unlockButton(),
+      section({ children: [row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(t(`${trick.id}Trick`))) })] }),
+    );
+    return { title: t(`${trick.id}Trick`), left: back(BRAND), body };
+  }
+
+  function paywallPage(pushed = false, backLabel = t('setup')) {
     const store = t(purchases.platform === 'android' ? 'googlePlayAccount' : 'appleAccount');
     const buy = el('button', 'paywall-buy', t('loading'));
     buy.type = 'button';
@@ -465,7 +510,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       if (!pkg) return;
       buy.disabled = true;
       try {
-        if (await purchases.purchase(pkg)) reset(mainPage);
+        await purchases.purchase(pkg); // unlocking switches the app to the welcome guide
       } catch {
         alert(t('purchaseFailed'));
       } finally {
@@ -483,7 +528,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
     return {
       title: t('allAccess'),
-      left: pushed ? back(t('setup')) : null,
+      left: pushed ? back(backLabel) : null,
       right: pushed ? null : { label: t('close'), onClick: () => close() },
       body: [
         el('h2', 'set-hero', t('allAccessHero')),
@@ -501,7 +546,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   return {
     show(name) {
       if (name === 'welcome') reset(() => welcomePage(false));
-      else if (name === 'paywall') reset(() => paywallPage(false));
+      else if (name === 'home') reset(homePage);
       else reset(mainPage);
     },
   };

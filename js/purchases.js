@@ -7,13 +7,26 @@ import { CONFIG } from './config.js';
 export const isNative = Capacitor.isNativePlatform();
 export const platform = Capacitor.getPlatform();
 
-let active = new Set(isNative ? [] : [CONFIG.allAccessEntitlement]); // active entitlement ids
+// The last known entitlements are kept on the phone, so a subscriber opens straight into the trick
+// (no flash of the locked screen while RevenueCat answers) and stays unlocked with no signal.
+const CACHE_KEY = 'foldwise.entitlements';
+
+function cachedEntitlements() {
+  try {
+    return JSON.parse(localStorage.getItem(CACHE_KEY)) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+let active = new Set(isNative ? cachedEntitlements() : [CONFIG.allAccessEntitlement]); // active entitlement ids
 let configured = false;
 const listeners = new Set();
 
 function apply(customerInfo) {
   const next = new Set(Object.keys(customerInfo?.entitlements?.active ?? {}));
-  if ([...next].join() === [...active].join()) return;
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify([...next])); } catch { /* ignore */ }
+  if ([...next].sort().join() === [...active].sort().join()) return;
   active = next;
   for (const fn of listeners) fn();
 }
