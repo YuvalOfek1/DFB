@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Foldwise</string>
+    <string name="title_activity_main">Foldwise</string>
+    <string name="package_name">com.foldwise.app</string>
+    <string name="custom_url_scheme">com.foldwise.app</string>
+</resources>

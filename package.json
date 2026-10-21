@@ -1,9 +1,24 @@
 {
-  "name": "dfb",
+  "name": "foldwise",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "start": "python3 -m http.server 8080"
+    "start": "npm run build && python3 -m http.server 8080 --directory www",
+    "build": "node scripts/build-web.mjs",
+    "sync": "npm run build && cap sync",
+    "android": "npm run sync && cap open android",
+    "ios": "npm run sync && cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3",
+    "@capacitor/status-bar": "^8.0.4",
+    "@revenuecat/purchases-capacitor": "^13.7.4"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
+    "esbuild": "^0.28.2"
   }
 }

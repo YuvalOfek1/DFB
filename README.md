@@ -1,16 +1,16 @@
-# DFB — Digital Force Bag
+# Foldwise
 
-A PWA that looks exactly like the iPhone Notes app. Each note is a numbered list. A spectator names any number, and the word you predicted is secretly placed at that position.
+Magic tricks hidden in ordinary-looking apps. The first trick looks exactly like the iPhone Notes app: each note is a numbered list, a spectator names any number, and the word you predicted is secretly placed at that position.
+
+The store apps (iOS and Android) are branded **Foldwise**; the web version keeps the "Notes" name and icon as a personal disguise.
 
 **Live:** https://yuvalofek1.github.io/DFB/
 
-## Install on iPhone
+## Install
 
-1. Open the link in **Safari**.
-2. Share → **Add to Home Screen**. It's already named "Notes" with a Notes-style icon.
-3. Open it once while online; after that it works offline.
+Foldwise is distributed only as the iOS and Android store apps. Until they are published, test with TestFlight on iPhone or the debug APK from CI on Android. The first launch shows a short welcome and getting-started guide.
 
-The first launch shows a short welcome guide.
+The GitHub Pages web version is a personal preview for development only (always unlocked, no store features) and will be taken down.
 
 ## Performing
 
@@ -34,19 +34,54 @@ If the force word is already in the list, it **swaps** places with the item at t
 
 Settings are stored on the phone only.
 
+## Languages
+
+English, Spanish (Spain `es-ES` and Latin America `es-419`), French, German, Italian, Portuguese (Brazil, also used for Portugal), Hebrew, Japanese and Korean. **Automatic** (default) follows the phone, so the disguise always matches the real Notes app; any other phone language falls back to English. Setup → Language overrides it and offers that language's built-in lists.
+
+- `js/locales/<language>.js`: every interface string, one file per language for easy native review, including the Notes disguise wording iOS uses in that language. A test fails if any language is missing a key.
+- **Hebrew is right to left**: the whole interface mirrors as iOS does (back button and numbers on the right, notes slide in from the left, swipe back from the right edge).
+- `scripts/lists_data.py` → `python3 scripts/build_lists.py` → `js/lists.js`: built-in lists and decoy notes per language, chosen per culture (local celebrities and films, local release titles), validated for size, duplicates and force words.
+- Japanese input: full-width digits/spaces are normalized, and the return that confirms Japanese characters doesn't submit the force.
+- `store/listings.json`: App Store / Google Play name, subtitle, keywords and description per locale (within each store's limits).
+- Before launch, have a native speaker of each language review its locale file, lists and listing; the Notes disguise words in particular must match what iOS shows.
+
+## Store apps (iOS & Android)
+
+The app is wrapped with [Capacitor](https://capacitorjs.com): the same code runs as the web app and inside the native `ios/` and `android/` projects. Subscriptions are handled by [RevenueCat](https://www.revenuecat.com).
+
+- **Paid only (native apps):** the tricks work only with Foldwise All Access (RevenueCat entitlement `all_access`), sold as a **monthly subscription** or a **lifetime** one-time purchase: the current offering's Monthly and Lifetime packages, both attached to `all_access`. Without it, the app opens on its **home screen** instead of the disguise: the tricks list, where each trick shows only what the audience experiences (never the method), language, the plans and Restore Purchases. Each trick's demo video (`media/`, listed in `CONFIG.tricks`) and How to Perform are for subscribers, under Setup → Help. The last known access is kept on the phone, so subscribers open straight into the disguise with no flash and stay unlocked offline. Each trick also checks `trick_<id>`, so single tricks can be sold later. The web version is always unlocked.
+- **Configure before publishing:** `js/config.js` holds the RevenueCat public SDK keys (iOS `appl_…`, Android `goog_…`), the entitlement id, the tricks shown on the home screen with their demo videos, and the Terms/Privacy links shown on the paywall. With no key set, a native build runs unlocked (development only).
+- **App id:** `com.foldwise.app` (`capacitor.config.json`). It can't change after the first store upload.
+- **Cloud builds:** `.github/workflows/native.yml` builds a debug Android APK (downloadable from the workflow run) and an iOS Simulator build on every push and pull request. Signed release builds and store upload are the next step.
+- **Icons and launch screens:** `python3 scripts/make_icons.py` regenerates the Notes-style web icon, the Foldwise icon for iOS/Android (`icons/foldwise-1024.png` for store listings) and the plain launch screens.
+
+Native workflow:
+
+```sh
+npm run sync      # build www/ and copy it into ios/ and android/
+npm run android   # sync, then open Android Studio
+npm run ios       # sync, then open Xcode (macOS)
+```
+
 ## Development
 
 ```sh
+npm install
 npm test          # unit tests (force logic, settings storage/migration)
-npm start         # serve on http://localhost:8080
+npm start         # build www/ and serve it on http://localhost:8080
 ```
 
 - `js/force.js`: pure trick logic (parse the secret input, apply the force)
 - `js/lists.js`: built-in lists and the decoy notes
 - `js/store.js`: settings shape, validation, and migration from the single-list format
 - `js/app.js`: Notes imitation, transitions, secret input
-- `js/setup.js`: the hidden Setup sheet
+- `js/setup.js`: the hidden Setup sheet and the paywall
+- `js/purchases.js`: RevenueCat subscription state
+- `scripts/record-demo.mjs`: records a trick's demo video from the built app (wordless overlay, so one video serves every language)
+- `media/`: demo videos and their cover images, bundled into the apps
+- `js/config.js`: keys and links to fill in before publishing
+- `scripts/build-web.mjs`: bundles the app into `www/` with esbuild
 - `sw.js`: offline cache. **Bump `VERSION` whenever you change a file**, or installed copies keep the old version.
 - `scripts/make_icons.py`: regenerates `icons/` (needs Pillow)
 
-Pushing to `main` runs the tests and deploys to GitHub Pages (`.github/workflows/pages.yml`).
+Pushing to `main` runs the tests, builds `www/` and deploys it to GitHub Pages (`.github/workflows/pages.yml`).
