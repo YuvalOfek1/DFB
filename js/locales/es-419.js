@@ -14,7 +14,7 @@ export default {
   routineSteps: [
     ['Haz una predicción.', 'Escribe en un papel la palabra a forzar de la lista que vas a usar y dáselo a alguien para que lo guarde.'],
     ['Muestra la lista.', 'Abre la nota y deja que el espectador la recorra. Todos los elementos son distintos.'],
-    ['Pide un número.', 'Pide cualquier número del 1 al total de la lista. Deja que cambie de opinión.'],
+    ['Pide un número.', 'Primero recupera el teléfono, para que elija sin ver la lista. Pide cualquier número del 1 al total de la lista. Deja que cambie de opinión.'],
     ['Ingrésalo en secreto.', 'Mientras miran la predicción, toca cualquier parte de la nota. Se abre el teclado numérico, pero no aparece nada de lo que escribes. Escribe su número y vuelve a tocar la nota.'],
     ['Revela.', 'Gira la pantalla hacia ellos, baja hasta su número y deja que lean el elemento en voz alta. Después abre la predicción.'],
   ],
