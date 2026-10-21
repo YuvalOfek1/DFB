@@ -82,7 +82,69 @@ def validate(locale, data):
         assert l['force'] in items, (locale, l['id'], 'force not in list')
 
 
-SETS = {'en': english(), 'es-ES': spanish('es-ES'), 'es-419': spanish('es-419'), 'ja': japanese()}
+def unique(items):
+    seen, out = set(), []
+    for item in items:
+        if item.lower() not in seen:
+            seen.add(item.lower())
+            out.append(item)
+    return out
+
+
+# (column in WESTERN_FILMS_EU, titles, forces, local data) per language using the shared Latin-script lists.
+LATIN = {
+    'fr': (0, ('Célébrités', 'Soirée ciné', 'Voyages à faire', 'Idées Pictionary'),
+           ('Kylian Mbappé', 'Intouchables', 'Japon', 'Éléphant'), d.FR_CELEBS, d.FR_FILMS, d.FR_COUNTRIES, d.FR_PICTIONARY, d.FR_DECOYS),
+    'de': (1, ('Promis', 'Filmabend', 'Reiseziele', 'Pictionary-Ideen'),
+           ('Michael Schumacher', 'Das Boot', 'Japan', 'Elefant'), d.DE_CELEBS, d.DE_FILMS, d.DE_COUNTRIES, d.DE_PICTIONARY, d.DE_DECOYS),
+    'it': (2, ('Celebrità', 'Serata film', 'Viaggi da fare', 'Idee per Pictionary'),
+           ('Valentino Rossi', 'La vita è bella', 'Giappone', 'Elefante'), d.IT_CELEBS, d.IT_FILMS, d.IT_COUNTRIES, d.IT_PICTIONARY, d.IT_DECOYS),
+    'pt-BR': (3, ('Famosos', 'Noite de filme', 'Viagens dos sonhos', 'Ideias pro Imagem & Ação'),
+              ('Anitta', 'Cidade de Deus', 'Japão', 'Elefante'), d.PT_CELEBS, d.PT_FILMS, d.PT_COUNTRIES, d.PT_PICTIONARY, d.PT_DECOYS),
+}
+
+
+def latin(locale):
+    col, titles, forces, celebs, films, countries, pictionary, fakes = LATIN[locale]
+    movies = unique(films + [row[col] for row in d.WESTERN_FILMS_EU])[:100]
+    people = unique(celebs + d.INTL_LATIN)[:100]
+    return {
+        'lists': [
+            lst('celebrities', titles[0], forces[0], mix(people, f'{locale}-celebs')),
+            lst('movies', titles[1], forces[1], mix(movies, f'{locale}-movies')),
+            lst('travel', titles[2], forces[2], mix(countries, f'{locale}-travel')),
+            lst('pictionary', titles[3], forces[3], pictionary),
+        ],
+        'decoys': decoys(fakes),
+    }
+
+
+def own_script(locale, titles, forces, celebs, movies, countries, pictionary, fakes):
+    return {
+        'lists': [
+            lst('celebrities', titles[0], forces[0], mix(unique(celebs)[:100], f'{locale}-celebs')),
+            lst('movies', titles[1], forces[1], mix(unique(movies)[:100], f'{locale}-movies')),
+            lst('travel', titles[2], forces[2], mix(countries, f'{locale}-travel')),
+            lst('pictionary', titles[3], forces[3], pictionary),
+        ],
+        'decoys': decoys(fakes),
+    }
+
+
+SETS = {
+    'en': english(),
+    'es-ES': spanish('es-ES'),
+    'es-419': spanish('es-419'),
+    'fr': latin('fr'),
+    'de': latin('de'),
+    'it': latin('it'),
+    'pt-BR': latin('pt-BR'),
+    'he': own_script('he', ('מפורסמים', 'ערב סרט', 'מקומות לטייל', 'רעיונות לפיקשנרי'), ('גל גדות', 'טיטאניק', 'יפן', 'פיל'),
+                     d.HE_CELEBS, d.HE_MOVIES, d.HE_COUNTRIES, d.HE_PICTIONARY, d.HE_DECOYS),
+    'ja': japanese(),
+    'ko': own_script('ko', ('유명인', '볼 영화', '가고 싶은 나라', '그림 퀴즈 제시어'), ('손흥민', '기생충', '일본', '코끼리'),
+                     d.KO_CELEBS, d.KO_MOVIES, d.KO_COUNTRIES, d.KO_PICTIONARY, d.KO_DECOYS),
+}
 for locale, data in SETS.items():
     validate(locale, data)
 

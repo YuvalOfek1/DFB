@@ -8,6 +8,9 @@ import { isFreeList } from './access.js';
 
 const PAGE_MS = 450;
 
+// Horizontal page offset in %, mirrored for right-to-left languages.
+const x = (percent) => `translate3d(${(document.documentElement.dir === 'rtl' ? -1 : 1) * percent}%,0,0)`;
+
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -107,8 +110,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     stack.push(page);
     root.append(page.node);
     const options = { duration: PAGE_MS, easing: IOS_EASE };
-    const anims = [page.node.animate([{ transform: 'translate3d(100%,0,0)' }, { transform: 'translate3d(0,0,0)' }], options)];
-    if (below) anims.push(below.node.animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-30%,0,0)' }], options));
+    const anims = [page.node.animate([{ transform: x(100) }, { transform: x(0) }], options)];
+    if (below) anims.push(below.node.animate([{ transform: x(0) }, { transform: x(-30) }], options));
     await Promise.all(anims.map((a) => a.finished)).catch(() => {});
     below?.node.classList.add('covered');
     animating = false;
@@ -124,8 +127,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     below.node.classList.remove('covered');
     const options = { duration: PAGE_MS - 60, easing: IOS_EASE };
     await Promise.all([
-      page.node.animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(100%,0,0)' }], options).finished,
-      below.node.animate([{ transform: 'translate3d(-30%,0,0)' }, { transform: 'translate3d(0,0,0)' }], options).finished,
+      page.node.animate([{ transform: x(0) }, { transform: x(100) }], options).finished,
+      below.node.animate([{ transform: x(-30) }, { transform: x(0) }], options).finished,
     ]).catch(() => {});
     page.node.remove();
     animating = false;
@@ -421,7 +424,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   }
 
   function paywallPage(pushed = false) {
-    const store = purchases.platform === 'android' ? 'Google Play' : t('appleAccount');
+    const store = t(purchases.platform === 'android' ? 'googlePlayAccount' : 'appleAccount');
     const buy = el('button', 'paywall-buy', t('loading'));
     buy.type = 'button';
     buy.disabled = true;

@@ -1,6 +1,6 @@
 import { parseSecret, applyForce } from './force.js';
 import { listSet } from './lists.js';
-import { resolveLocale, setLocale, t } from './i18n.js';
+import { resolveLocale, setLocale, t, isRTL } from './i18n.js';
 import { IOS_EASE } from './motion.js';
 import * as store from './store.js';
 import { createSetup } from './setup.js';
@@ -36,6 +36,7 @@ function applyLocale() {
   locale = resolveLocale(settings.language, phoneLanguages);
   setLocale(locale);
   document.documentElement.lang = locale;
+  document.documentElement.dir = isRTL(locale) ? 'rtl' : 'ltr';
   for (const node of document.querySelectorAll('[data-i18n]')) node.textContent = t(node.dataset.i18n);
   decoys = listSet(locale).decoys;
 
@@ -161,8 +162,10 @@ const settingsScreen = $('settings-screen');
 const shade = $('shade');
 let busy = false;
 
-const noteX = (p) => `translate3d(${(1 - p) * 100}%, 0, 0)`;
-const listX = (p) => `translate3d(${-PARALLAX * p}%, 0, 0)`;
+// +1 left-to-right, -1 right-to-left (Hebrew), where iOS mirrors the push direction.
+const dir = () => (document.documentElement.dir === 'rtl' ? -1 : 1);
+const noteX = (p) => `translate3d(${dir() * (1 - p) * 100}%, 0, 0)`;
+const listX = (p) => `translate3d(${-dir() * PARALLAX * p}%, 0, 0)`;
 
 // p = how far the note is pushed on screen: 0 = off to the right, 1 = fully shown.
 function setPush(p) {
@@ -245,9 +248,12 @@ function enableEdgeSwipe() {
   const EDGE = 24;
   let swipe = null;
 
+  // Distance from the edge the swipe starts at: the left edge, or the right one in RTL.
+  const fromEdge = (x) => (dir() === 1 ? x : window.innerWidth - x);
+
   noteScreen.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
-    if (busy || e.touches.length > 1 || touch.clientX > EDGE) return;
+    if (busy || e.touches.length > 1 || fromEdge(touch.clientX) > EDGE) return;
     swipe = { startX: touch.clientX, lastX: touch.clientX, lastT: e.timeStamp, velocity: 0, started: false };
   }, { passive: true });
 
@@ -261,10 +267,10 @@ function enableEdgeSwipe() {
     }
     e.preventDefault(); // stop the note scrolling while dragging sideways
     const dt = Math.max(1, e.timeStamp - swipe.lastT);
-    swipe.velocity = (x - swipe.lastX) / dt;
+    swipe.velocity = (dir() * (x - swipe.lastX)) / dt;
     swipe.lastX = x;
     swipe.lastT = e.timeStamp;
-    setPush(1 - Math.max(0, x - swipe.startX) / window.innerWidth);
+    setPush(1 - Math.max(0, dir() * (x - swipe.startX)) / window.innerWidth);
   }, { passive: false });
 
   const end = async () => {
@@ -272,7 +278,7 @@ function enableEdgeSwipe() {
     const { started, lastX, startX, velocity } = swipe;
     swipe = null;
     if (!started) return;
-    const p = 1 - Math.max(0, lastX - startX) / window.innerWidth;
+    const p = 1 - Math.max(0, dir() * (lastX - startX)) / window.innerWidth;
     if (p < 0.6 || velocity > 0.4) {
       await popNote(p, Math.max(160, POP_MS * p));
       afterClose();

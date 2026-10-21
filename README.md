@@ -38,13 +38,14 @@ Settings are stored on the phone only.
 
 ## Languages
 
-English, Spanish (Spain `es-ES` and Latin America `es-419`) and Japanese. **Automatic** (default) follows the phone, so the disguise always matches the real Notes app; Setup → Language overrides it and offers that language's built-in lists.
+English, Spanish (Spain `es-ES` and Latin America `es-419`), French, German, Italian, Portuguese (Brazil, also used for Portugal), Hebrew, Japanese and Korean. **Automatic** (default) follows the phone, so the disguise always matches the real Notes app; any other phone language falls back to English. Setup → Language overrides it and offers that language's built-in lists.
 
-- `js/i18n.js`: every interface string, including the Notes disguise wording iOS uses in each language. A test fails if Spanish or Japanese is missing a key.
-- `scripts/lists_data.py` → `python3 scripts/build_lists.py` → `js/lists.js`: built-in lists and decoy notes per language, chosen per culture (local celebrities and films, regional movie titles for Spain vs Latin America), validated for duplicates and force words.
+- `js/locales/<language>.js`: every interface string, one file per language for easy native review, including the Notes disguise wording iOS uses in that language. A test fails if any language is missing a key.
+- **Hebrew is right to left**: the whole interface mirrors as iOS does (back button and numbers on the right, notes slide in from the left, swipe back from the right edge).
+- `scripts/lists_data.py` → `python3 scripts/build_lists.py` → `js/lists.js`: built-in lists and decoy notes per language, chosen per culture (local celebrities and films, local release titles), validated for size, duplicates and force words.
 - Japanese input: full-width digits/spaces are normalized, and the return that confirms Japanese characters doesn't submit the force.
 - `store/listings.json`: App Store / Google Play name, subtitle, keywords and description per locale (within each store's limits).
-- Before launch, have a native speaker of each language review the strings, lists and listings; the Notes disguise words in particular must match what iOS shows.
+- Before launch, have a native speaker of each language review its locale file, lists and listing; the Notes disguise words in particular must match what iOS shows.
 
 ## Store apps (iOS & Android)
 
