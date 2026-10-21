@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Notes</string>
-    <string name="title_activity_main">Notes</string>
-    <string name="package_name">io.github.yuvalofek.dfb</string>
-    <string name="custom_url_scheme">io.github.yuvalofek.dfb</string>
+    <string name="app_name">Mindfold</string>
+    <string name="title_activity_main">Mindfold</string>
+    <string name="package_name">com.mindfold.app</string>
+    <string name="custom_url_scheme">com.mindfold.app</string>
 </resources>

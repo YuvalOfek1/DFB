@@ -4,6 +4,7 @@ import { IOS_EASE } from './motion.js';
 import * as store from './store.js';
 import { createSetup } from './setup.js';
 import * as purchases from './purchases.js';
+import { availableLists, canForce } from './access.js';
 
 const LONG_PRESS_MS = 700;
 
@@ -52,7 +53,7 @@ function listNote(list) {
 }
 
 function allNotes() {
-  const lists = settings.lists.filter((list) => list.visible).map(listNote);
+  const lists = availableLists(settings.lists, purchases.hasAllAccess()).map(listNote);
   const decoys = DECOYS.map((n) => ({ ...n, date: daysAgoDate(n.daysAgo), preview: n.lines.filter(Boolean).join(' ') }));
   return [...lists, ...decoys].sort((a, b) => b.date - a.date);
 }
@@ -366,8 +367,10 @@ function commitSecretInput() {
   const parsed = parseSecret(secret.value, openList?.force);
   secret.value = '';
   if (!openList) return;
-  // Without a subscription the app is just Notes: the force does nothing.
-  if (parsed && purchases.isEntitled()) shownWords = applyForce(shownWords, parsed.position, parsed.word);
+  // Without All Access only the free list's own force word works.
+  if (parsed && canForce(openList, parsed.word, purchases.hasAllAccess())) {
+    shownWords = applyForce(shownWords, parsed.position, parsed.word);
+  }
   renderTrickBody();
   renderedKey = contentKey({ list: openList }, shownWords);
 }
@@ -451,6 +454,13 @@ if (!settings.welcomed) {
   setTimeout(() => openSetup('welcome'), 400);
 }
 
+// Subscribing (or a subscription ending) changes which lists are shown.
+purchases.onChange(() => {
+  if (noteScreen.classList.contains('active')) return;
+  renderList();
+  const next = primaryNote();
+  if (next) showNoteContent(next);
+});
 purchases.init();
 
 // The native apps bundle their files, so only the web version needs the offline cache.

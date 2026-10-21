@@ -3,6 +3,7 @@
 import { IOS_EASE } from './motion.js';
 import { defaultSettings, newList, parseItems } from './store.js';
 import { CONFIG } from './config.js';
+import { isFreeList } from './access.js';
 
 const PAGE_MS = 450;
 
@@ -141,24 +142,30 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
   function mainPage() {
     const { lists } = getSettings();
+    const allAccess = purchases.hasAllAccess();
+    const toPaywall = () => push(() => paywallPage(true));
     const listRows = lists.map((list) => row({
       label: list.title,
-      sublabel: [
-        `${list.items.length} items`,
-        list.force ? `Force: ${list.force}` : 'No force word',
-        list.visible ? null : 'Hidden',
-      ].filter(Boolean).join(' · '),
+      sublabel: allAccess
+        ? [
+          `${list.items.length} items`,
+          list.force ? `Force: ${list.force}` : 'No force word',
+          list.visible ? null : 'Hidden',
+        ].filter(Boolean).join(' · ')
+        : (isFreeList(list) ? `Free · Force: ${list.force}` : 'All Access'),
       chevron: true,
-      onClick: () => push(() => listPage(list.id)),
+      onClick: allAccess ? () => push(() => listPage(list.id)) : toPaywall,
     }));
     const add = row({
       label: 'Add List',
       tone: 'accent',
-      onClick: () => {
-        const list = newList(getSettings());
-        update((s) => s.lists.push(list));
-        push(() => listPage(list.id));
-      },
+      onClick: allAccess
+        ? () => {
+          const list = newList(getSettings());
+          update((s) => s.lists.push(list));
+          push(() => listPage(list.id));
+        }
+        : toPaywall,
     });
 
     return {
@@ -166,8 +173,12 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       right: done,
       body: [
         el('p', 'set-intro', 'Spectators never see this screen. Long-press the “Notes” title to open it again.'),
+        ...(allAccess ? [] : [section({
+          children: [row({ label: 'Unlock Everything', sublabel: 'Mindfold All Access', tone: 'accent', chevron: true, onClick: toPaywall })],
+          footer: `Free: the ${lists.find(isFreeList)?.title ?? 'starter'} list with its force word. All Access unlocks every list, your own lists and force words, and every new trick.`,
+        })]),
         section({ header: 'Lists', children: [...listRows, add], footer: 'Each list appears as its own note. Tap a list to change its items or force word.' }),
-        ...(purchases.isNative ? [section({
+        ...(purchases.isNative && allAccess ? [section({
           header: 'Subscription',
           children: [
             row({
@@ -358,8 +369,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       left: pushed ? back('Setup') : null,
       right: done,
       body: [
-        el('h2', 'set-hero', 'A magic trick hidden in Notes'),
-        el('p', 'set-intro', 'This app looks exactly like the iPhone Notes app. Spectators see ordinary lists, and pick any number. Secretly, the item at their number becomes the word you predicted.'),
+        el('h2', 'set-hero', 'Welcome to Mindfold'),
+        el('p', 'set-intro', 'Magic tricks hidden in ordinary-looking apps. Your first trick looks exactly like the Notes app: spectators see ordinary lists and pick any number, and secretly the item at their number becomes the word you predicted.'),
         ...(purchases.isNative ? [] : [section({
           header: installed ? 'Installed' : 'Install on your iPhone',
           children: [installed
@@ -377,11 +388,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         section({
           children: [
             row({ label: 'How to Perform', chevron: true, onClick: () => push(() => howToPage('Welcome')) }),
-            ...(pushed ? [] : [row({
-              label: purchases.isEntitled() ? 'Set Up Lists' : 'Get Started',
-              chevron: true,
-              onClick: () => push(purchases.isEntitled() ? mainPage : paywallPage),
-            })]),
+            ...(pushed ? [] : [row({ label: 'Set Up Lists', chevron: true, onClick: () => push(mainPage) })]),
           ],
         }),
       ],
@@ -398,7 +405,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     }
   }
 
-  function paywallPage() {
+  function paywallPage(pushed = false) {
     const store = purchases.platform === 'android' ? 'Google Play' : 'Apple ID';
     const buy = el('button', 'paywall-buy', 'Loading…');
     buy.type = 'button';
@@ -436,9 +443,9 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const features = el('ul', 'paywall-features');
     for (const text of [
       'Every built-in list: celebrities, movies, countries and more',
-      'Choose the force word for each list',
+      'Choose the force word for each list, or type one on the spot',
       'Create your own lists',
-      'Secret number entry and on-the-fly forcing',
+      'Every new trick as it’s released',
     ]) features.append(el('li', null, text));
 
     const legal = el('p', 'set-footer paywall-legal',
@@ -449,11 +456,12 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     if (CONFIG.privacyUrl) links.append(link('Privacy Policy', CONFIG.privacyUrl));
 
     return {
-      title: 'Subscribe',
-      right: { label: 'Close', onClick: () => close() },
+      title: 'All Access',
+      left: pushed ? back('Setup') : null,
+      right: pushed ? null : { label: 'Close', onClick: () => close() },
       body: [
-        el('h2', 'set-hero', 'Unlock the trick'),
-        el('p', 'set-intro', 'One subscription, everything included.'),
+        el('h2', 'set-hero', 'Mindfold All Access'),
+        el('p', 'set-intro', 'One subscription, every trick and list included.'),
         section({ children: [features] }),
         buy,
         trial,
@@ -466,8 +474,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
   return {
     show(name) {
-      if (name === 'welcome') reset(() => welcomePage(false));
-      else reset(purchases.isEntitled() ? mainPage : paywallPage);
+      reset(name === 'welcome' ? () => welcomePage(false) : mainPage);
     },
   };
 }

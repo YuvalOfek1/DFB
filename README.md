@@ -1,6 +1,8 @@
-# DFB — Digital Force Bag
+# Mindfold
 
-A PWA that looks exactly like the iPhone Notes app. Each note is a numbered list. A spectator names any number, and the word you predicted is secretly placed at that position.
+Magic tricks hidden in ordinary-looking apps. The first trick looks exactly like the iPhone Notes app: each note is a numbered list, a spectator names any number, and the word you predicted is secretly placed at that position.
+
+The store apps (iOS and Android) are branded **Mindfold**; the web version keeps the "Notes" name and icon as a personal disguise.
 
 **Live:** https://yuvalofek1.github.io/DFB/
 
@@ -38,11 +40,11 @@ Settings are stored on the phone only.
 
 The app is wrapped with [Capacitor](https://capacitorjs.com): the same code runs as the web app and inside the native `ios/` and `android/` projects. Subscriptions are handled by [RevenueCat](https://www.revenuecat.com).
 
-- **Locked until subscribed (native apps only):** without the `pro` entitlement the app still looks like Notes, but the force does nothing and long-pressing "Notes" opens the paywall. The web version is always unlocked.
-- **Configure before publishing:** `js/config.js` holds the RevenueCat public SDK keys (iOS `appl_…`, Android `goog_…`), the entitlement id, and the Terms/Privacy links shown on the paywall. With no key set, a native build runs unlocked (development only).
-- **App id:** `capacitor.config.json` → `appId` (`io.github.yuvalofek.dfb`). It can't change after the first store upload.
+- **Mindfold All Access (native apps only):** one monthly subscription, RevenueCat entitlement `all_access`, unlocks every list, force-word choice, custom lists and every future trick. Without it, the Notes trick works with the free Celebrities list and its own force word; other lists open the paywall. Each trick also checks its own entitlement (`trick_<id>`), so single tricks can be sold later without code changes. The web version is always unlocked. Rules live in `js/access.js`.
+- **Configure before publishing:** `js/config.js` holds the RevenueCat public SDK keys (iOS `appl_…`, Android `goog_…`), the entitlement id, the free list, and the Terms/Privacy links shown on the paywall. With no key set, a native build runs unlocked (development only).
+- **App id:** `com.mindfold.app` (`capacitor.config.json`). It can't change after the first store upload.
 - **Cloud builds:** `.github/workflows/native.yml` builds a debug Android APK (downloadable from the workflow run) and an iOS Simulator build on every push and pull request. Signed release builds and store upload are the next step.
-- **Icons and launch screens:** `python3 scripts/make_icons.py` regenerates the web, iOS and Android icons and the plain launch screens.
+- **Icons and launch screens:** `python3 scripts/make_icons.py` regenerates the Notes-style web icon, the Mindfold icon for iOS/Android (`icons/mindfold-1024.png` for store listings) and the plain launch screens.
 
 Native workflow:
 
@@ -66,6 +68,7 @@ npm start         # build www/ and serve it on http://localhost:8080
 - `js/app.js`: Notes imitation, transitions, secret input
 - `js/setup.js`: the hidden Setup sheet and the paywall
 - `js/purchases.js`: RevenueCat subscription state
+- `js/access.js`: what works with and without All Access
 - `js/config.js`: keys and links to fill in before publishing
 - `scripts/build-web.mjs`: bundles the app into `www/` with esbuild
 - `sw.js`: offline cache. **Bump `VERSION` whenever you change a file**, or installed copies keep the old version.

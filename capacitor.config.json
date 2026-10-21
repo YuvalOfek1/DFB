@@ -1,6 +1,6 @@
 {
-  "appId": "io.github.yuvalofek.dfb",
-  "appName": "Notes",
+  "appId": "com.mindfold.app",
+  "appName": "Mindfold",
   "webDir": "www",
   "backgroundColor": "#f2f2f7",
   "ios": {

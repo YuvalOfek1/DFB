@@ -1,4 +1,4 @@
-// Subscription state via RevenueCat. Only the native iOS/Android apps sell subscriptions;
+// Subscription state via RevenueCat. Only the native iOS/Android apps sell the subscription;
 // the web version (and native builds without a key configured, for development) are unlocked.
 import { Capacitor } from '@capacitor/core';
 import { Purchases, PURCHASES_ERROR_CODE } from '@revenuecat/purchases-capacitor';
@@ -7,15 +7,15 @@ import { CONFIG } from './config.js';
 export const isNative = Capacitor.isNativePlatform();
 export const platform = Capacitor.getPlatform();
 
-let entitled = !isNative;
+let active = new Set(isNative ? [] : [CONFIG.allAccessEntitlement]); // active entitlement ids
 let configured = false;
 const listeners = new Set();
 
 function apply(customerInfo) {
-  const next = !!customerInfo?.entitlements?.active?.[CONFIG.entitlement];
-  if (next === entitled) return;
-  entitled = next;
-  for (const fn of listeners) fn(entitled);
+  const next = new Set(Object.keys(customerInfo?.entitlements?.active ?? {}));
+  if ([...next].join() === [...active].join()) return;
+  active = next;
+  for (const fn of listeners) fn();
 }
 
 export async function init() {
@@ -23,7 +23,7 @@ export async function init() {
   const apiKey = CONFIG.revenueCatKeys[platform];
   if (!apiKey) {
     console.warn(`No RevenueCat key for ${platform}: running unlocked (development only).`);
-    entitled = true;
+    active = new Set([CONFIG.allAccessEntitlement]);
     return;
   }
   try {
@@ -37,7 +37,9 @@ export async function init() {
   }
 }
 
-export const isEntitled = () => entitled;
+export const hasAllAccess = () => active.has(CONFIG.allAccessEntitlement);
+// A trick is unlocked by All Access or by buying that trick alone.
+export const isTrickUnlocked = (trickId) => hasAllAccess() || active.has(`trick_${trickId}`);
 export const canPurchase = () => configured;
 
 export function onChange(fn) {
@@ -63,7 +65,7 @@ export async function purchase(aPackage) {
   try {
     const { customerInfo } = await Purchases.purchasePackage({ aPackage });
     apply(customerInfo);
-    return entitled;
+    return hasAllAccess();
   } catch (err) {
     if (err?.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) return false;
     throw err;
@@ -73,7 +75,7 @@ export async function purchase(aPackage) {
 export async function restore() {
   const { customerInfo } = await Purchases.restorePurchases();
   apply(customerInfo);
-  return entitled;
+  return hasAllAccess();
 }
 
 export async function managementUrl() {

@@ -1,4 +1,4 @@
-package io.github.yuvalofek.dfb;
+package com.mindfold.app;
 
 import com.getcapacitor.BridgeActivity;
 
