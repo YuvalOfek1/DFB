@@ -10,7 +10,7 @@ The store apps (iOS and Android) are branded **Foldwise**; the web version keeps
 
 Foldwise is distributed only as the iOS and Android store apps. Until they are published, test with TestFlight on iPhone or the debug APK from CI on Android. The first launch shows a short welcome and getting-started guide.
 
-The GitHub Pages web version is a personal preview for development only (always unlocked, no store features) and will be taken down.
+The GitHub Pages web version is a personal preview for development only (always unlocked, no store features) and will be taken down. GitHub Pages must keep serving `legal/` (the Privacy Policy and Terms of Use the apps and store listings link to).
 
 ## Performing
 
