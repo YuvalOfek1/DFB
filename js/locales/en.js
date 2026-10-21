@@ -20,14 +20,13 @@ export default {
   // Setup
   setupIntro: 'Spectators never see this screen. Long-press the “Notes” title to open it again.',
   unlockEverything: 'Unlock Everything',
-  freeFooter: (title) => `Free: the ${title} list with its force word. All Access unlocks every list, your own lists and force words, and every new trick.`,
+  freeFooter: (n) => `Try everything free for ${n} uses: each trick you perform counts as one. All Access makes it unlimited.`,
   lists: 'Lists',
   listsFooter: 'Each list appears as its own note. Tap a list to change its items or force word.',
   itemCount: (n) => `${n} items`,
   forceIs: (word) => `Force: ${word}`,
   noForce: 'No force word',
   hidden: 'Hidden',
-  free: 'Free',
   addList: 'Add List',
   newList: 'New list',
   subscription: 'Subscription',
@@ -97,8 +96,9 @@ export default {
   // Subscription
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'One subscription, every trick and list included.',
+  allAccessIntro: 'Choose a plan. Every trick and list included.',
   features: [
+    'Unlimited uses',
     'Every built-in list: celebrities, movies, countries and more',
     'Choose the force word for each list, or type one on the spot',
     'Create your own lists',
@@ -129,4 +129,15 @@ export default {
     ['Choose your list and word.', 'Long-press the big “Notes” title to open Setup, then pick a list and the word you’ll predict.'],
     ['Practice once.', 'Try the secret entry a few times on your own before you perform it for anyone.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => n === 1 ? '1 free use left' : `${n} free uses left`,
+  freeUsesGone: 'Your free uses are used up',
+  planMonthly: 'Monthly',
+  planLifetime: 'Lifetime',
+  perMonth: (price) => `${price} / month`,
+  oneTime: (price) => `${price} one time`,
+  lifetimeNote: 'Pay once, keep everything forever, including new tricks.',
+  buyLifetime: (price) => `Buy for ${price}`,
+  lifetimeLegal: 'Lifetime is a one-time purchase, not a subscription.',
 };

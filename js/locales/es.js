@@ -17,14 +17,13 @@ export default {
 
   setupIntro: 'Los espectadores nunca ven esta pantalla. Mantén pulsado el título “Notas” para volver a abrirla.',
   unlockEverything: 'Desbloquear todo',
-  freeFooter: (title) => `Gratis: la lista ${title} con su palabra a forzar. All Access desbloquea todas las listas, tus propias listas y palabras, y cada truco nuevo.`,
+  freeFooter: (n) => `Prueba todo gratis durante ${n} usos: cada truco que haces cuenta como uno. Con All Access no hay límite.`,
   lists: 'Listas',
   listsFooter: 'Cada lista aparece como una nota. Toca una lista para cambiar sus elementos o la palabra a forzar.',
   itemCount: (n) => `${n} elementos`,
   forceIs: (word) => `Forzar: ${word}`,
   noForce: 'Sin palabra a forzar',
   hidden: 'Oculta',
-  free: 'Gratis',
   addList: 'Añadir lista',
   newList: 'Lista nueva',
   subscription: 'Suscripción',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Una suscripción con todos los trucos y listas.',
+  allAccessIntro: 'Elige un plan. Todos los trucos y listas incluidos.',
   features: [
+    'Usos ilimitados',
     'Todas las listas incluidas: famosos, películas, países y más',
     'Elige la palabra a forzar de cada lista o escríbela en el momento',
     'Crea tus propias listas',
@@ -123,4 +123,15 @@ export default {
     ['Elige tu lista y tu palabra.', 'Mantén pulsado el título grande “Notas” para abrir la configuración y elige una lista y la palabra que vas a predecir.'],
     ['Practica una vez.', 'Prueba la entrada secreta unas cuantas veces a solas antes de hacerla delante de alguien.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => n === 1 ? 'Te queda 1 uso gratis' : `Te quedan ${n} usos gratis`,
+  freeUsesGone: 'Has agotado tus usos gratis',
+  planMonthly: 'Mensual',
+  planLifetime: 'De por vida',
+  perMonth: (price) => `${price} al mes`,
+  oneTime: (price) => `${price}, un solo pago`,
+  lifetimeNote: 'Pagas una vez y lo tienes todo para siempre, trucos nuevos incluidos.',
+  buyLifetime: (price) => `Comprar por ${price}`,
+  lifetimeLegal: 'De por vida es una compra única, no una suscripción.',
 };

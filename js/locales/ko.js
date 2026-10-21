@@ -17,14 +17,13 @@ export default {
 
   setupIntro: '관객은 이 화면을 볼 수 없습니다. 다시 열려면 ‘메모’ 제목을 길게 누르세요.',
   unlockEverything: '모두 잠금 해제',
-  freeFooter: (title) => `무료: ‘${title}’ 목록과 그 목록의 포스 단어. All Access를 이용하면 모든 목록, 나만의 목록과 단어, 새로운 마술을 모두 사용할 수 있습니다.`,
+  freeFooter: (n) => `${n}회까지 모든 기능을 무료로 써 보세요. 마술을 한 번 공연할 때마다 1회가 차감됩니다. All Access는 무제한입니다.`,
   lists: '목록',
   listsFooter: '각 목록은 메모 하나로 표시됩니다. 목록을 탭하면 항목이나 포스 단어를 바꿀 수 있습니다.',
   itemCount: (n) => `${n}개 항목`,
   forceIs: (word) => `포스: ${word}`,
   noForce: '포스 단어 없음',
   hidden: '숨김',
-  free: '무료',
   addList: '목록 추가',
   newList: '새로운 목록',
   subscription: '구독',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: '구독 하나로 모든 마술과 목록을 이용하세요.',
+  allAccessIntro: '플랜을 선택하세요. 모든 마술과 목록이 포함됩니다.',
   features: [
+    '무제한 사용',
     '모든 기본 목록: 유명인, 영화, 나라 등',
     '목록마다 포스 단어 선택, 즉석 입력도 가능',
     '나만의 목록 만들기',
@@ -120,4 +120,15 @@ export default {
     ['목록과 단어를 고르세요.', '큰 ‘메모’ 제목을 길게 눌러 설정을 열고, 목록과 예언할 단어를 고르세요.'],
     ['한 번 연습하세요.', '다른 사람 앞에서 하기 전에 혼자 몰래 입력하기를 몇 번 연습해 보세요.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => `무료 사용 ${n}회 남음`,
+  freeUsesGone: '무료 사용 횟수를 모두 사용했습니다',
+  planMonthly: '월간',
+  planLifetime: '평생',
+  perMonth: (price) => `월 ${price}`,
+  oneTime: (price) => `${price} (1회 결제)`,
+  lifetimeNote: '한 번 결제로 새로운 마술까지 평생 이용하세요.',
+  buyLifetime: (price) => `${price}에 구입하기`,
+  lifetimeLegal: '평생 이용권은 구독이 아닌 1회 구매입니다.',
 };

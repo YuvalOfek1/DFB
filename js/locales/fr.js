@@ -17,14 +17,13 @@ export default {
 
   setupIntro: 'Les spectateurs ne voient jamais cet écran. Maintenez le doigt sur le titre « Notes » pour le rouvrir.',
   unlockEverything: 'Tout débloquer',
-  freeFooter: (title) => `Gratuit : la liste « ${title} » avec son mot à forcer. All Access débloque toutes les listes, vos propres listes et mots, et chaque nouveau tour.`,
+  freeFooter: (n) => `Essayez tout gratuitement pendant ${n} utilisations : chaque tour présenté compte pour une. All Access les rend illimitées.`,
   lists: 'Listes',
   listsFooter: 'Chaque liste apparaît comme une note. Touchez une liste pour modifier ses éléments ou son mot à forcer.',
   itemCount: (n) => `${n} éléments`,
   forceIs: (word) => `Forcer : ${word}`,
   noForce: 'Aucun mot à forcer',
   hidden: 'Masquée',
-  free: 'Gratuit',
   addList: 'Ajouter une liste',
   newList: 'Nouvelle liste',
   subscription: 'Abonnement',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Un seul abonnement, tous les tours et toutes les listes.',
+  allAccessIntro: 'Choisissez une formule. Tous les tours et toutes les listes inclus.',
   features: [
+    'Utilisations illimitées',
     'Toutes les listes intégrées : célébrités, films, pays et plus',
     'Choisissez le mot à forcer de chaque liste, ou tapez-le sur le moment',
     'Créez vos propres listes',
@@ -123,4 +123,15 @@ export default {
     ['Choisissez votre liste et votre mot.', 'Maintenez le doigt sur le grand titre « Notes » pour ouvrir les réglages, puis choisissez une liste et le mot que vous allez prédire.'],
     ['Entraînez-vous une fois.', 'Essayez la saisie secrète plusieurs fois seul avant de présenter le tour à quelqu’un.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => n === 1 ? '1 utilisation gratuite restante' : `${n} utilisations gratuites restantes`,
+  freeUsesGone: 'Vos utilisations gratuites sont épuisées',
+  planMonthly: 'Mensuel',
+  planLifetime: 'À vie',
+  perMonth: (price) => `${price} par mois`,
+  oneTime: (price) => `${price} en une fois`,
+  lifetimeNote: 'Payez une fois, gardez tout pour toujours, nouveaux tours compris.',
+  buyLifetime: (price) => `Acheter pour ${price}`,
+  lifetimeLegal: 'L’accès à vie est un achat unique, pas un abonnement.',
 };

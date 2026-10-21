@@ -5,7 +5,7 @@ import { IOS_EASE } from './motion.js';
 import * as store from './store.js';
 import { createSetup } from './setup.js';
 import * as purchases from './purchases.js';
-import { availableLists, canForce } from './access.js';
+import { canForce, needsPaywall } from './access.js';
 
 const LONG_PRESS_MS = 700;
 
@@ -84,7 +84,7 @@ function listNote(list) {
 }
 
 function allNotes() {
-  const lists = availableLists(settings.lists, purchases.hasAllAccess()).map(listNote);
+  const lists = settings.lists.filter((list) => list.visible).map(listNote);
   const fakes = decoys.map((n) => ({ ...n, date: daysAgoDate(n.daysAgo), preview: n.lines.filter(Boolean).join(' ') }));
   return [...lists, ...fakes].sort((a, b) => b.date - a.date);
 }
@@ -305,6 +305,11 @@ function contentKey(note, words = note.list?.items) {
 async function openNote(note, cell) {
   await finishRunning();
   if (busy || noteScreen.classList.contains('active')) return;
+  // Free forces used up: show the paywall now, while preparing, rather than let a trick fail later.
+  if (note.list && needsPaywall(settings, purchases.hasAllAccess())) {
+    openSetup('paywall');
+    return;
+  }
   // Keep the cell highlighted under the note, like iOS (a fading highlight would repaint mid-slide).
   selectedCell = cell;
   cell.classList.add('selected');
@@ -403,9 +408,13 @@ function commitSecretInput() {
   const parsed = parseSecret(secret.value, openList?.force);
   secret.value = '';
   if (!openList) return;
-  // Without All Access only the free list's own force word works.
-  if (parsed && canForce(openList, parsed.word, purchases.hasAllAccess())) {
+  const inRange = parsed && parsed.position <= shownWords.length;
+  if (inRange && canForce(settings, purchases.hasAllAccess())) {
     shownWords = applyForce(shownWords, parsed.position, parsed.word);
+    if (!purchases.hasAllAccess()) {
+      settings = { ...settings, freeForcesUsed: (settings.freeForcesUsed ?? 0) + 1 };
+      store.save(settings);
+    }
   }
   renderTrickBody();
   renderedKey = contentKey({ list: openList }, shownWords);

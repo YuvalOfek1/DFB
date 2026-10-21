@@ -17,14 +17,13 @@ export default {
 
   setupIntro: 'Gli spettatori non vedono mai questa schermata. Tieni premuto il titolo “Note” per riaprirla.',
   unlockEverything: 'Sblocca tutto',
-  freeFooter: (title) => `Gratis: la lista “${title}” con la sua parola da forzare. All Access sblocca tutte le liste, le tue liste e parole, e ogni nuovo trucco.`,
+  freeFooter: (n) => `Prova tutto gratis per ${n} utilizzi: ogni trucco eseguito ne conta uno. Con All Access sono illimitati.`,
   lists: 'Liste',
   listsFooter: 'Ogni lista appare come una nota. Tocca una lista per cambiarne gli elementi o la parola da forzare.',
   itemCount: (n) => `${n} elementi`,
   forceIs: (word) => `Forza: ${word}`,
   noForce: 'Nessuna parola da forzare',
   hidden: 'Nascosta',
-  free: 'Gratis',
   addList: 'Aggiungi lista',
   newList: 'Nuova lista',
   subscription: 'Abbonamento',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Un solo abbonamento, tutti i trucchi e le liste inclusi.',
+  allAccessIntro: 'Scegli un piano. Tutti i trucchi e le liste inclusi.',
   features: [
+    'Utilizzi illimitati',
     'Tutte le liste incluse: celebrità, film, paesi e altro',
     'Scegli la parola da forzare di ogni lista o scrivila al momento',
     'Crea le tue liste',
@@ -123,4 +123,15 @@ export default {
     ['Scegli la lista e la parola.', 'Tieni premuto il titolo grande “Note” per aprire le impostazioni, poi scegli una lista e la parola che prevederai.'],
     ['Esercitati una volta.', 'Prova l’inserimento segreto qualche volta da solo prima di eseguirlo davanti a qualcuno.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => n === 1 ? '1 utilizzo gratuito rimasto' : `${n} utilizzi gratuiti rimasti`,
+  freeUsesGone: 'Hai esaurito gli utilizzi gratuiti',
+  planMonthly: 'Mensile',
+  planLifetime: 'A vita',
+  perMonth: (price) => `${price} al mese`,
+  oneTime: (price) => `${price} una tantum`,
+  lifetimeNote: 'Paghi una volta e tieni tutto per sempre, nuovi trucchi inclusi.',
+  buyLifetime: (price) => `Acquista a ${price}`,
+  lifetimeLegal: 'L’accesso a vita è un acquisto unico, non un abbonamento.',
 };

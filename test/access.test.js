@@ -1,30 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { availableLists, canForce } from '../js/access.js';
-import { defaultSettings } from '../js/store.js';
+import { freeForcesLeft, canForce, needsPaywall } from '../js/access.js';
+import { CONFIG } from '../js/config.js';
 
-const { lists } = defaultSettings();
-const celebrities = lists.find((l) => l.id === 'celebrities');
-const movies = lists.find((l) => l.id === 'movies');
-
-test('without All Access only the free list is shown', () => {
-  assert.deepEqual(availableLists(lists, false).map((l) => l.id), ['celebrities']);
-  assert.equal(availableLists(lists, true).length, lists.length);
+test('3 free forces, counted down and never negative', () => {
+  assert.equal(CONFIG.freeForces, 3);
+  assert.equal(freeForcesLeft({}), 3);
+  assert.equal(freeForcesLeft({ freeForcesUsed: 2 }), 1);
+  assert.equal(freeForcesLeft({ freeForcesUsed: 7 }), 0);
 });
 
-test('hidden lists stay hidden either way', () => {
-  const hidden = lists.map((l) => ({ ...l, visible: l.id !== 'celebrities' }));
-  assert.deepEqual(availableLists(hidden, false), []);
-});
-
-test('the free list forces only its own force word', () => {
-  assert.equal(canForce(celebrities, 'Leonardo DiCaprio', false), true);
-  assert.equal(canForce(celebrities, 'leonardo dicaprio ', false), true);
-  assert.equal(canForce(celebrities, 'Banana', false), false);
-  assert.equal(canForce(movies, 'Titanic', false), false);
-  assert.equal(canForce(null, 'x', false), false);
-});
-
-test('All Access forces anything', () => {
-  assert.equal(canForce(movies, 'Banana', true), true);
+test('forcing is allowed while free forces remain, then needs All Access', () => {
+  assert.equal(canForce({ freeForcesUsed: 2 }, false), true);
+  assert.equal(canForce({ freeForcesUsed: 3 }, false), false);
+  assert.equal(canForce({ freeForcesUsed: 3 }, true), true);
+  assert.equal(needsPaywall({ freeForcesUsed: 3 }, false), true);
+  assert.equal(needsPaywall({ freeForcesUsed: 3 }, true), false);
+  assert.equal(needsPaywall({ freeForcesUsed: 0 }, false), false);
 });

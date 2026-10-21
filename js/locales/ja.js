@@ -17,14 +17,13 @@ export default {
 
   setupIntro: '観客にはこの画面は見えません。もう一度開くには「メモ」のタイトルを長押しします。',
   unlockEverything: 'すべてをアンロック',
-  freeFooter: (title) => `無料:「${title}」リストとそのフォースする言葉。All Accessでは、すべてのリスト、自分で作るリストや言葉、新しいマジックがすべて使えます。`,
+  freeFooter: (n) => `${n}回まで無料ですべて試せます(マジックを1回演じるごとに1回)。All Accessなら無制限です。`,
   lists: 'リスト',
   listsFooter: 'リストはそれぞれ1つのメモとして表示されます。タップすると項目やフォースする言葉を変更できます。',
   itemCount: (n) => `${n}項目`,
   forceIs: (word) => `フォース: ${word}`,
   noForce: 'フォースする言葉なし',
   hidden: '非表示',
-  free: '無料',
   addList: 'リストを追加',
   newList: '新しいリスト',
   subscription: 'サブスクリプション',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: '1つのサブスクリプションで、すべてのマジックとリストが使えます。',
+  allAccessIntro: 'プランを選んでください。すべてのマジックとリストが使えます。',
   features: [
+    '無制限に使える',
     '標準リストすべて:有名人、映画、国など',
     'リストごとにフォースする言葉を選べる、その場で入力も可能',
     '自分だけのリストを作成',
@@ -120,4 +120,15 @@ export default {
     ['リストと言葉を選ぶ。', '大きな「メモ」のタイトルを長押しして設定を開き、リストと予言する言葉を選びます。'],
     ['一度練習する。', '人前で演じる前に、ひとりで何度かこっそり入力を試してみましょう。'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => `無料であと${n}回使えます`,
+  freeUsesGone: '無料の回数を使い切りました',
+  planMonthly: '月額',
+  planLifetime: '買い切り',
+  perMonth: (price) => `${price}/月`,
+  oneTime: (price) => `${price}(1回のみ)`,
+  lifetimeNote: '一度の支払いで、新しいマジックも含めてずっと使えます。',
+  buyLifetime: (price) => `${price}で購入`,
+  lifetimeLegal: '買い切りは1回限りの購入で、サブスクリプションではありません。',
 };

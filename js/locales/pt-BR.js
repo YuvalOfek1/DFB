@@ -17,14 +17,13 @@ export default {
 
   setupIntro: 'Os espectadores nunca veem esta tela. Toque e segure o título “Notas” para abri-la de novo.',
   unlockEverything: 'Desbloquear tudo',
-  freeFooter: (title) => `Grátis: a lista “${title}” com a palavra forçada dela. O All Access desbloqueia todas as listas, suas próprias listas e palavras, e cada truque novo.`,
+  freeFooter: (n) => `Teste tudo grátis por ${n} usos: cada truque apresentado conta como um. Com o All Access é ilimitado.`,
   lists: 'Listas',
   listsFooter: 'Cada lista aparece como uma nota. Toque numa lista para mudar os itens ou a palavra forçada.',
   itemCount: (n) => `${n} itens`,
   forceIs: (word) => `Forçar: ${word}`,
   noForce: 'Sem palavra forçada',
   hidden: 'Oculta',
-  free: 'Grátis',
   addList: 'Adicionar lista',
   newList: 'Nova lista',
   subscription: 'Assinatura',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Uma assinatura com todos os truques e listas.',
+  allAccessIntro: 'Escolha um plano. Todos os truques e listas incluídos.',
   features: [
+    'Usos ilimitados',
     'Todas as listas prontas: famosos, filmes, países e mais',
     'Escolha a palavra forçada de cada lista, ou digite na hora',
     'Crie suas próprias listas',
@@ -123,4 +123,15 @@ export default {
     ['Escolha a lista e a palavra.', 'Toque e segure o título grande “Notas” para abrir os ajustes e escolha uma lista e a palavra que você vai prever.'],
     ['Treine uma vez.', 'Faça a entrada secreta algumas vezes sozinho antes de apresentar para alguém.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => n === 1 ? '1 uso grátis restante' : `${n} usos grátis restantes`,
+  freeUsesGone: 'Seus usos grátis acabaram',
+  planMonthly: 'Mensal',
+  planLifetime: 'Vitalício',
+  perMonth: (price) => `${price}/mês`,
+  oneTime: (price) => `${price} uma única vez`,
+  lifetimeNote: 'Pague uma vez e fique com tudo para sempre, incluindo truques novos.',
+  buyLifetime: (price) => `Comprar por ${price}`,
+  lifetimeLegal: 'O vitalício é uma compra única, não uma assinatura.',
 };

@@ -5,11 +5,11 @@ export const CONFIG = {
     ios: '', // appl_...
     android: '', // goog_...
   },
-  // RevenueCat entitlements: All Access unlocks every trick. A single trick can later be sold on
-  // its own as the entitlement `trick_<id>` (e.g. trick_notes) without code changes.
+  // RevenueCat entitlement unlocked by both plans (monthly subscription and lifetime purchase).
+  // A single trick can later be sold on its own as `trick_<id>` without code changes.
   allAccessEntitlement: 'all_access',
-  // What works without a subscription: the Notes trick with this built-in list and its own force word.
-  freeListId: 'celebrities',
+  // Forces a user can perform before the paywall.
+  freeForces: 3,
   // Required on the paywall by Apple and Google.
   termsUrl: 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/',
   privacyUrl: '',

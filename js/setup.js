@@ -4,7 +4,7 @@ import { IOS_EASE } from './motion.js';
 import { defaultLists, newList, parseItems } from './store.js';
 import { t, getLocale, LOCALES, LANGUAGE_NAMES, resolveLocale } from './i18n.js';
 import { CONFIG } from './config.js';
-import { isFreeList } from './access.js';
+import { freeForcesLeft } from './access.js';
 
 const PAGE_MS = 450;
 
@@ -146,28 +146,25 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const { lists } = getSettings();
     const allAccess = purchases.hasAllAccess();
     const toPaywall = () => push(() => paywallPage(true));
+    const left = freeForcesLeft(getSettings());
     const listRows = lists.map((list) => row({
       label: list.title,
-      sublabel: allAccess
-        ? [
-          t('itemCount', list.items.length),
-          list.force ? t('forceIs', list.force) : t('noForce'),
-          list.visible ? null : t('hidden'),
-        ].filter(Boolean).join(' · ')
-        : (isFreeList(list) ? `${t('free')} · ${t('forceIs', list.force)}` : t('allAccess')),
+      sublabel: [
+        t('itemCount', list.items.length),
+        list.force ? t('forceIs', list.force) : t('noForce'),
+        list.visible ? null : t('hidden'),
+      ].filter(Boolean).join(' · '),
       chevron: true,
-      onClick: allAccess ? () => push(() => listPage(list.id)) : toPaywall,
+      onClick: () => push(() => listPage(list.id)),
     }));
     const add = row({
       label: t('addList'),
       tone: 'accent',
-      onClick: allAccess
-        ? () => {
-          const list = newList(getSettings(), t('newList'));
-          update((s) => s.lists.push(list));
-          push(() => listPage(list.id));
-        }
-        : toPaywall,
+      onClick: () => {
+        const list = newList(getSettings(), t('newList'));
+        update((s) => s.lists.push(list));
+        push(() => listPage(list.id));
+      },
     });
 
     return {
@@ -176,8 +173,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       body: [
         el('p', 'set-intro', t('setupIntro')),
         ...(allAccess ? [] : [section({
-          children: [row({ label: t('unlockEverything'), sublabel: t('allAccessHero'), tone: 'accent', chevron: true, onClick: toPaywall })],
-          footer: t('freeFooter', lists.find(isFreeList)?.title ?? ''),
+          children: [row({ label: t('unlockEverything'), sublabel: left > 0 ? t('freeUsesLeft', left) : t('freeUsesGone'), tone: 'accent', chevron: true, onClick: toPaywall })],
+          footer: t('freeFooter', CONFIG.freeForces),
         })]),
         section({ header: t('lists'), children: [...listRows, add], footer: t('listsFooter') }),
         ...(purchases.isNative && allAccess ? [section({
@@ -420,25 +417,51 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const buy = el('button', 'paywall-buy', t('loading'));
     buy.type = 'button';
     buy.disabled = true;
-    const trial = el('p', 'paywall-trial');
+    const plansBox = el('div', 'plans');
+    const legal = el('p', 'set-footer paywall-legal', t('legal', store));
 
-    let pkg = null;
-    purchases.getPackage().then((found) => {
-      pkg = found;
-      if (!pkg) {
+    let plans = { monthly: null, lifetime: null };
+    let chosen = 'monthly';
+
+    function planCard(kind, pkg) {
+      const product = pkg.product;
+      const card = el('button', 'plan');
+      card.type = 'button';
+      card.dataset.plan = kind;
+      card.append(el('span', 'plan-name', t(kind === 'monthly' ? 'planMonthly' : 'planLifetime')));
+      card.append(el('span', 'plan-price', kind === 'monthly' ? t('perMonth', product.priceString) : t('oneTime', product.priceString)));
+      let note = kind === 'lifetime' ? t('lifetimeNote') : '';
+      if (kind === 'monthly' && product.introPrice) {
+        const intro = product.introPrice;
+        const length = t('period', intro.periodNumberOfUnits, intro.periodUnit);
+        note = intro.price === 0 ? t('freeTrial', length, product.priceString) : t('introOffer', intro.priceString, length, product.priceString);
+      }
+      if (note) card.append(el('span', 'plan-note', note));
+      card.addEventListener('click', () => choose(kind));
+      return card;
+    }
+
+    function choose(kind) {
+      chosen = kind;
+      for (const card of plansBox.children) card.classList.toggle('selected', card.dataset.plan === kind);
+      const product = plans[kind].product;
+      buy.textContent = kind === 'monthly' ? t('subscribeFor', product.priceString) : t('buyLifetime', product.priceString);
+      buy.disabled = false;
+    }
+
+    purchases.getPlans().then((found) => {
+      plans = found;
+      const kinds = ['monthly', 'lifetime'].filter((kind) => plans[kind]);
+      if (!kinds.length) {
         buy.textContent = purchases.canPurchase() ? t('unavailableNow') : t('subscriptionsUnavailable');
         return;
       }
-      const product = pkg.product;
-      buy.textContent = t('subscribeFor', product.priceString);
-      buy.disabled = false;
-      if (product.introPrice) {
-        const intro = product.introPrice;
-        const length = t('period', intro.periodNumberOfUnits, intro.periodUnit);
-        trial.textContent = intro.price === 0 ? t('freeTrial', length, product.priceString) : t('introOffer', intro.priceString, length, product.priceString);
-      }
+      plansBox.replaceChildren(...kinds.map((kind) => planCard(kind, plans[kind])));
+      if (plans.lifetime) legal.textContent = `${t('legal', store)} ${t('lifetimeLegal')}`;
+      choose(kinds[0]);
     });
     buy.addEventListener('click', async () => {
+      const pkg = plans[chosen];
       if (!pkg) return;
       buy.disabled = true;
       try {
@@ -453,8 +476,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const features = el('ul', 'paywall-features');
     for (const text of t('features')) features.append(el('li', null, text));
 
-    const legal = el('p', 'set-footer paywall-legal',
-      t('legal', store));
     const links = el('p', 'set-footer paywall-links');
     const link = (label, url) => { const a = el('a', null, label); a.href = url; a.target = '_blank'; return a; };
     if (CONFIG.termsUrl) links.append(link(t('terms'), CONFIG.termsUrl));
@@ -468,8 +489,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         el('h2', 'set-hero', t('allAccessHero')),
         el('p', 'set-intro', t('allAccessIntro')),
         section({ children: [features] }),
+        plansBox,
         buy,
-        trial,
         section({ children: [row({ label: t('restorePurchases'), tone: 'accent', onClick: () => restore() })] }),
         legal,
         links,
@@ -479,7 +500,9 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
   return {
     show(name) {
-      reset(name === 'welcome' ? () => welcomePage(false) : mainPage);
+      if (name === 'welcome') reset(() => welcomePage(false));
+      else if (name === 'paywall') reset(() => paywallPage(false));
+      else reset(mainPage);
     },
   };
 }

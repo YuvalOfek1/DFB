@@ -47,16 +47,17 @@ export function onChange(fn) {
   return () => listeners.delete(fn);
 }
 
-// The package to sell: the current offering's monthly package (or its first one).
-export async function getPackage() {
-  if (!configured) return null;
+// The plans to sell, from RevenueCat's current offering: its Monthly and Lifetime packages.
+// Either can be null if it isn't set up in RevenueCat.
+export async function getPlans() {
+  if (!configured) return { monthly: null, lifetime: null };
   try {
     const offerings = await Purchases.getOfferings();
     const current = offerings?.current;
-    return current?.monthly ?? current?.availablePackages?.[0] ?? null;
+    return { monthly: current?.monthly ?? null, lifetime: current?.lifetime ?? null };
   } catch (err) {
     console.warn('Could not load offerings', err);
-    return null;
+    return { monthly: null, lifetime: null };
   }
 }
 

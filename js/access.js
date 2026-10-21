@@ -1,16 +1,18 @@
 // What a user can do with or without All Access. Pure functions, so they can be unit-tested.
 import { CONFIG } from './config.js';
 
-export const isFreeList = (list) => list.id === CONFIG.freeListId;
-
-// Lists shown as notes: everything visible with All Access; only the free list without it.
-export function availableLists(lists, allAccess) {
-  return lists.filter((list) => list.visible && (allAccess || isFreeList(list)));
+// Free forces left before the paywall (never negative).
+export function freeForcesLeft(settings) {
+  return Math.max(0, CONFIG.freeForces - (settings.freeForcesUsed ?? 0));
 }
 
-// The free list forces only its own force word (no typing a different word on the spot).
-export function canForce(list, word, allAccess) {
-  if (allAccess) return true;
-  const norm = (w) => String(w).normalize('NFKC').trim().toLowerCase();
-  return !!list && isFreeList(list) && !!list.force && norm(word) === norm(list.force);
+// A force is allowed with All Access, or while free forces remain. It never fails silently
+// mid-trick: once none are left, list notes open the paywall before the trick starts.
+export function canForce(settings, allAccess) {
+  return allAccess || freeForcesLeft(settings) > 0;
+}
+
+// Opening a list note without All Access and without free forces shows the paywall instead.
+export function needsPaywall(settings, allAccess) {
+  return !canForce(settings, allAccess);
 }

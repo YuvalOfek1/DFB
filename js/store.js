@@ -30,6 +30,7 @@ export function defaultSettings(locale = 'en') {
   return {
     version: VERSION,
     welcomed: false,
+    freeForcesUsed: 0,
     language: 'auto',
     lists: defaultLists(locale),
   };
@@ -73,6 +74,7 @@ export function normalize(raw) {
   return {
     version: VERSION,
     welcomed: !!raw.welcomed,
+    freeForcesUsed: Number.isInteger(raw.freeForcesUsed) && raw.freeForcesUsed > 0 ? raw.freeForcesUsed : 0,
     language: LOCALES.includes(raw.language) ? raw.language : 'auto',
     lists: renameOldDefaults(lists, Number(raw.version) || 2),
   };

@@ -17,14 +17,13 @@ export default {
 
   setupIntro: 'Zuschauer sehen diesen Bildschirm nie. Halte den Titel „Notizen“ gedrückt, um ihn wieder zu öffnen.',
   unlockEverything: 'Alles freischalten',
-  freeFooter: (title) => `Kostenlos: die Liste „${title}“ mit ihrem Zielwort. All Access schaltet alle Listen, eigene Listen und Wörter und jeden neuen Trick frei.`,
+  freeFooter: (n) => `Teste alles kostenlos für ${n} Nutzungen: Jeder vorgeführte Trick zählt als eine. Mit All Access unbegrenzt.`,
   lists: 'Listen',
   listsFooter: 'Jede Liste erscheint als eigene Notiz. Tippe auf eine Liste, um ihre Einträge oder ihr Zielwort zu ändern.',
   itemCount: (n) => `${n} Einträge`,
   forceIs: (word) => `Zielwort: ${word}`,
   noForce: 'Kein Zielwort',
   hidden: 'Ausgeblendet',
-  free: 'Kostenlos',
   addList: 'Liste hinzufügen',
   newList: 'Neue Liste',
   subscription: 'Abo',
@@ -88,8 +87,9 @@ export default {
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Ein Abo, alle Tricks und Listen inklusive.',
+  allAccessIntro: 'Wähle ein Paket. Alle Tricks und Listen inklusive.',
   features: [
+    'Unbegrenzte Nutzung',
     'Alle mitgelieferten Listen: Promis, Filme, Länder und mehr',
     'Wähle das Zielwort jeder Liste oder tippe es spontan ein',
     'Erstelle eigene Listen',
@@ -123,4 +123,15 @@ export default {
     ['Wähle Liste und Wort.', 'Halte den großen Titel „Notizen“ gedrückt, um die Einstellungen zu öffnen, und wähle eine Liste und das Wort, das du vorhersagst.'],
     ['Übe einmal.', 'Probiere die geheime Eingabe ein paar Mal allein aus, bevor du den Trick jemandem vorführst.'],
   ],
+
+  // Free uses and plans
+  freeUsesLeft: (n) => n === 1 ? 'Noch 1 kostenlose Nutzung' : `Noch ${n} kostenlose Nutzungen`,
+  freeUsesGone: 'Deine kostenlosen Nutzungen sind aufgebraucht',
+  planMonthly: 'Monatlich',
+  planLifetime: 'Lebenslang',
+  perMonth: (price) => `${price}/Monat`,
+  oneTime: (price) => `${price} einmalig`,
+  lifetimeNote: 'Einmal zahlen, alles für immer behalten – inklusive neuer Tricks.',
+  buyLifetime: (price) => `Für ${price} kaufen`,
+  lifetimeLegal: 'Lebenslang ist ein einmaliger Kauf, kein Abo.',
 };
