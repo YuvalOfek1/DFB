@@ -42,3 +42,13 @@ test('applyForce: out-of-range positions leave the list unchanged', () => {
   assert.deepEqual(applyForce(['a', 'b'], 5, 'z'), ['a', 'b']);
   assert.deepEqual(applyForce(['a', 'b'], 0, 'z'), ['a', 'b']);
 });
+
+test('parseSecret: full-width digits and spaces from Japanese keyboards', () => {
+  assert.deepEqual(parseSecret('１７', 'ゾウ'), { position: 17, word: 'ゾウ' });
+  assert.deepEqual(parseSecret('１７　ゾウ'), { position: 17, word: 'ゾウ' });
+  assert.deepEqual(parseSecret('5ゾウ'), { position: 5, word: 'ゾウ' });
+});
+
+test('applyForce: matches the force word across full- and half-width forms', () => {
+  assert.deepEqual(applyForce(['ＡＢＣ', 'x', 'y'], 3, 'abc'), ['y', 'x', 'ＡＢＣ']);
+});

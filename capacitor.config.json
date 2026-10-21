@@ -1,6 +1,6 @@
 {
-  "appId": "com.mindfold.app",
-  "appName": "Mindfold",
+  "appId": "com.foldwise.app",
+  "appName": "Foldwise",
   "webDir": "www",
   "backgroundColor": "#f2f2f7",
   "ios": {

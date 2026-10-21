@@ -1,5 +1,6 @@
 import { parseSecret, applyForce } from './force.js';
-import { DECOYS } from './lists.js';
+import { listSet } from './lists.js';
+import { resolveLocale, setLocale, t } from './i18n.js';
 import { IOS_EASE } from './motion.js';
 import * as store from './store.js';
 import { createSetup } from './setup.js';
@@ -10,16 +11,45 @@ const LONG_PRESS_MS = 700;
 
 const $ = (id) => document.getElementById(id);
 
-let settings = store.load();
+const phoneLanguages = navigator.languages?.length ? navigator.languages : [navigator.language ?? 'en'];
+let settings = store.load(globalThis.localStorage, resolveLocale('auto', phoneLanguages));
 let openList = null; // the trick list currently in the note screen (null for a decoy note)
 let shownWords = []; // what that list currently displays (changes when a force is applied)
 
+// ---------- Language ----------
+
+let locale = 'en';
+let decoys = [];
+let timeFmt, weekdayFmt, shortFmt, longFmt;
+
+// A language tag Intl accepts, or the fallback (some systems report tags like "en-US@posix").
+function validLocale(tag, fallback) {
+  try {
+    return Intl.getCanonicalLocales(String(tag).split('@')[0])[0] ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+// Applies the chosen language (or the phone's) to the disguise: words, date formats, decoy notes.
+function applyLocale() {
+  locale = resolveLocale(settings.language, phoneLanguages);
+  setLocale(locale);
+  document.documentElement.lang = locale;
+  for (const node of document.querySelectorAll('[data-i18n]')) node.textContent = t(node.dataset.i18n);
+  decoys = listSet(locale).decoys;
+
+  // Dates follow the phone's own regional format when it uses the same language (en-GB vs en-US).
+  const base = locale.split('-')[0];
+  const dateLocale = validLocale(phoneLanguages.find((l) => l.toLowerCase().startsWith(base)), locale);
+  timeFmt = new Intl.DateTimeFormat(dateLocale, { hour: 'numeric', minute: '2-digit' });
+  weekdayFmt = new Intl.DateTimeFormat(dateLocale, { weekday: 'long' });
+  shortFmt = new Intl.DateTimeFormat(dateLocale, { year: base === 'ja' ? 'numeric' : '2-digit', month: 'numeric', day: 'numeric' });
+  longFmt = new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long' });
+}
+
 // ---------- Dates (mimic Notes' labels) ----------
 
-const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
-const weekdayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
-const shortFmt = new Intl.DateTimeFormat(undefined, { year: '2-digit', month: 'numeric', day: 'numeric' });
-const longFmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'long' });
 const bootTime = Date.now();
 
 function daysAgoDate(days) {
@@ -36,13 +66,13 @@ function calendarDaysAgo(date) {
 
 function listLabel(date, daysAgo) {
   if (daysAgo === 0) return timeFmt.format(date);
-  if (daysAgo === 1) return 'Yesterday';
+  if (daysAgo === 1) return t('yesterday');
   if (daysAgo < 7) return weekdayFmt.format(date);
   return shortFmt.format(date);
 }
 
 function headerLabel(date) {
-  return `${longFmt.format(date)} at ${timeFmt.format(date)}`;
+  return t('noteDate', longFmt.format(date), timeFmt.format(date));
 }
 
 // ---------- Rendering ----------
@@ -54,8 +84,8 @@ function listNote(list) {
 
 function allNotes() {
   const lists = availableLists(settings.lists, purchases.hasAllAccess()).map(listNote);
-  const decoys = DECOYS.map((n) => ({ ...n, date: daysAgoDate(n.daysAgo), preview: n.lines.filter(Boolean).join(' ') }));
-  return [...lists, ...decoys].sort((a, b) => b.date - a.date);
+  const fakes = decoys.map((n) => ({ ...n, date: daysAgoDate(n.daysAgo), preview: n.lines.filter(Boolean).join(' ') }));
+  return [...lists, ...fakes].sort((a, b) => b.date - a.date);
 }
 
 function el(tag, className, text) {
@@ -68,9 +98,9 @@ function el(tag, className, text) {
 function renderList() {
   const notes = allNotes();
   const buckets = [
-    ['Today', notes.filter((n) => n.daysAgo === 0)],
-    ['Previous 7 Days', notes.filter((n) => n.daysAgo > 0 && n.daysAgo <= 7)],
-    ['Previous 30 Days', notes.filter((n) => n.daysAgo > 7)],
+    [t('today'), notes.filter((n) => n.daysAgo === 0)],
+    [t('previous7'), notes.filter((n) => n.daysAgo > 0 && n.daysAgo <= 7)],
+    [t('previous30'), notes.filter((n) => n.daysAgo > 7)],
   ];
 
   const container = $('note-groups');
@@ -83,7 +113,7 @@ function renderList() {
       const cell = el('button', 'cell');
       cell.type = 'button';
       const sub = el('div', 'cell-sub');
-      sub.append(el('time', null, listLabel(note.date, note.daysAgo)), note.preview || 'No additional text');
+      sub.append(el('time', null, listLabel(note.date, note.daysAgo)), note.preview || t('noText'));
       cell.append(el('div', 'cell-title', note.title), sub);
       cell.addEventListener('click', () => openNote(note, cell));
       group.append(cell);
@@ -91,7 +121,7 @@ function renderList() {
     container.append(group);
   }
   container.append(el('div', 'list-bottom-pad'));
-  $('note-count').textContent = `${notes.length} Notes`;
+  $('note-count').textContent = t('noteCount', notes.length);
 }
 
 // `caretAt` is the index of the list item to show the fake cursor after (-1 for none).
@@ -396,8 +426,19 @@ noteScroll.addEventListener('pointerup', (e) => {
   beginSecretInput(e.timeStamp - current.t >= LONG_PRESS_MS ? 'text' : 'numeric', current.target);
 });
 
+// Japanese (IME) keyboards use return to confirm the converted characters. That return must not
+// submit the force; Safari can report it just after compositionend, so allow a short grace period.
+let composing = false;
+let compositionEndedAt = 0;
+secret.addEventListener('compositionstart', () => { composing = true; });
+secret.addEventListener('compositionend', (e) => {
+  composing = false;
+  compositionEndedAt = e.timeStamp;
+});
+
 $('secret-form').addEventListener('submit', (e) => {
   e.preventDefault();
+  if (composing || e.timeStamp - compositionEndedAt < 100) return;
   secret.blur();
 });
 secret.addEventListener('blur', commitSecretInput);
@@ -417,8 +458,13 @@ const setup = createSetup({
   purchases,
   getSettings: () => settings,
   setSettings(next) {
+    const languageChanged = next.language !== settings.language;
     settings = next;
     store.save(settings);
+    if (languageChanged) {
+      applyLocale();
+      renderList();
+    }
   },
   close: async () => {
     if (busy) return;
@@ -443,6 +489,7 @@ onLongPress($('folder-title'), () => openSetup('main'));
 // iOS only applies :active styles (button press dimming) when a touch listener exists.
 document.addEventListener('touchstart', () => {}, { passive: true });
 
+applyLocale();
 renderList();
 const firstNote = primaryNote();
 if (firstNote) showNoteContent(firstNote);

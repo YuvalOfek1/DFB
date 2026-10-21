@@ -1,6 +1,6 @@
 """Generate the icons and plain launch screens.
 
-The web app keeps the Notes-style disguise icon; the native store apps use the Mindfold brand icon
+The web app keeps the Notes-style disguise icon; the native store apps use the Foldwise brand icon
 (Apple requires the installed app to match its store listing).
 
 Run from the repo root after `npx cap add ios/android` (needs Pillow).
@@ -33,7 +33,7 @@ def make(size: int) -> Image.Image:
 
 
 def brand(size: int) -> Image.Image:
-    """Mindfold icon: a white note with a folded corner on a deep violet gradient, plus a spark."""
+    """Foldwise icon: a white note with a folded corner on a deep violet gradient, plus a spark."""
     img = Image.new("RGB", (size, size))
     d = ImageDraw.Draw(img)
     top, bottom = (91, 63, 214), (40, 20, 110)
@@ -49,7 +49,7 @@ def brand(size: int) -> Image.Image:
     for i in range(4):
         y = (450 + i * 80) * s
         d.rounded_rectangle([x0 + 70 * s, y, x1 - (70 + (120 if i == 3 else 0)) * s, y + 22 * s], 11 * s, fill=(214, 207, 245))
-    # Spark above the fold: the "mind" in Mindfold
+    # Spark above the fold: the "mind" in Foldwise
     cx, cy, r = 760 * s, 205 * s, 70 * s
     d.polygon([(cx, cy - r), (cx + r * 0.28, cy - r * 0.28), (cx + r, cy), (cx + r * 0.28, cy + r * 0.28),
                (cx, cy + r), (cx - r * 0.28, cy + r * 0.28), (cx - r, cy), (cx - r * 0.28, cy - r * 0.28)], fill=(255, 214, 72))
@@ -118,7 +118,7 @@ def android():
 
 
 web()
-brand(1024).save(ROOT / "icons/mindfold-1024.png")  # for store listings and marketing
+brand(1024).save(ROOT / "icons/foldwise-1024.png")  # for store listings and marketing
 ios()
 android()
 print("icons and launch screens written")

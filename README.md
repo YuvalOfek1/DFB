@@ -1,8 +1,8 @@
-# Mindfold
+# Foldwise
 
 Magic tricks hidden in ordinary-looking apps. The first trick looks exactly like the iPhone Notes app: each note is a numbered list, a spectator names any number, and the word you predicted is secretly placed at that position.
 
-The store apps (iOS and Android) are branded **Mindfold**; the web version keeps the "Notes" name and icon as a personal disguise.
+The store apps (iOS and Android) are branded **Foldwise**; the web version keeps the "Notes" name and icon as a personal disguise.
 
 **Live:** https://yuvalofek1.github.io/DFB/
 
@@ -36,15 +36,25 @@ If the force word is already in the list, it **swaps** places with the item at t
 
 Settings are stored on the phone only.
 
+## Languages
+
+English, Spanish (Spain `es-ES` and Latin America `es-419`) and Japanese. **Automatic** (default) follows the phone, so the disguise always matches the real Notes app; Setup → Language overrides it and offers that language's built-in lists.
+
+- `js/i18n.js`: every interface string, including the Notes disguise wording iOS uses in each language. A test fails if Spanish or Japanese is missing a key.
+- `scripts/lists_data.py` → `python3 scripts/build_lists.py` → `js/lists.js`: built-in lists and decoy notes per language, chosen per culture (local celebrities and films, regional movie titles for Spain vs Latin America), validated for duplicates and force words.
+- Japanese input: full-width digits/spaces are normalized, and the return that confirms Japanese characters doesn't submit the force.
+- `store/listings.json`: App Store / Google Play name, subtitle, keywords and description per locale (within each store's limits).
+- Before launch, have a native speaker of each language review the strings, lists and listings; the Notes disguise words in particular must match what iOS shows.
+
 ## Store apps (iOS & Android)
 
 The app is wrapped with [Capacitor](https://capacitorjs.com): the same code runs as the web app and inside the native `ios/` and `android/` projects. Subscriptions are handled by [RevenueCat](https://www.revenuecat.com).
 
-- **Mindfold All Access (native apps only):** one monthly subscription, RevenueCat entitlement `all_access`, unlocks every list, force-word choice, custom lists and every future trick. Without it, the Notes trick works with the free Celebrities list and its own force word; other lists open the paywall. Each trick also checks its own entitlement (`trick_<id>`), so single tricks can be sold later without code changes. The web version is always unlocked. Rules live in `js/access.js`.
+- **Foldwise All Access (native apps only):** one monthly subscription, RevenueCat entitlement `all_access`, unlocks every list, force-word choice, custom lists and every future trick. Without it, the Notes trick works with the free Celebrities list and its own force word; other lists open the paywall. Each trick also checks its own entitlement (`trick_<id>`), so single tricks can be sold later without code changes. The web version is always unlocked. Rules live in `js/access.js`.
 - **Configure before publishing:** `js/config.js` holds the RevenueCat public SDK keys (iOS `appl_…`, Android `goog_…`), the entitlement id, the free list, and the Terms/Privacy links shown on the paywall. With no key set, a native build runs unlocked (development only).
-- **App id:** `com.mindfold.app` (`capacitor.config.json`). It can't change after the first store upload.
+- **App id:** `com.foldwise.app` (`capacitor.config.json`). It can't change after the first store upload.
 - **Cloud builds:** `.github/workflows/native.yml` builds a debug Android APK (downloadable from the workflow run) and an iOS Simulator build on every push and pull request. Signed release builds and store upload are the next step.
-- **Icons and launch screens:** `python3 scripts/make_icons.py` regenerates the Notes-style web icon, the Mindfold icon for iOS/Android (`icons/mindfold-1024.png` for store listings) and the plain launch screens.
+- **Icons and launch screens:** `python3 scripts/make_icons.py` regenerates the Notes-style web icon, the Foldwise icon for iOS/Android (`icons/foldwise-1024.png` for store listings) and the plain launch screens.
 
 Native workflow:
 

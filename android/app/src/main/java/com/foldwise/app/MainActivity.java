@@ -1,4 +1,4 @@
-package com.mindfold.app;
+package com.foldwise.app;
 
 import com.getcapacitor.BridgeActivity;
 

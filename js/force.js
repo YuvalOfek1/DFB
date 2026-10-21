@@ -1,13 +1,18 @@
 // Pure trick logic — no DOM, so it can be unit-tested with `node --test`.
 
+// Japanese (and other) keyboards often type full-width digits and spaces ("１７　ゾウ").
+// NFKC turns them into plain ones so they parse and compare like any other input.
+const normalize = (text) => String(text ?? '').normalize('NFKC').trim();
+const sameWord = (a, b) => normalize(a).toLowerCase() === normalize(b).toLowerCase();
+
 /**
  * Parse what the performer secretly typed.
- * Accepts "17", "17 banana", "17banana", "banana 17".
+ * Accepts "17", "17 banana", "17banana", "banana 17", and full-width forms ("１７　ゾウ").
  * Returns { position, word } or null if there's no usable number.
  * `word` falls back to `defaultWord` when none was typed.
  */
 export function parseSecret(input, defaultWord = '') {
-  const text = String(input ?? '').trim();
+  const text = normalize(input);
   const match = text.match(/^(\d+)\s*(.*)$/) || text.match(/^(.*?)\s*(\d+)$/);
   if (!match) return null;
 
@@ -30,7 +35,7 @@ export function applyForce(words, position, word) {
   const target = position - 1;
   if (target < 0 || target >= result.length) return result;
 
-  const existing = result.findIndex((w) => w.trim().toLowerCase() === word.trim().toLowerCase());
+  const existing = result.findIndex((w) => sameWord(w, word));
   if (existing === -1) {
     result[target] = word;
   } else {

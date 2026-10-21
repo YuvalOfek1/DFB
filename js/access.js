@@ -11,5 +11,6 @@ export function availableLists(lists, allAccess) {
 // The free list forces only its own force word (no typing a different word on the spot).
 export function canForce(list, word, allAccess) {
   if (allAccess) return true;
-  return !!list && isFreeList(list) && !!list.force && word.trim().toLowerCase() === list.force.toLowerCase();
+  const norm = (w) => String(w).normalize('NFKC').trim().toLowerCase();
+  return !!list && isFreeList(list) && !!list.force && norm(word) === norm(list.force);
 }

@@ -1,7 +1,8 @@
 // The hidden setup sheet: manage lists, pick force words, and read how to perform.
 // Styled like iOS Settings, with its own push/pop page stack inside the sheet.
 import { IOS_EASE } from './motion.js';
-import { defaultSettings, newList, parseItems } from './store.js';
+import { defaultLists, newList, parseItems } from './store.js';
+import { t, getLocale, LOCALES, LANGUAGE_NAMES, resolveLocale } from './i18n.js';
 import { CONFIG } from './config.js';
 import { isFreeList } from './access.js';
 
@@ -135,7 +136,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     root.replaceChildren(stack[0].node);
   }
 
-  const done = { label: 'Done', bold: true, onClick: () => close() };
+  const done = () => ({ label: t('done'), bold: true, onClick: () => close() });
   const back = (label) => ({ label, back: true, onClick: pop });
 
   // ----- Pages -----
@@ -148,20 +149,20 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       label: list.title,
       sublabel: allAccess
         ? [
-          `${list.items.length} items`,
-          list.force ? `Force: ${list.force}` : 'No force word',
-          list.visible ? null : 'Hidden',
+          t('itemCount', list.items.length),
+          list.force ? t('forceIs', list.force) : t('noForce'),
+          list.visible ? null : t('hidden'),
         ].filter(Boolean).join(' · ')
-        : (isFreeList(list) ? `Free · Force: ${list.force}` : 'All Access'),
+        : (isFreeList(list) ? `${t('free')} · ${t('forceIs', list.force)}` : t('allAccess')),
       chevron: true,
       onClick: allAccess ? () => push(() => listPage(list.id)) : toPaywall,
     }));
     const add = row({
-      label: 'Add List',
+      label: t('addList'),
       tone: 'accent',
       onClick: allAccess
         ? () => {
-          const list = newList(getSettings());
+          const list = newList(getSettings(), t('newList'));
           update((s) => s.lists.push(list));
           push(() => listPage(list.id));
         }
@@ -169,43 +170,44 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     });
 
     return {
-      title: 'Setup',
-      right: done,
+      title: t('setup'),
+      right: done(),
       body: [
-        el('p', 'set-intro', 'Spectators never see this screen. Long-press the “Notes” title to open it again.'),
+        el('p', 'set-intro', t('setupIntro')),
         ...(allAccess ? [] : [section({
-          children: [row({ label: 'Unlock Everything', sublabel: 'Mindfold All Access', tone: 'accent', chevron: true, onClick: toPaywall })],
-          footer: `Free: the ${lists.find(isFreeList)?.title ?? 'starter'} list with its force word. All Access unlocks every list, your own lists and force words, and every new trick.`,
+          children: [row({ label: t('unlockEverything'), sublabel: t('allAccessHero'), tone: 'accent', chevron: true, onClick: toPaywall })],
+          footer: t('freeFooter', lists.find(isFreeList)?.title ?? ''),
         })]),
-        section({ header: 'Lists', children: [...listRows, add], footer: 'Each list appears as its own note. Tap a list to change its items or force word.' }),
+        section({ header: t('lists'), children: [...listRows, add], footer: t('listsFooter') }),
         ...(purchases.isNative && allAccess ? [section({
-          header: 'Subscription',
+          header: t('subscription'),
           children: [
             row({
-              label: 'Manage Subscription',
+              label: t('manageSubscription'),
               chevron: true,
               onClick: async () => {
                 const url = await purchases.managementUrl();
                 if (url) window.open(url, '_blank');
               },
             }),
-            row({ label: 'Restore Purchases', onClick: () => restore() }),
+            row({ label: t('restorePurchases'), onClick: () => restore() }),
           ],
         })] : []),
         section({
-          header: 'Help',
+          header: t('help'),
           children: [
-            row({ label: 'How to Perform', chevron: true, onClick: () => push(() => howToPage()) }),
-            row({ label: 'Install & Welcome', chevron: true, onClick: () => push(() => welcomePage(true)) }),
+            row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(languagePage) }),
+            row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
+            row({ label: t('installWelcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
           ],
         }),
         section({
           children: [row({
-            label: 'Restore Default Lists',
+            label: t('restoreDefaults'),
             tone: 'danger',
             onClick: () => {
-              if (!confirm('Replace all lists with the built-in ones? Your changes will be lost.')) return;
-              update((s) => { s.lists = defaultSettings().lists; });
+              if (!confirm(t('restoreDefaultsConfirm'))) return;
+              update((s) => { s.lists = defaultLists(getLocale()); });
               stack.at(-1).refresh();
             },
           })],
@@ -216,18 +218,18 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
   function listPage(id) {
     const list = findList(id);
-    if (!list) return { title: '', left: back('Setup'), body: [] };
+    if (!list) return { title: '', left: back(t('setup')), body: [] };
 
     const title = el('input', 'set-input');
-    Object.assign(title, { type: 'text', value: list.title, placeholder: 'Note title', autocomplete: 'off' });
+    Object.assign(title, { type: 'text', value: list.title, placeholder: t('noteTitle'), autocomplete: 'off' });
     title.setAttribute('autocapitalize', 'sentences');
     title.addEventListener('input', () => {
-      update((s) => { s.lists.find((l) => l.id === id).title = title.value.trim() || 'Untitled'; });
+      update((s) => { s.lists.find((l) => l.id === id).title = title.value.trim() || t('untitled'); });
     });
 
     const toggle = el('label', 'set-row');
     const toggleText = el('span', 'row-text');
-    toggleText.append(el('span', 'row-label', 'Show in Notes'));
+    toggleText.append(el('span', 'row-label', t('showInNotes')));
     const sw = el('input', 'switch');
     Object.assign(sw, { type: 'checkbox', checked: list.visible });
     sw.addEventListener('change', () => update((s) => { s.lists.find((l) => l.id === id).visible = sw.checked; }));
@@ -236,14 +238,14 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const forceFooter = el('div', 'set-footer');
     const itemsHeader = el('div', 'set-header');
     const describe = (items, force) => {
-      itemsHeader.textContent = `Items · ${items.length}`;
-      if (!force) forceFooter.textContent = 'Pick the word you want the spectator to “find”.';
-      else if (items.some((w) => w.toLowerCase() === force.toLowerCase())) forceFooter.textContent = `It’s in the list, so it swaps places with whatever is at their number. The list always keeps the same ${items.length} items.`;
-      else forceFooter.textContent = 'It’s not in the list, so it replaces the item at their number.';
+      itemsHeader.textContent = t('itemsHeader', items.length);
+      if (!force) forceFooter.textContent = t('forcePick');
+      else if (items.some((w) => w.toLowerCase() === force.toLowerCase())) forceFooter.textContent = t('forceSwaps', items.length);
+      else forceFooter.textContent = t('forceReplaces');
     };
 
     const items = el('textarea', 'set-textarea');
-    Object.assign(items, { rows: 12, value: list.items.join('\n'), placeholder: 'One item per line' });
+    Object.assign(items, { rows: 12, value: list.items.join('\n'), placeholder: t('itemsPlaceholder') });
     items.setAttribute('autocapitalize', 'words');
     items.addEventListener('input', () => {
       const parsed = parseItems(items.value);
@@ -255,26 +257,26 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const itemsSection = el('div', 'set-section');
     const itemsGroup = el('div', 'set-group');
     itemsGroup.append(items);
-    itemsSection.append(itemsHeader, itemsGroup, el('div', 'set-footer', 'One per line, in the order they appear in the note. Ask the spectator for a number in that range.'));
+    itemsSection.append(itemsHeader, itemsGroup, el('div', 'set-footer', t('itemsFooter')));
 
     return {
-      title: 'List',
-      left: back('Setup'),
+      title: t('list'),
+      left: back(t('setup')),
       body: [
-        section({ header: 'Note title', children: [title] }),
+        section({ header: t('noteTitle'), children: [title] }),
         section({ children: [toggle] }),
         section({
-          header: 'Force word',
-          children: [row({ label: list.force || 'Not set', tone: list.force ? '' : 'muted', chevron: true, onClick: () => push(() => forcePage(id)) })],
+          header: t('forceWord'),
+          children: [row({ label: list.force || t('notSet'), tone: list.force ? '' : 'muted', chevron: true, onClick: () => push(() => forcePage(id)) })],
           footer: forceFooter,
         }),
         itemsSection,
         section({
           children: [row({
-            label: 'Delete List',
+            label: t('deleteList'),
             tone: 'danger',
             onClick: () => {
-              if (!confirm(`Delete “${list.title}”?`)) return;
+              if (!confirm(t('deleteListConfirm', list.title))) return;
               update((s) => { s.lists = s.lists.filter((l) => l.id !== id); });
               pop();
             },
@@ -294,12 +296,13 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     const inList = list?.items.some((w) => w.toLowerCase() === current);
 
     const search = el('input', 'set-search');
-    Object.assign(search, { type: 'search', placeholder: 'Search this list', autocomplete: 'off' });
+    Object.assign(search, { type: 'search', placeholder: t('searchList'), autocomplete: 'off' });
 
     const custom = el('input', 'set-input');
-    Object.assign(custom, { type: 'text', placeholder: 'Type any word…', value: inList ? '' : list?.force ?? '', enterKeyHint: 'done', autocomplete: 'off' });
+    Object.assign(custom, { type: 'text', placeholder: t('customPlaceholder'), value: inList ? '' : list?.force ?? '', enterKeyHint: 'done', autocomplete: 'off' });
     custom.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && custom.value.trim()) setForce(custom.value);
+      // isComposing / 229: return that confirms Japanese input, not "done".
+      if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229 && custom.value.trim()) setForce(custom.value);
     });
     custom.addEventListener('change', () => { if (custom.value.trim()) setForce(custom.value); });
 
@@ -314,13 +317,40 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     });
 
     return {
-      title: 'Force Word',
-      left: back('List'),
+      title: t('forceWordTitle'),
+      left: back(t('list')),
       body: [
         search,
-        section({ header: 'Custom', children: [custom], footer: 'A word that isn’t in the list replaces the item at their number.' }),
-        section({ header: 'From this list', children: rows.length ? rows : [row({ label: 'This list is empty', tone: 'muted' })] }),
+        section({ header: t('custom'), children: [custom], footer: t('customFooter') }),
+        section({ header: t('fromList'), children: rows.length ? rows : [row({ label: t('emptyList'), tone: 'muted' })] }),
       ],
+    };
+  }
+
+  const languageLabel = (pref) => (LOCALES.includes(pref) ? LANGUAGE_NAMES[pref] : t('automatic'));
+
+  function languagePage() {
+    const current = getSettings().language;
+    const choose = (pref) => {
+      if (pref === current) return pop();
+      const before = getLocale();
+      update((s) => { s.language = pref; });
+      // Offer the new language's built-in lists, asked in the new language.
+      const after = resolveLocale(pref, navigator.languages ?? []);
+      if (after !== before && confirm(t('replaceListsConfirm', LANGUAGE_NAMES[after]))) {
+        update((s) => { s.lists = defaultLists(after); });
+      }
+      pop();
+    };
+    const options = ['auto', ...LOCALES].map((pref) => row({
+      label: pref === 'auto' ? t('automatic') : LANGUAGE_NAMES[pref],
+      check: pref === current,
+      onClick: () => choose(pref),
+    }));
+    return {
+      title: t('language'),
+      left: back(t('setup')),
+      body: [section({ children: options, footer: t('languageFooter') })],
     };
   }
 
@@ -334,29 +364,18 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     return ol;
   }
 
-  function howToPage(backLabel = 'Setup') {
+  function howToPage(backLabel = t('setup')) {
     return {
-      title: 'How to Perform',
+      title: t('howToPerform'),
       left: back(backLabel),
       body: [
         section({
-          header: 'The routine',
-          children: [steps([
-            ['Make a prediction.', 'Write the force word of the list you’ll use on a piece of paper and give it to someone to hold.'],
-            ['Show the list.', 'Open the note and let the spectator scroll through it. All the items are different.'],
-            ['Get a number.', 'Ask for any number from 1 to the length of the list. Let them change their mind.'],
-            ['Enter it secretly.', 'While they look at the prediction, tap anywhere on the note. The number pad opens but nothing you type appears. Type their number, then tap the note again.'],
-            ['Reveal.', 'Turn the screen to them, scroll to their number and let them read the item out loud. Then open the prediction.'],
-          ])],
+          header: t('routine'),
+          children: [steps(t('routineSteps'))],
         }),
         section({
-          header: 'Good to know',
-          children: [steps([
-            ['Force a different word on the spot.', 'Long-press the note instead of tapping. The letter keyboard opens: type the number and the word, like “17 Banana”, then press return.'],
-            ['Nothing is missing.', 'If the force word is already in the list, it swaps places with the item at their number, so the list still holds exactly the same items.'],
-            ['Reset is automatic.', 'Going back to the notes list (button or swipe from the left edge) restores the original order.'],
-            ['Timing.', 'Do the secret entry while attention is elsewhere, and slow down afterwards. Practice until you can do it without looking.'],
-          ])],
+          header: t('goodToKnow'),
+          children: [steps(t('goodToKnowSteps'))],
         }),
       ],
     };
@@ -365,30 +384,26 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   function welcomePage(pushed = false) {
     const installed = isStandalone();
     return {
-      title: 'Welcome',
-      left: pushed ? back('Setup') : null,
-      right: done,
+      title: t('welcome'),
+      left: pushed ? back(t('setup')) : null,
+      right: done(),
       body: [
-        el('h2', 'set-hero', 'Welcome to Mindfold'),
-        el('p', 'set-intro', 'Magic tricks hidden in ordinary-looking apps. Your first trick looks exactly like the Notes app: spectators see ordinary lists and pick any number, and secretly the item at their number becomes the word you predicted.'),
+        el('h2', 'set-hero', t('welcomeHero')),
+        el('p', 'set-intro', t('welcomeIntro')),
         ...(purchases.isNative ? [] : [section({
-          header: installed ? 'Installed' : 'Install on your iPhone',
+          header: installed ? t('installed') : t('installHeader'),
           children: [installed
-            ? el('p', 'set-text', 'You’re running from the Home Screen, so it opens full screen and works offline.')
-            : steps([
-              ['Open this page in Safari.', 'Other browsers can’t add it to the Home Screen.'],
-              ['Tap Share, then “Add to Home Screen”.', 'It’s already named “Notes” with a Notes icon.'],
-              ['Open it once while online.', 'After that it works with no signal.'],
-            ])],
+            ? el('p', 'set-text', t('installedText'))
+            : steps(t('installSteps'))],
         })]),
         section({
-          header: 'The secret menu',
-          children: [el('p', 'set-text', 'Long-press the big “Notes” title to open Setup. There you choose each list’s force word, edit lists, or add your own.')],
+          header: t('secretMenu'),
+          children: [el('p', 'set-text', t('secretMenuText'))],
         }),
         section({
           children: [
-            row({ label: 'How to Perform', chevron: true, onClick: () => push(() => howToPage('Welcome')) }),
-            ...(pushed ? [] : [row({ label: 'Set Up Lists', chevron: true, onClick: () => push(mainPage) })]),
+            row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(t('welcome'))) }),
+            ...(pushed ? [] : [row({ label: t('setUpLists'), chevron: true, onClick: () => push(mainPage) })]),
           ],
         }),
       ],
@@ -398,16 +413,16 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   async function restore() {
     try {
       const unlocked = await purchases.restore();
-      alert(unlocked ? 'Your subscription has been restored.' : 'No active subscription was found for this account.');
+      alert(unlocked ? t('restored') : t('nothingToRestore'));
       if (unlocked) reset(mainPage);
     } catch {
-      alert('Could not restore purchases. Check your connection and try again.');
+      alert(t('restoreFailed'));
     }
   }
 
   function paywallPage(pushed = false) {
-    const store = purchases.platform === 'android' ? 'Google Play' : 'Apple ID';
-    const buy = el('button', 'paywall-buy', 'Loading…');
+    const store = purchases.platform === 'android' ? 'Google Play' : t('appleAccount');
+    const buy = el('button', 'paywall-buy', t('loading'));
     buy.type = 'button';
     buy.disabled = true;
     const trial = el('p', 'paywall-trial');
@@ -416,16 +431,16 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     purchases.getPackage().then((found) => {
       pkg = found;
       if (!pkg) {
-        buy.textContent = purchases.canPurchase() ? 'Unavailable right now' : 'Subscriptions unavailable';
+        buy.textContent = purchases.canPurchase() ? t('unavailableNow') : t('subscriptionsUnavailable');
         return;
       }
       const product = pkg.product;
-      buy.textContent = `Subscribe for ${product.priceString} / month`;
+      buy.textContent = t('subscribeFor', product.priceString);
       buy.disabled = false;
       if (product.introPrice) {
         const intro = product.introPrice;
-        const length = `${intro.periodNumberOfUnits} ${intro.periodUnit.toLowerCase()}${intro.periodNumberOfUnits > 1 ? 's' : ''}`;
-        trial.textContent = intro.price === 0 ? `Free for ${length}, then ${product.priceString} / month.` : `${intro.priceString} for ${length}, then ${product.priceString} / month.`;
+        const length = t('period', intro.periodNumberOfUnits, intro.periodUnit);
+        trial.textContent = intro.price === 0 ? t('freeTrial', length, product.priceString) : t('introOffer', intro.priceString, length, product.priceString);
       }
     });
     buy.addEventListener('click', async () => {
@@ -434,38 +449,33 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       try {
         if (await purchases.purchase(pkg)) reset(mainPage);
       } catch {
-        alert('The purchase could not be completed. Please try again.');
+        alert(t('purchaseFailed'));
       } finally {
         buy.disabled = false;
       }
     });
 
     const features = el('ul', 'paywall-features');
-    for (const text of [
-      'Every built-in list: celebrities, movies, countries and more',
-      'Choose the force word for each list, or type one on the spot',
-      'Create your own lists',
-      'Every new trick as it’s released',
-    ]) features.append(el('li', null, text));
+    for (const text of t('features')) features.append(el('li', null, text));
 
     const legal = el('p', 'set-footer paywall-legal',
-      `Payment is charged to your ${store} account. The subscription renews automatically each month unless cancelled at least 24 hours before the end of the current period. Manage or cancel it in your account settings.`);
+      t('legal', store));
     const links = el('p', 'set-footer paywall-links');
     const link = (label, url) => { const a = el('a', null, label); a.href = url; a.target = '_blank'; return a; };
-    if (CONFIG.termsUrl) links.append(link('Terms of Use', CONFIG.termsUrl));
-    if (CONFIG.privacyUrl) links.append(link('Privacy Policy', CONFIG.privacyUrl));
+    if (CONFIG.termsUrl) links.append(link(t('terms'), CONFIG.termsUrl));
+    if (CONFIG.privacyUrl) links.append(link(t('privacy'), CONFIG.privacyUrl));
 
     return {
-      title: 'All Access',
-      left: pushed ? back('Setup') : null,
-      right: pushed ? null : { label: 'Close', onClick: () => close() },
+      title: t('allAccess'),
+      left: pushed ? back(t('setup')) : null,
+      right: pushed ? null : { label: t('close'), onClick: () => close() },
       body: [
-        el('h2', 'set-hero', 'Mindfold All Access'),
-        el('p', 'set-intro', 'One subscription, every trick and list included.'),
+        el('h2', 'set-hero', t('allAccessHero')),
+        el('p', 'set-intro', t('allAccessIntro')),
         section({ children: [features] }),
         buy,
         trial,
-        section({ children: [row({ label: 'Restore Purchases', tone: 'accent', onClick: () => restore() })] }),
+        section({ children: [row({ label: t('restorePurchases'), tone: 'accent', onClick: () => restore() })] }),
         legal,
         links,
       ],

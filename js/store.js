@@ -1,5 +1,6 @@
 // Settings shape and persistence. Pure functions take/return plain objects so they can be tested.
-import { DEFAULT_LISTS } from './lists.js';
+import { DEFAULT_LISTS, listSet } from './lists.js';
+import { LOCALES } from './i18n.js';
 
 export const STORAGE_KEY = 'dfb.settings.v2';
 const LEGACY_KEY = 'dfb.settings.v1';
@@ -19,11 +20,18 @@ function renameOldDefaults(lists, fromVersion) {
   return lists;
 }
 
-export function defaultSettings() {
+// Built-in lists for a language (each list as an independent copy).
+export function defaultLists(locale = 'en') {
+  return listSet(locale).lists.map((list) => ({ ...list, items: [...list.items], visible: true }));
+}
+
+// `language` is 'auto' (follow the phone) or one of LOCALES.
+export function defaultSettings(locale = 'en') {
   return {
     version: VERSION,
     welcomed: false,
-    lists: DEFAULT_LISTS.map((list) => ({ ...list, items: [...list.items], visible: true })),
+    language: 'auto',
+    lists: defaultLists(locale),
   };
 }
 
@@ -62,14 +70,19 @@ export function normalize(raw) {
         visible: list.visible !== false,
       };
     });
-  return { version: VERSION, welcomed: !!raw.welcomed, lists: renameOldDefaults(lists, Number(raw.version) || 2) };
+  return {
+    version: VERSION,
+    welcomed: !!raw.welcomed,
+    language: LOCALES.includes(raw.language) ? raw.language : 'auto',
+    lists: renameOldDefaults(lists, Number(raw.version) || 2),
+  };
 }
 
-export function newList(settings) {
+export function newList(settings, title = 'New list') {
   const n = settings.lists.length;
   return {
     id: `list-${Date.now().toString(36)}`,
-    title: 'New list',
+    title,
     force: '',
     ageMinutes: 25 + n * 97, // spread new notes out so they don't all show the same time
     items: [],
@@ -81,14 +94,15 @@ export function parseItems(text) {
   return String(text).split('\n').map((w) => w.trim()).filter(Boolean);
 }
 
-export function load(storage = globalThis.localStorage) {
+// `locale` picks the built-in lists for a first launch; saved settings keep their own lists.
+export function load(storage = globalThis.localStorage, locale = 'en') {
   try {
     const current = storage.getItem(STORAGE_KEY);
     if (current) return normalize(JSON.parse(current));
     const legacy = storage.getItem(LEGACY_KEY);
     if (legacy) return migrateV1(JSON.parse(legacy));
   } catch { /* storage unavailable or corrupt: fall back to defaults */ }
-  return defaultSettings();
+  return defaultSettings(locale);
 }
 
 export function save(settings, storage = globalThis.localStorage) {
