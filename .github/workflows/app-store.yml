@@ -1,0 +1,56 @@
+name: App Store setup
+
+# Run by hand from the Actions tab. "plan" only reads App Store Connect and shows what would
+# change; "apply" makes the changes. Needs the repository secrets ASC_KEY_ID, ASC_ISSUER_ID and
+# ASC_PRIVATE_KEY (the .p8 file's text), and the repository variable ASC_APP_ID.
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: What to set up
+        type: choice
+        options:
+          - products
+          - metadata
+      mode:
+        description: plan shows the changes, apply makes them
+        type: choice
+        options:
+          - plan
+          - apply
+
+concurrency:
+  group: app-store
+  cancel-in-progress: false
+
+jobs:
+  asc:
+    runs-on: ubuntu-latest
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+      ASC_APP_ID: ${{ vars.ASC_APP_ID }}
+      APP_VERSION: '1.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rudrankriyam/setup-asc@v1
+        with:
+          version: latest
+      - name: Check the key
+        run: asc auth status --validate
+
+      - name: Products (app price and availability, subscription, Lifetime)
+        if: inputs.task == 'products'
+        run: bash scripts/asc/products.sh "${{ inputs.mode }}"
+
+      - name: Store listing in every language
+        if: inputs.task == 'metadata'
+        run: |
+          python3 scripts/asc/build_metadata.py metadata "$APP_VERSION"
+          asc metadata validate --dir metadata
+          if [ "${{ inputs.mode }}" = apply ]; then
+            asc metadata push --app "$ASC_APP_ID" --version "$APP_VERSION" --dir metadata --if-exists update
+          else
+            asc metadata push --app "$ASC_APP_ID" --version "$APP_VERSION" --dir metadata --if-exists update --dry-run
+          fi
