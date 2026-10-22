@@ -78,10 +78,17 @@ export default {
 
   welcome: 'Willkommen',
   welcomeHero: 'Willkommen bei Foldwise',
-  welcomeIntro: 'Zaubertricks, versteckt in ganz gewöhnlich aussehenden Apps. Dein erster Trick sieht genau aus wie die Notizen-App: Zuschauer sehen ganz normale Listen und wählen eine beliebige Zahl – und heimlich wird der Eintrag an dieser Zahl zu dem Wort, das du vorhergesagt hast.',
-  secretMenu: 'Das geheime Menü',
-  secretMenuText: 'Halte den großen Titel „Notizen“ gedrückt, um die Einstellungen zu öffnen. Dort wählst du das Zielwort jeder Liste, bearbeitest Listen oder legst eigene an.',
-  setUpLists: 'Listen einrichten',
+  welcomeTagline: 'Gedankenlese-Magie, versteckt in einer App, die genau wie Notizen aussieht.',
+  welcomeKeyHeader: 'Das Wichtigste zuerst',
+  welcomeKeyText: 'Halte den großen Titel „Notizen“ gedrückt, um die Einstellungen zu öffnen. Dort wählst du das Wort, das du vorhersagst, bearbeitest die Listen und findest die Anleitung. Dein Publikum sieht sie nie.',
+  welcomeLearnHeader: 'Das lernst du',
+  welcomeLearnSteps: [
+    ['Der Notizen-Trick', 'Jemand nennt eine beliebige Zahl und findet dort deine Vorhersage.'],
+    ['So führst du ihn vor', 'Ein Demovideo und eine Schritt-für-Schritt-Anleitung: was du sagst, wann du den geheimen Schritt machst und wie du enthüllst.'],
+    ['Eigene Listen', 'Promis, Filme, Orte oder alles, was du selbst schreibst.'],
+    ['Neue Tricks', 'Jeder neue Trick, sobald er erscheint.'],
+  ],
+  welcomeStart: 'Jetzt ausprobieren',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -113,13 +120,6 @@ export default {
   purchaseFailed: 'Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut.',
 
   // Welcome page
-  welcomeGuide: 'Willkommen & erste Schritte',
-  gettingStarted: 'Erste Schritte',
-  gettingStartedSteps: [
-    ['Öffne Foldwise vor dem Trick.', 'Starte die App, bevor jemand zuschaut. Sie öffnet sich direkt im Notizen-Look, sodass niemand das Foldwise-Symbol sieht.'],
-    ['Wähle Liste und Wort.', 'Halte den großen Titel „Notizen“ gedrückt, um die Einstellungen zu öffnen, und wähle eine Liste und das Wort, das du vorhersagst.'],
-    ['Übe einmal.', 'Probiere die geheime Eingabe ein paar Mal allein aus, bevor du den Trick jemandem vorführst.'],
-  ],
 
   // Free uses and plans
   planMonthly: 'Monatlich',

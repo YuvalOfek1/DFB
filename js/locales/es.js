@@ -78,10 +78,17 @@ export default {
 
   welcome: 'Bienvenida',
   welcomeHero: 'Te damos la bienvenida a Foldwise',
-  welcomeIntro: 'Trucos de magia escondidos en apps de apariencia normal. Tu primer truco se ve exactamente como la app Notas: los espectadores ven listas normales y eligen cualquier número, y en secreto el elemento de ese número se convierte en la palabra que predijiste.',
-  secretMenu: 'El menú secreto',
-  secretMenuText: 'Mantén pulsado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra a forzar de cada lista, editas las listas o creas las tuyas.',
-  setUpLists: 'Configurar listas',
+  welcomeTagline: 'Magia de adivinación escondida en una app idéntica a Notas.',
+  welcomeKeyHeader: 'Lo único que debes recordar',
+  welcomeKeyText: 'Mantén pulsado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra que vas a predecir, editas las listas y encuentras el tutorial. Tu público nunca la ve.',
+  welcomeLearnHeader: 'Lo que vas a aprender',
+  welcomeLearnSteps: [
+    ['El truco de Notas', 'Alguien dice cualquier número y encuentra ahí tu predicción.'],
+    ['Cómo hacerlo', 'Un vídeo de demostración y una guía paso a paso: qué decir, cuándo hacer el movimiento secreto y cómo revelarlo.'],
+    ['Tus propias listas', 'Famosos, películas, lugares o lo que tú escribas.'],
+    ['Más trucos', 'Cada truco nuevo en cuanto salga.'],
+  ],
+  welcomeStart: 'Pruébalo ahora',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -113,13 +120,6 @@ export default {
   purchaseFailed: 'No se pudo completar la compra. Inténtalo de nuevo.',
 
   // Welcome page
-  welcomeGuide: 'Bienvenida y primeros pasos',
-  gettingStarted: 'Primeros pasos',
-  gettingStartedSteps: [
-    ['Abre Foldwise antes del truco.', 'Ábrela antes de que nadie esté mirando. Se abre directamente con el aspecto de Notas, así nadie ve el icono de Foldwise.'],
-    ['Elige tu lista y tu palabra.', 'Mantén pulsado el título grande “Notas” para abrir la configuración y elige una lista y la palabra que vas a predecir.'],
-    ['Practica una vez.', 'Prueba la entrada secreta unas cuantas veces a solas antes de hacerla delante de alguien.'],
-  ],
 
   // Free uses and plans
   planMonthly: 'Mensual',

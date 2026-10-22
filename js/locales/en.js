@@ -86,10 +86,17 @@ export default {
   // Welcome
   welcome: 'Welcome',
   welcomeHero: 'Welcome to Foldwise',
-  welcomeIntro: 'Magic tricks hidden in ordinary-looking apps. Your first trick looks exactly like the Notes app: spectators see ordinary lists and pick any number, and secretly the item at their number becomes the word you predicted.',
-  secretMenu: 'The secret menu',
-  secretMenuText: 'Long-press the big “Notes” title to open Setup. There you choose each list’s force word, edit lists, or add your own.',
-  setUpLists: 'Set Up Lists',
+  welcomeTagline: 'Mind-reading magic, hidden inside an app that looks just like Notes.',
+  welcomeKeyHeader: 'The one thing to remember',
+  welcomeKeyText: 'Touch and hold the big “Notes” title to open Setup. That’s where you choose the word you’ll predict, edit the lists and find the tutorial. Your audience never sees it.',
+  welcomeLearnHeader: 'What you’ll learn',
+  welcomeLearnSteps: [
+    ['The Notes Trick', 'A friend names any number and finds your prediction there.'],
+    ['How to perform it', 'A demo video and a step-by-step guide: what to say, when to make the secret move and how to reveal.'],
+    ['Your own lists', 'Celebrities, movies, places, or anything you write.'],
+    ['New tricks', 'Every new trick as it’s released.'],
+  ],
+  welcomeStart: 'Try it now',
 
   // Subscription
   allAccess: 'All Access',
@@ -119,13 +126,6 @@ export default {
   purchaseFailed: 'The purchase could not be completed. Please try again.',
 
   // Welcome page
-  welcomeGuide: 'Welcome & Getting Started',
-  gettingStarted: 'Getting started',
-  gettingStartedSteps: [
-    ['Open Foldwise before the trick.', 'Launch it before anyone is watching. It opens straight into the Notes look, so nobody sees the Foldwise icon.'],
-    ['Choose your list and word.', 'Long-press the big “Notes” title to open Setup, then pick a list and the word you’ll predict.'],
-    ['Practice once.', 'Try the secret entry a few times on your own before you perform it for anyone.'],
-  ],
 
   // Free uses and plans
   planMonthly: 'Monthly',

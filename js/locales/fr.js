@@ -78,10 +78,17 @@ export default {
 
   welcome: 'Bienvenue',
   welcomeHero: 'Bienvenue dans Foldwise',
-  welcomeIntro: 'Des tours de magie cachés dans des apps tout à fait ordinaires. Votre premier tour ressemble exactement à l’app Notes : les spectateurs voient des listes ordinaires et choisissent un numéro, et en secret l’élément à ce numéro devient le mot que vous avez prédit.',
-  secretMenu: 'Le menu secret',
-  secretMenuText: 'Maintenez le doigt sur le grand titre « Notes » pour ouvrir les réglages. Vous y choisissez le mot à forcer de chaque liste, modifiez les listes ou créez les vôtres.',
-  setUpLists: 'Configurer les listes',
+  welcomeTagline: 'Des tours de mentalisme cachés dans une app identique à Notes.',
+  welcomeKeyHeader: 'La seule chose à retenir',
+  welcomeKeyText: 'Maintenez le doigt sur le grand titre « Notes » pour ouvrir les réglages. C’est là que vous choisissez le mot que vous allez prédire, modifiez les listes et trouvez le tutoriel. Votre public ne les voit jamais.',
+  welcomeLearnHeader: 'Ce que vous allez apprendre',
+  welcomeLearnSteps: [
+    ['Le tour des Notes', 'Quelqu’un nomme n’importe quel numéro et y trouve votre prédiction.'],
+    ['Comment le présenter', 'Une vidéo de démonstration et un guide pas à pas : quoi dire, quand faire le geste secret et comment révéler.'],
+    ['Vos propres listes', 'Célébrités, films, lieux ou tout ce que vous écrivez.'],
+    ['D’autres tours', 'Chaque nouveau tour dès sa sortie.'],
+  ],
+  welcomeStart: 'Essayer maintenant',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -113,13 +120,6 @@ export default {
   purchaseFailed: 'L’achat n’a pas pu aboutir. Veuillez réessayer.',
 
   // Welcome page
-  welcomeGuide: 'Bienvenue et premiers pas',
-  gettingStarted: 'Premiers pas',
-  gettingStartedSteps: [
-    ['Ouvrez Foldwise avant le tour.', 'Lancez-la avant que quiconque regarde. Elle s’ouvre directement sur l’apparence de Notes : personne ne voit l’icône de Foldwise.'],
-    ['Choisissez votre liste et votre mot.', 'Maintenez le doigt sur le grand titre « Notes » pour ouvrir les réglages, puis choisissez une liste et le mot que vous allez prédire.'],
-    ['Entraînez-vous une fois.', 'Essayez la saisie secrète plusieurs fois seul avant de présenter le tour à quelqu’un.'],
-  ],
 
   // Free uses and plans
   planMonthly: 'Mensuel',

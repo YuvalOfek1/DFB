@@ -78,10 +78,17 @@ export default {
 
   welcome: '환영합니다',
   welcomeHero: 'Foldwise에 오신 것을 환영합니다',
-  welcomeIntro: '평범해 보이는 앱 속에 숨은 마술. 첫 번째 마술은 메모 앱과 똑같이 생겼습니다. 관객은 평범한 목록을 보고 아무 번호나 고르지만, 그 번호의 항목은 몰래 당신이 예언한 단어로 바뀝니다.',
-  secretMenu: '비밀 메뉴',
-  secretMenuText: '큰 ‘메모’ 제목을 길게 누르면 설정이 열립니다. 여기서 각 목록의 포스 단어를 고르고, 목록을 편집하거나 직접 만들 수 있습니다.',
-  setUpLists: '목록 설정',
+  welcomeTagline: '메모 앱과 똑같이 생긴 화면 속에 숨은, 마음을 읽는 마술.',
+  welcomeKeyHeader: '꼭 기억할 한 가지',
+  welcomeKeyText: '큰 ‘메모’ 제목을 길게 누르면 설정이 열립니다. 예언할 단어 고르기, 목록 편집, 튜토리얼이 모두 여기에 있습니다. 관객은 이 화면을 절대 볼 수 없습니다.',
+  welcomeLearnHeader: '배우게 될 것',
+  welcomeLearnSteps: [
+    ['메모 마술', '누군가 아무 번호나 말하면, 그 자리에 당신의 예언이 있습니다.'],
+    ['공연 방법', '시연 영상과 단계별 가이드: 무엇을 말하고, 언제 비밀 동작을 하고, 어떻게 공개하는지.'],
+    ['나만의 목록', '유명인, 영화, 장소 또는 직접 쓴 무엇이든.'],
+    ['새로운 마술', '새로운 마술이 나오는 즉시.'],
+  ],
+  welcomeStart: '지금 해 보기',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -110,13 +117,6 @@ export default {
   purchaseFailed: '구입을 완료할 수 없습니다. 다시 시도하세요.',
 
   // Welcome page
-  welcomeGuide: '환영 및 시작하기',
-  gettingStarted: '시작하기',
-  gettingStartedSteps: [
-    ['마술 전에 Foldwise를 여세요.', '아무도 보지 않을 때 미리 실행해 두세요. 처음부터 메모 앱 모습으로 열리므로 Foldwise 아이콘을 아무도 보지 못합니다.'],
-    ['목록과 단어를 고르세요.', '큰 ‘메모’ 제목을 길게 눌러 설정을 열고, 목록과 예언할 단어를 고르세요.'],
-    ['한 번 연습하세요.', '다른 사람 앞에서 하기 전에 혼자 몰래 입력하기를 몇 번 연습해 보세요.'],
-  ],
 
   // Free uses and plans
   planMonthly: '월간',
