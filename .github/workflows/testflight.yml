@@ -1,0 +1,113 @@
+name: TestFlight
+
+# Run by hand from the Actions tab: builds a signed iOS release and uploads it to TestFlight.
+# Signing is automatic: Xcode uses the App Store Connect API key (the same secrets as the
+# App Store setup workflow) to create the distribution certificate and profile it needs, so no
+# certificates live in the repo. The build number is this workflow's run number.
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: What to test (shown to testers)
+        required: false
+        default: ''
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+jobs:
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+      ASC_APP_ID: ${{ vars.ASC_APP_ID || secrets.ASC_APP_ID }}
+      BUNDLE_ID: com.yuvalofek.foldwise
+      BUILD_NUMBER: ${{ github.run_number }}
+      TESTER_GROUP: Internal Testers
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: rudrankriyam/setup-asc@v1
+        with:
+          version: latest
+
+      - name: Build the web app and copy it into iOS
+        run: |
+          npm ci
+          npm test
+          npm run build
+          npx cap sync ios
+
+      - name: Signing key and team
+        run: |
+          key_dir="$HOME/.appstoreconnect/private_keys"
+          mkdir -p "$key_dir"
+          printf '%s\n' "$ASC_PRIVATE_KEY" > "$key_dir/AuthKey_$ASC_KEY_ID.p8"
+          echo "KEY_PATH=$key_dir/AuthKey_$ASC_KEY_ID.p8" >> "$GITHUB_ENV"
+          team=$(asc bundle-ids list --identifier "$BUNDLE_ID" --output json | jq -r '.data[0].attributes.seedId // empty')
+          [ -n "$team" ] || { echo "::error::Bundle ID $BUNDLE_ID not found in this team"; exit 1; }
+          echo "TEAM_ID=$team" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Archive
+        run: |
+          xcodebuild archive \
+            -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
+            DEVELOPMENT_TEAM="$TEAM_ID" CODE_SIGN_STYLE=Automatic CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+
+      - name: Export the IPA
+        run: |
+          cat > build/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>export</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath build/App.xcarchive -exportPath build/ipa -exportOptionsPlist build/ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          ls -la build/ipa
+
+      - name: Upload to TestFlight
+        env:
+          NOTES: ${{ inputs.notes }}
+        run: |
+          # Internal testers (App Store Connect users, like the account holder) in this group get each build.
+          if ! asc testflight groups list --app "$ASC_APP_ID" --paginate --output json \
+              | jq -e --arg n "$TESTER_GROUP" '.data[] | select(.attributes.name == $n)' >/dev/null; then
+            asc testflight groups create --app "$ASC_APP_ID" --name "$TESTER_GROUP" --internal
+          fi
+          notes=()
+          [ -n "$NOTES" ] && notes=(--test-notes "$NOTES" --locale en-US)
+          asc publish testflight --app "$ASC_APP_ID" --ipa build/ipa/App.ipa --group "$TESTER_GROUP" --wait \
+            --timeout 45m "${notes[@]}" --output table
+
+      - name: Keep the archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-${{ github.run_number }}
+          path: |
+            build/ipa/*.ipa
+            build/App.xcarchive/dSYMs
+          retention-days: 14
+          if-no-files-found: ignore
