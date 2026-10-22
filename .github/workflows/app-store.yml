@@ -38,7 +38,14 @@ jobs:
         with:
           version: latest
       - name: Check the key
-        run: asc auth status --validate
+        run: |
+          missing=$(for name in ASC_KEY_ID ASC_ISSUER_ID ASC_PRIVATE_KEY ASC_APP_ID; do [ -n "${!name}" ] || echo "$name"; done)
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets: $(echo $missing). Add them under Settings → Secrets and variables → Actions → Repository secrets."
+            exit 1
+          fi
+          asc auth status --validate
+          asc apps view --id "$ASC_APP_ID" --output table
 
       - name: Products (app price and availability, subscription, Lifetime)
         if: inputs.task == 'products'
