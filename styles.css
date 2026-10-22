@@ -312,6 +312,10 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 .set-row.muted .row-label { color: var(--secondary); }
 .set-row.danger, .set-row.accent { justify-content: center; }
 .set-row.danger .row-text, .set-row.accent .row-text { flex: none; }
+/* A colored action with an explanation reads as a regular row: left-aligned, the note wrapping. */
+.set-row.described { justify-content: flex-start; }
+.set-row.described .row-text { flex: 1; }
+.set-row.danger.described .row-sub, .set-row.accent.described .row-sub { white-space: normal; }
 .row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .row-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row-sub { font-size: 13px; color: var(--secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

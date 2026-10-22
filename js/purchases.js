@@ -37,7 +37,9 @@ function apply(customerInfo) {
   const next = new Set(Object.keys(entitlements));
   const access = entitlements[CONFIG.allAccessEntitlement];
   const nextPlan = access ? (access.expirationDate ? 'subscription' : 'lifetime') : null;
-  const nextRenewing = (customerInfo?.activeSubscriptions?.length ?? 0) > 0;
+  // A cancelled subscription stays active until its period ends, but no longer renews.
+  const nextRenewing = Object.values(customerInfo?.subscriptionsByProductIdentifier ?? {})
+    .some((sub) => sub.isActive && sub.willRenew);
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify([...next]));
     localStorage.setItem(PLAN_KEY, JSON.stringify(nextPlan));

@@ -41,7 +41,7 @@ function section({ header, footer, children, className = '' }) {
 }
 
 function row({ label, sublabel, value, onClick, chevron: withChevron, check, tone }) {
-  const node = el(onClick ? 'button' : 'div', `set-row${tone ? ` ${tone}` : ''}`);
+  const node = el(onClick ? 'button' : 'div', `set-row${tone ? ` ${tone}` : ''}${sublabel ? ' described' : ''}`);
   if (onClick) {
     node.type = 'button';
     node.addEventListener('click', onClick);
