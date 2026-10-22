@@ -72,6 +72,7 @@ export async function init() {
     if (uiLocale) await Purchases.overridePreferredUILocale({ locale: uiLocale });
     await Purchases.addCustomerInfoUpdateListener((info) => apply(info));
     await refresh();
+    await syncOnFreshInstall();
   } catch (err) {
     console.warn('RevenueCat init failed', err);
   }
@@ -83,6 +84,24 @@ let uiLocale = null;
 export function setUILocale(locale) {
   uiLocale = locale;
   if (configured) Purchases.overridePreferredUILocale({ locale }).catch((err) => console.warn('Could not set the paywall language', err));
+}
+
+// A fresh install starts as a new anonymous RevenueCat customer, so someone who reinstalls or moves
+// to a new phone would see the paywall and could pay twice. Once per install, if the app opens
+// locked, hand the store account's existing purchases to RevenueCat; unlike Restore, this doesn't
+// ask the user to sign in.
+const SYNCED_KEY = 'foldwise.synced';
+async function syncOnFreshInstall() {
+  if (hasAllAccess() || cached(SYNCED_KEY, false)) return;
+  try {
+    localStorage.setItem(SYNCED_KEY, 'true');
+  } catch { /* ignore */ }
+  try {
+    await Purchases.syncPurchases();
+    await refresh();
+  } catch (err) {
+    console.warn('Could not sync existing purchases', err);
+  }
 }
 
 export const hasAllAccess = () => active.has(CONFIG.allAccessEntitlement);
