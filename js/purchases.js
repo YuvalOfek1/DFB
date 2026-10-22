@@ -57,11 +57,20 @@ export async function init() {
     await Purchases.setLogLevel({ level: LOG_LEVEL.WARN });
     await Purchases.configure({ apiKey: apiKey() });
     configured = true;
+    if (uiLocale) await Purchases.overridePreferredUILocale({ locale: uiLocale });
     await Purchases.addCustomerInfoUpdateListener((info) => apply(info));
     await refresh();
   } catch (err) {
     console.warn('RevenueCat init failed', err);
   }
+}
+
+// RevenueCat's Paywall and Customer Center follow the app's language (Setup → Language): the chosen
+// locale, or null for the phone's.
+let uiLocale = null;
+export function setUILocale(locale) {
+  uiLocale = locale;
+  if (configured) Purchases.overridePreferredUILocale({ locale }).catch((err) => console.warn('Could not set the paywall language', err));
 }
 
 export const hasAllAccess = () => active.has(CONFIG.allAccessEntitlement);

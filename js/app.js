@@ -38,6 +38,7 @@ function applyLocale() {
   document.documentElement.dir = isRTL(locale) ? 'rtl' : 'ltr';
   for (const node of document.querySelectorAll('[data-i18n]')) node.textContent = t(node.dataset.i18n);
   decoys = listSet(locale).decoys;
+  purchases.setUILocale(settings.language === 'auto' ? null : locale);
 
   // Dates follow the phone's own regional format when it uses the same language (en-GB vs en-US).
   const base = locale.split('-')[0];
