@@ -26,6 +26,9 @@ let active = new Set(isNative ? cached(CACHE_KEY, []) : [CONFIG.allAccessEntitle
 // How All Access is held: 'subscription' (Monthly, it expires and renews), 'lifetime' (bought
 // once, no expiry) or null.
 let plan = isNative ? cached(PLAN_KEY, null) : null;
+// Whether a subscription is still renewing. Someone who bought Lifetime while on Monthly keeps
+// paying for Monthly until they cancel it.
+let renewing = false;
 let configured = false;
 const listeners = new Set();
 
@@ -34,13 +37,15 @@ function apply(customerInfo) {
   const next = new Set(Object.keys(entitlements));
   const access = entitlements[CONFIG.allAccessEntitlement];
   const nextPlan = access ? (access.expirationDate ? 'subscription' : 'lifetime') : null;
+  const nextRenewing = (customerInfo?.activeSubscriptions?.length ?? 0) > 0;
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify([...next]));
     localStorage.setItem(PLAN_KEY, JSON.stringify(nextPlan));
   } catch { /* ignore */ }
-  if ([...next].sort().join() === [...active].sort().join() && nextPlan === plan) return;
+  if ([...next].sort().join() === [...active].sort().join() && nextPlan === plan && nextRenewing === renewing) return;
   active = next;
   plan = nextPlan;
+  renewing = nextRenewing;
   for (const fn of listeners) fn();
 }
 
@@ -58,7 +63,16 @@ async function refresh() {
 // store's key for this platform.
 const apiKey = () => (CONFIG.useTestStore ? CONFIG.revenueCatTestKey : CONFIG.revenueCatKeys[platform]);
 
-export async function init() {
+// Settles once RevenueCat has answered at launch (including a fresh install's sync), so the paywall
+// isn't offered to someone whose existing purchase is still being found.
+let markReady;
+export const ready = new Promise((resolve) => { markReady = resolve; });
+
+export function init() {
+  return start().finally(markReady);
+}
+
+async function start() {
   if (!isNative) return;
   if (!apiKey()) {
     console.warn(`No RevenueCat key for ${platform}: running unlocked (development only).`);
@@ -106,6 +120,8 @@ async function syncOnFreshInstall() {
 
 export const hasAllAccess = () => active.has(CONFIG.allAccessEntitlement);
 export const currentPlan = () => plan;
+// Owns Lifetime but a monthly subscription still renews: it should be cancelled.
+export const hasRedundantSubscription = () => plan === 'lifetime' && renewing;
 // A trick is unlocked by All Access or by buying that trick alone.
 export const isTrickUnlocked = (trickId) => hasAllAccess() || active.has(`trick_${trickId}`);
 

@@ -29,6 +29,8 @@ export default {
   upgradeLifetime: '평생 이용권으로 업그레이드',
   upgradeLifetimeNote: '한 번 결제하고 매달 결제는 그만하세요.',
   upgradedCancelMonthly: '평생 이용권이 활성화되었습니다! 월간 구독은 자동으로 해지되지 않습니다. 다시 결제되지 않도록 지금 해지할까요?',
+  cancelMonthly: '월간 구독 해지',
+  cancelMonthlyNote: '평생 이용권이 있으므로 월간 구독은 더 이상 필요하지 않습니다.',
   restorePurchases: '구입 내역 복원',
   help: '도움말',
   howToPerform: '공연 방법',

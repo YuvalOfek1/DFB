@@ -29,6 +29,8 @@ export default {
   upgradeLifetime: 'Passer à l’accès à vie',
   upgradeLifetimeNote: 'Payez une fois et ne payez plus chaque mois.',
   upgradedCancelMonthly: 'L’accès à vie est à vous ! Votre abonnement mensuel ne se résilie pas automatiquement. Le résilier maintenant pour ne plus être débité ?',
+  cancelMonthly: 'Annuler l’abonnement mensuel',
+  cancelMonthlyNote: 'Vous avez l’accès à vie : l’abonnement mensuel n’est plus nécessaire.',
   restorePurchases: 'Restaurer les achats',
   help: 'Aide',
   howToPerform: 'Comment présenter le tour',

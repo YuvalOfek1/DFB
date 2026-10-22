@@ -29,6 +29,8 @@ export default {
   upgradeLifetime: 'Mudar para o vitalício',
   upgradeLifetimeNote: 'Pague uma vez e pare de pagar todo mês.',
   upgradedCancelMonthly: 'O vitalício é seu! Sua assinatura mensal não é cancelada automaticamente. Cancelar agora para não ser cobrado de novo?',
+  cancelMonthly: 'Cancelar o mensal',
+  cancelMonthlyNote: 'Você tem o acesso vitalício, então não precisa mais da assinatura mensal.',
   restorePurchases: 'Restaurar compras',
   help: 'Ajuda',
   howToPerform: 'Como apresentar',

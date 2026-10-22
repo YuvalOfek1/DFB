@@ -29,6 +29,8 @@ export default {
   upgradeLifetime: 'Pásate a de por vida',
   upgradeLifetimeNote: 'Paga una vez y deja de pagar cada mes.',
   upgradedCancelMonthly: '¡Ya tienes el plan de por vida! Tu suscripción mensual no se cancela automáticamente. ¿Quieres cancelarla ahora para que no se te vuelva a cobrar?',
+  cancelMonthly: 'Cancelar la mensual',
+  cancelMonthlyNote: 'Tienes el acceso de por vida, así que ya no necesitas la suscripción mensual.',
   restorePurchases: 'Restaurar compras',
   help: 'Ayuda',
   howToPerform: 'Cómo hacer el truco',
