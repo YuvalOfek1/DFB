@@ -26,6 +26,9 @@ export default {
   newList: 'Neue Liste',
   subscription: 'Abo',
   manageSubscription: 'Abo verwalten',
+  upgradeLifetime: 'Auf Lebenslang upgraden',
+  upgradeLifetimeNote: 'Einmal zahlen und nicht mehr jeden Monat.',
+  upgradedCancelMonthly: 'Lebenslang gehört dir! Dein Monatsabo wird nicht automatisch gekündigt. Jetzt kündigen, damit es nicht erneut abgebucht wird?',
   restorePurchases: 'Käufe wiederherstellen',
   help: 'Hilfe',
   howToPerform: 'So führst du den Trick vor',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: 'Jetzt ausprobieren',
 
-  restored: 'Dein Abo wurde wiederhergestellt.',
-  nothingToRestore: 'Für diesen Account wurde kein aktives Abo gefunden.',
+  restored: 'Dein Kauf wurde wiederhergestellt.',
+  nothingToRestore: 'Für diesen Account wurde kein Foldwise-Kauf gefunden.',
   restoreFailed: 'Käufe konnten nicht wiederhergestellt werden. Prüfe deine Verbindung und versuche es erneut.',
   paywallUnavailable: 'Die Abos konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.',
 

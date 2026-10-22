@@ -195,7 +195,12 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
                 if (url) openExternal(url);
               },
             }),
-            row({ label: t('restorePurchases'), onClick: () => restore() }),
+            ...(purchases.currentPlan() === 'subscription' ? [row({
+              label: t('upgradeLifetime'),
+              sublabel: t('upgradeLifetimeNote'),
+              tone: 'accent',
+              onClick: () => upgradeToLifetime(),
+            })] : []),
           ],
         })] : []),
         section({
@@ -438,6 +443,22 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         ...(pushed ? [] : [start]),
       ],
     };
+  }
+
+  // Monthly subscribers can buy Lifetime. The store doesn't cancel the monthly subscription by
+  // itself, so after the purchase offer to open the Customer Center to cancel it.
+  async function upgradeToLifetime() {
+    const outcome = await purchases.presentPaywall(CONFIG.lifetimeUpgradeOffering);
+    if (outcome === 'unavailable') {
+      alert(t('paywallUnavailable'));
+      return;
+    }
+    stack.at(-1)?.refresh();
+    if (purchases.currentPlan() === 'lifetime' && confirm(t('upgradedCancelMonthly'))) {
+      if (await purchases.presentCustomerCenter()) return;
+      const url = await purchases.managementUrl();
+      if (url) openExternal(url);
+    }
   }
 
   async function restore() {

@@ -9,27 +9,38 @@ import { CONFIG } from './config.js';
 export const isNative = Capacitor.isNativePlatform();
 export const platform = Capacitor.getPlatform();
 
-// The last known entitlements are kept on the phone, so a subscriber opens straight into the trick
-// (no flash of the locked screen while RevenueCat answers) and stays unlocked with no signal.
+// The last known entitlements and plan are kept on the phone, so a subscriber opens straight into
+// the trick (no flash of the locked screen while RevenueCat answers) and stays unlocked with no signal.
 const CACHE_KEY = 'foldwise.entitlements';
+const PLAN_KEY = 'foldwise.plan';
 
-function cachedEntitlements() {
+function cached(key, fallback) {
   try {
-    return JSON.parse(localStorage.getItem(CACHE_KEY)) ?? [];
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
   } catch {
-    return [];
+    return fallback;
   }
 }
 
-let active = new Set(isNative ? cachedEntitlements() : [CONFIG.allAccessEntitlement]); // active entitlement ids
+let active = new Set(isNative ? cached(CACHE_KEY, []) : [CONFIG.allAccessEntitlement]); // active entitlement ids
+// How All Access is held: 'subscription' (Monthly, it expires and renews), 'lifetime' (bought
+// once, no expiry) or null.
+let plan = isNative ? cached(PLAN_KEY, null) : null;
 let configured = false;
 const listeners = new Set();
 
 function apply(customerInfo) {
-  const next = new Set(Object.keys(customerInfo?.entitlements?.active ?? {}));
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify([...next])); } catch { /* ignore */ }
-  if ([...next].sort().join() === [...active].sort().join()) return;
+  const entitlements = customerInfo?.entitlements?.active ?? {};
+  const next = new Set(Object.keys(entitlements));
+  const access = entitlements[CONFIG.allAccessEntitlement];
+  const nextPlan = access ? (access.expirationDate ? 'subscription' : 'lifetime') : null;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify([...next]));
+    localStorage.setItem(PLAN_KEY, JSON.stringify(nextPlan));
+  } catch { /* ignore */ }
+  if ([...next].sort().join() === [...active].sort().join() && nextPlan === plan) return;
   active = next;
+  plan = nextPlan;
   for (const fn of listeners) fn();
 }
 
@@ -75,6 +86,7 @@ export function setUILocale(locale) {
 }
 
 export const hasAllAccess = () => active.has(CONFIG.allAccessEntitlement);
+export const currentPlan = () => plan;
 // A trick is unlocked by All Access or by buying that trick alone.
 export const isTrickUnlocked = (trickId) => hasAllAccess() || active.has(`trick_${trickId}`);
 
@@ -83,14 +95,21 @@ export function onChange(fn) {
   return () => listeners.delete(fn);
 }
 
-// Shows the RevenueCat Paywall for the current offering (Monthly and Lifetime). Resolves
-// 'unlocked' after a purchase or restore that grants All Access (the onChange listeners have run
-// by then), 'closed' if dismissed, or 'unavailable' if it couldn't be shown (no connection,
-// RevenueCat not set up, or no offering yet).
-export async function presentPaywall() {
+// Shows the RevenueCat Paywall for an offering: the current one (Monthly and Lifetime), or another
+// by id, such as the Lifetime-only upgrade offer (falling back to the current one if it doesn't
+// exist). Resolves 'unlocked' after a purchase or restore that grants All Access (the onChange
+// listeners have run by then), 'closed' if dismissed, or 'unavailable' if it couldn't be shown
+// (no connection, RevenueCat not set up, or no offering yet).
+export async function presentPaywall(offeringId) {
   if (!configured) return 'unavailable';
   try {
-    const { result } = await RevenueCatUI.presentPaywall({ displayCloseButton: true });
+    let offering;
+    if (offeringId) {
+      try {
+        offering = (await Purchases.getOfferings()).all?.[offeringId];
+      } catch { /* the current offering will do */ }
+    }
+    const { result } = await RevenueCatUI.presentPaywall({ displayCloseButton: true, ...(offering ? { offering } : {}) });
     if (result === PAYWALL_RESULT.PURCHASED || result === PAYWALL_RESULT.RESTORED) {
       await refresh();
       return hasAllAccess() ? 'unlocked' : 'closed';

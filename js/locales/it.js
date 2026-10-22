@@ -26,6 +26,9 @@ export default {
   newList: 'Nuova lista',
   subscription: 'Abbonamento',
   manageSubscription: 'Gestisci abbonamento',
+  upgradeLifetime: 'Passa all’accesso a vita',
+  upgradeLifetimeNote: 'Paga una volta e smetti di pagare ogni mese.',
+  upgradedCancelMonthly: 'L’accesso a vita è tuo! L’abbonamento mensile non si disdice automaticamente. Vuoi disdirlo ora per non pagarlo di nuovo?',
   restorePurchases: 'Ripristina acquisti',
   help: 'Aiuto',
   howToPerform: 'Come eseguire il trucco',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: 'Provalo ora',
 
-  restored: 'Il tuo abbonamento è stato ripristinato.',
-  nothingToRestore: 'Non è stato trovato nessun abbonamento attivo per questo account.',
+  restored: 'Il tuo acquisto è stato ripristinato.',
+  nothingToRestore: 'Nessun acquisto Foldwise trovato per questo account.',
   restoreFailed: 'Impossibile ripristinare gli acquisti. Controlla la connessione e riprova.',
   paywallUnavailable: 'Impossibile caricare i piani. Controlla la connessione e riprova.',
 

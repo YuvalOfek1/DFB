@@ -26,6 +26,9 @@ export default {
   newList: 'Nova lista',
   subscription: 'Assinatura',
   manageSubscription: 'Gerenciar assinatura',
+  upgradeLifetime: 'Mudar para o vitalício',
+  upgradeLifetimeNote: 'Pague uma vez e pare de pagar todo mês.',
+  upgradedCancelMonthly: 'O vitalício é seu! Sua assinatura mensal não é cancelada automaticamente. Cancelar agora para não ser cobrado de novo?',
   restorePurchases: 'Restaurar compras',
   help: 'Ajuda',
   howToPerform: 'Como apresentar',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: 'Experimente agora',
 
-  restored: 'Sua assinatura foi restaurada.',
-  nothingToRestore: 'Nenhuma assinatura ativa foi encontrada nesta conta.',
+  restored: 'Sua compra foi restaurada.',
+  nothingToRestore: 'Nenhuma compra do Foldwise foi encontrada nesta conta.',
   restoreFailed: 'Não foi possível restaurar as compras. Verifique a conexão e tente de novo.',
   paywallUnavailable: 'Não foi possível carregar os planos. Verifique a conexão e tente de novo.',
 

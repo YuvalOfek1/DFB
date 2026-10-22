@@ -26,6 +26,9 @@ export default {
   newList: 'Nouvelle liste',
   subscription: 'Abonnement',
   manageSubscription: 'Gérer l’abonnement',
+  upgradeLifetime: 'Passer à l’accès à vie',
+  upgradeLifetimeNote: 'Payez une fois et ne payez plus chaque mois.',
+  upgradedCancelMonthly: 'L’accès à vie est à vous ! Votre abonnement mensuel ne se résilie pas automatiquement. Le résilier maintenant pour ne plus être débité ?',
   restorePurchases: 'Restaurer les achats',
   help: 'Aide',
   howToPerform: 'Comment présenter le tour',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: 'Essayer maintenant',
 
-  restored: 'Votre abonnement a été restauré.',
-  nothingToRestore: 'Aucun abonnement actif n’a été trouvé pour ce compte.',
+  restored: 'Votre achat a été restauré.',
+  nothingToRestore: 'Aucun achat Foldwise n’a été trouvé pour ce compte.',
   restoreFailed: 'Impossible de restaurer les achats. Vérifiez votre connexion et réessayez.',
   paywallUnavailable: 'Impossible de charger les formules. Vérifiez votre connexion et réessayez.',
 
