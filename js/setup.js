@@ -369,8 +369,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       try {
         await appIcon.set(icon);
         iconName = icon;
-      } catch {
-        alert(t('appIconFailed'));
+      } catch (err) {
+        alert(err?.message ? `${t('appIconFailed')}\n\n${err.message}` : t('appIconFailed'));
       }
       stack.at(-1)?.refresh();
     };
