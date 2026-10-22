@@ -462,3 +462,6 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
   .press-demo-title, .press-demo-touch, #folder-title.hint-press { animation: none; }
   .press-demo-touch { opacity: 1; }
 }
+
+/* Setup → App Icon */
+.icon-thumb { width: 40px; height: 40px; border-radius: 9px; flex: none; box-shadow: 0 0 0 0.5px var(--separator); }

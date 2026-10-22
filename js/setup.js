@@ -4,6 +4,7 @@ import { IOS_EASE } from './motion.js';
 import { defaultLists, newList, parseItems } from './store.js';
 import { t, getLocale, LOCALES, LANGUAGE_NAMES, resolveLocale } from './i18n.js';
 import { CONFIG } from './config.js';
+import * as appIcon from './appicon.js';
 
 const PAGE_MS = 450;
 
@@ -84,6 +85,10 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   }
 
   const findList = (id) => getSettings().lists.find((l) => l.id === id);
+
+  // The home-screen icon in use; read once from the phone, then kept in step with each change.
+  let iconName = 'Foldwise';
+  if (appIcon.supported) appIcon.current().then((name) => { iconName = name; stack.at(-1)?.refresh(); });
 
   // ----- Page shell -----
 
@@ -196,6 +201,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
           header: t('help'),
           children: [
             row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(languagePage) }),
+            ...(appIcon.supported ? [row({ label: t('appIcon'), value: t(`icon${iconName}`), chevron: true, onClick: () => push(appIconPage) })] : []),
             ...CONFIG.tricks.map((trick) => row({ label: t(`${trick.id}Trick`), sublabel: t('trickTutorial'), chevron: true, onClick: () => push(() => trickPage(trick, t('setup'))) })),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
             row({ label: t('welcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
@@ -351,6 +357,34 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       title: t('language'),
       left: back(backLabel),
       body: [section({ children: options, footer: t('languageFooter') })],
+    };
+  }
+
+  // Our own notepad designs only (nothing resembling Apple's Notes icon), chosen by the user, with
+  // Foldwise always available to go back: App Store guideline 4.6.
+  function appIconPage() {
+    const choose = async (icon) => {
+      if (icon === iconName) return;
+      try {
+        await appIcon.set(icon);
+        iconName = icon;
+      } catch {
+        alert(t('appIconFailed'));
+      }
+      stack.at(-1)?.refresh();
+    };
+    const options = appIcon.ICONS.map((icon) => {
+      const node = row({ label: t(`icon${icon}`), check: icon === iconName, onClick: () => choose(icon) });
+      const thumb = el('img', 'icon-thumb');
+      thumb.src = `icons/app-icons/${icon}.png`;
+      thumb.alt = '';
+      node.prepend(thumb);
+      return node;
+    });
+    return {
+      title: t('appIcon'),
+      left: back(t('setup')),
+      body: [section({ children: options, footer: t('appIconFooter') })],
     };
   }
 

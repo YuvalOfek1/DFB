@@ -35,6 +35,13 @@ export default {
 
   automatic: 'Automatique',
   languageFooter: 'En mode automatique, l’app suit la langue de votre téléphone, pour que le déguisement corresponde à la vraie app Notes.',
+  appIcon: 'Icône de l’app',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'Bloc-notes jaune',
+  iconIndexCard: 'Fiche bristol',
+  iconStickyNote: 'Note adhésive',
+  appIconFooter: 'L’icône de votre écran d’accueil. Le téléphone peut afficher un court message quand elle change : changez-la avant de présenter le tour.',
+  appIconFailed: 'Impossible de changer l’icône.',
   replaceListsConfirm: (lang) => `Remplacer aussi vos listes par les listes intégrées en ${lang} ? Les modifications de vos listes actuelles seront perdues.`,
 
   list: 'Liste',

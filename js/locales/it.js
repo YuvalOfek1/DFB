@@ -35,6 +35,13 @@ export default {
 
   automatic: 'Automatica',
   languageFooter: 'In automatico l’app segue la lingua del telefono, così il travestimento è identico alla vera app Note.',
+  appIcon: 'Icona dell’app',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'Blocco giallo',
+  iconIndexCard: 'Scheda',
+  iconStickyNote: 'Foglietto adesivo',
+  appIconFooter: 'L’icona nella schermata Home. Il telefono può mostrare un breve messaggio quando cambia, quindi cambiala prima di esibirti.',
+  appIconFailed: 'Impossibile cambiare l’icona.',
   replaceListsConfirm: (lang) => `Sostituire anche le tue liste con quelle predefinite in ${lang}? Le modifiche alle liste attuali andranno perse.`,
 
   list: 'Lista',

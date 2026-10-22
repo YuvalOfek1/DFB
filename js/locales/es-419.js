@@ -32,4 +32,9 @@ export default {
     ['Tus propias listas', 'Famosos, películas, lugares o lo que tú escribas.'],
     ['Más trucos', 'Cada truco nuevo en cuanto salga.'],
   ],
+
+  // App icon
+  appIcon: 'Ícono de la app',
+  appIconFooter: 'El ícono de tu pantalla de inicio. El teléfono puede mostrar un aviso breve al cambiarlo, así que cámbialo antes de presentarte.',
+  appIconFailed: 'No se pudo cambiar el ícono.',
 };
