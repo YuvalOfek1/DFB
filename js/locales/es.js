@@ -35,6 +35,13 @@ export default {
 
   automatic: 'Automático',
   languageFooter: 'Automático usa el idioma de tu teléfono, para que el disfraz coincida con la app Notas real.',
+  appIcon: 'Icono de la app',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'Bloc amarillo',
+  iconIndexCard: 'Ficha',
+  iconStickyNote: 'Nota adhesiva',
+  appIconFooter: 'El icono de tu pantalla de inicio. El teléfono puede mostrar un aviso breve al cambiarlo, así que cámbialo antes de actuar.',
+  appIconFailed: 'No se ha podido cambiar el icono.',
   replaceListsConfirm: (lang) => `¿Reemplazar también tus listas por las predeterminadas en ${lang}? Se perderán los cambios de las listas actuales.`,
 
   list: 'Lista',

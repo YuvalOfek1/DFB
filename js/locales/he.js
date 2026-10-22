@@ -40,6 +40,13 @@ export default {
 
   automatic: 'אוטומטי',
   languageFooter: 'במצב אוטומטי האפליקציה משתמשת בשפת הטלפון, כך שההסוואה זהה לאפליקציית הפתקים האמיתית.',
+  appIcon: 'סמל האפליקציה',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'פנקס צהוב',
+  iconIndexCard: 'כרטיסייה',
+  iconStickyNote: 'פתק דביק',
+  appIconFooter: 'הסמל במסך הבית. הטלפון עשוי להציג הודעה קצרה כשהסמל משתנה, אז כדאי להחליף אותו לפני ההופעה.',
+  appIconFailed: 'לא ניתן היה להחליף את הסמל.',
   replaceListsConfirm: (lang) => `להחליף גם את הרשימות ברשימות המובנות ${prefix('ב', lang)}? השינויים ברשימות הנוכחיות יאבדו.`,
 
   list: 'רשימה',

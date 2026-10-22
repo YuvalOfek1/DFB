@@ -35,6 +35,13 @@ export default {
 
   automatic: 'Automático',
   languageFooter: 'No modo automático o app segue o idioma do celular, para o disfarce ficar igual ao app Notas de verdade.',
+  appIcon: 'Ícone do app',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'Bloco amarelo',
+  iconIndexCard: 'Ficha',
+  iconStickyNote: 'Nota adesiva',
+  appIconFooter: 'O ícone na sua tela de início. O celular pode mostrar uma mensagem rápida quando ele muda, então troque antes de apresentar.',
+  appIconFailed: 'Não foi possível trocar o ícone.',
   replaceListsConfirm: (lang) => `Substituir também suas listas pelas listas padrão em ${lang}? As alterações nas listas atuais serão perdidas.`,
 
   list: 'Lista',

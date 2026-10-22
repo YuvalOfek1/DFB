@@ -35,6 +35,13 @@ export default {
 
   automatic: '자동',
   languageFooter: '자동으로 설정하면 휴대폰 언어를 따르므로, 실제 메모 앱과 똑같이 보입니다.',
+  appIcon: '앱 아이콘',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: '노란 메모장',
+  iconIndexCard: '인덱스 카드',
+  iconStickyNote: '점착 메모지',
+  appIconFooter: '홈 화면의 아이콘입니다. 아이콘을 바꾸면 휴대폰에 짧은 메시지가 표시될 수 있으니, 공연 전에 미리 바꿔 두세요.',
+  appIconFailed: '아이콘을 변경할 수 없습니다.',
   replaceListsConfirm: (lang) => `목록도 ${lang} 기본 목록으로 바꾸시겠습니까? 현재 목록의 변경 사항은 사라집니다.`,
 
   list: '목록',

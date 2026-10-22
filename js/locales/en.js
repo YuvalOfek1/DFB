@@ -39,6 +39,13 @@ export default {
   // Language
   automatic: 'Automatic',
   languageFooter: 'Automatic follows your phone’s language, so the disguise matches the real Notes app.',
+  appIcon: 'App Icon',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'Legal Pad',
+  iconIndexCard: 'Index Card',
+  iconStickyNote: 'Sticky Note',
+  appIconFooter: 'The icon on your home screen. Your phone may show a short message when it changes, so change it before you perform.',
+  appIconFailed: 'The icon could not be changed.',
   replaceListsConfirm: (lang) => `Also replace your lists with the built-in ${lang} lists? Your changes to the current lists will be lost.`,
 
   // List
