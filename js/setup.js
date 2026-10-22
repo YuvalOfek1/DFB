@@ -461,7 +461,10 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       // A purchase unlocks the app through purchases.onChange, which switches to the welcome.
       const outcome = await purchases.presentPaywall();
       button.disabled = false;
-      if (outcome === 'unavailable') alert(t('paywallUnavailable'));
+      if (outcome === 'unavailable') {
+        const detail = await purchases.paywallProblem();
+        alert(detail ? `${t('paywallUnavailable')}\n\n${detail}` : t('paywallUnavailable'));
+      }
     });
     return button;
   }

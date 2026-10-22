@@ -103,6 +103,21 @@ export async function presentPaywall() {
   }
 }
 
+// Why the paywall can't be shown, in RevenueCat's own words (offerings are what it renders), so the
+// message can name the setup step that's missing. Empty when nothing looks wrong.
+export async function paywallProblem() {
+  if (!configured) return 'RevenueCat is not configured.';
+  try {
+    const { current } = await Purchases.getOfferings();
+    if (!current) return 'RevenueCat has no current offering.';
+    if (!current.availablePackages?.length) return `The offering "${current.identifier}" has no products for this store.`;
+    return '';
+  } catch (err) {
+    const code = err?.readableErrorCode ?? err?.code ?? '';
+    return [code, err?.message, err?.underlyingErrorMessage].filter(Boolean).join(' · ');
+  }
+}
+
 // Customer Center: manage or cancel the subscription, restore, request a refund, contact support.
 // Resolves false if it couldn't be shown, so the caller can fall back to the store's own page.
 export async function presentCustomerCenter() {
