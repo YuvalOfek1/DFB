@@ -41,8 +41,12 @@ jobs:
 
       - name: Build the web app and copy it into iOS
         run: |
+          if grep -Eq "useTestStore: true" js/config.js; then
+            echo "::error::js/config.js has useTestStore: true. RevenueCat crashes Release builds (TestFlight, App Store) configured with a Test Store key."
+            exit 1
+          fi
           if ! grep -Eq "ios: 'appl_" js/config.js; then
-            echo "::warning::No RevenueCat App Store key in js/config.js: this build uses the RevenueCat Test Store (simulated purchases). Test with it, but don't submit it for App Review."
+            echo "::warning::No RevenueCat App Store key in js/config.js: this build runs unlocked, with no paywall. Don't submit it for App Review."
           fi
           npm ci
           npm test

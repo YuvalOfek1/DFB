@@ -3,14 +3,16 @@ export const CONFIG = {
   // Store app id (capacitor.config.json); used for the Google Play subscriptions link.
   appId: 'com.yuvalofek.foldwise',
   // RevenueCat public SDK keys (Project settings → API keys). These are meant to ship inside the app.
-  // Until the store keys are set, the app uses the Test Store key: purchases are simulated by
-  // RevenueCat, nothing is charged, and the TestFlight workflow warns that the build can't be
-  // submitted for review.
+  // With no key for the platform, a native build runs unlocked (development only).
   revenueCatKeys: {
     ios: '', // appl_...
     android: '', // goog_...
-    test: 'test_uZjDYixnPvvlDwFBATsazkbzBJO',
   },
+  // RevenueCat Test Store key (simulated purchases). RevenueCat deliberately crashes any Release
+  // build configured with it, and TestFlight and store builds are always Release, so it's only used
+  // when useTestStore is switched on for a Debug run from Xcode or Android Studio.
+  revenueCatTestKey: 'test_uZjDYixnPvvlDwFBATsazkbzBJO',
+  useTestStore: false,
   // RevenueCat entitlement unlocked by both plans (Monthly subscription and Lifetime purchase).
   // The tricks only work with it; without it the app shows its home screen (tricks, paywall).
   // A single trick can later be sold on its own as `trick_<id>` without code changes.

@@ -43,8 +43,9 @@ async function refresh() {
   }
 }
 
-// The store's key for this platform, or the Test Store key until the store keys are set.
-const apiKey = () => CONFIG.revenueCatKeys[platform] || CONFIG.revenueCatKeys.test;
+// The Test Store key when switched on for a Debug run (it crashes Release builds), else the
+// store's key for this platform.
+const apiKey = () => (CONFIG.useTestStore ? CONFIG.revenueCatTestKey : CONFIG.revenueCatKeys[platform]);
 
 export async function init() {
   if (!isNative) return;
