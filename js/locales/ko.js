@@ -26,6 +26,9 @@ export default {
   newList: '새로운 목록',
   subscription: '구독',
   manageSubscription: '구독 관리',
+  upgradeLifetime: '평생 이용권으로 업그레이드',
+  upgradeLifetimeNote: '한 번 결제하고 매달 결제는 그만하세요.',
+  upgradedCancelMonthly: '평생 이용권이 활성화되었습니다! 월간 구독은 자동으로 해지되지 않습니다. 다시 결제되지 않도록 지금 해지할까요?',
   restorePurchases: '구입 내역 복원',
   help: '도움말',
   howToPerform: '공연 방법',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: '지금 해 보기',
 
-  restored: '구독이 복원되었습니다.',
-  nothingToRestore: '이 계정에서 활성 구독을 찾을 수 없습니다.',
+  restored: '구입 내역이 복원되었습니다.',
+  nothingToRestore: '이 계정에서 Foldwise 구입 내역을 찾을 수 없습니다.',
   restoreFailed: '구입 내역을 복원할 수 없습니다. 연결을 확인한 후 다시 시도하세요.',
   paywallUnavailable: '플랜을 불러올 수 없습니다. 연결을 확인한 후 다시 시도하세요.',
 

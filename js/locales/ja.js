@@ -26,6 +26,9 @@ export default {
   newList: '新しいリスト',
   subscription: 'サブスクリプション',
   manageSubscription: 'サブスクリプションを管理',
+  upgradeLifetime: '買い切りにアップグレード',
+  upgradeLifetimeNote: '一度の支払いで、毎月の支払いが不要に。',
+  upgradedCancelMonthly: '買い切りを購入しました!月額サブスクリプションは自動では解約されません。再度請求されないよう、今すぐ解約しますか?',
   restorePurchases: '購入を復元',
   help: 'ヘルプ',
   howToPerform: '演じ方',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: 'さっそく試す',
 
-  restored: 'サブスクリプションを復元しました。',
-  nothingToRestore: 'このアカウントで有効なサブスクリプションが見つかりませんでした。',
+  restored: '購入を復元しました。',
+  nothingToRestore: 'このアカウントでFoldwiseの購入は見つかりませんでした。',
   restoreFailed: '購入を復元できませんでした。接続を確認して、もう一度お試しください。',
   paywallUnavailable: 'プランを読み込めませんでした。接続を確認して、もう一度お試しください。',
 

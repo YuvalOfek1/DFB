@@ -37,4 +37,6 @@ export default {
   appIcon: 'Ícono de la app',
   appIconFooter: 'El ícono de tu pantalla de inicio. El teléfono puede mostrar un aviso breve al cambiarlo, así que cámbialo antes de presentarte.',
   appIconFailed: 'No se pudo cambiar el ícono.',
+  restored: 'Se restauró tu compra.',
+  nothingToRestore: 'No se encontró ninguna compra de Foldwise en esta cuenta.',
 };

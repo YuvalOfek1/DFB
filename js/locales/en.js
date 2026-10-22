@@ -29,6 +29,9 @@ export default {
   newList: 'New list',
   subscription: 'Subscription',
   manageSubscription: 'Manage Subscription',
+  upgradeLifetime: 'Upgrade to Lifetime',
+  upgradeLifetimeNote: 'Pay once and stop paying every month.',
+  upgradedCancelMonthly: 'Lifetime is yours! Your monthly subscription doesn’t cancel automatically. Cancel it now so you aren’t charged again?',
   restorePurchases: 'Restore Purchases',
   help: 'Help',
   howToPerform: 'How to Perform',
@@ -106,8 +109,8 @@ export default {
   welcomeStart: 'Try it now',
 
   // Subscription
-  restored: 'Your subscription has been restored.',
-  nothingToRestore: 'No active subscription was found for this account.',
+  restored: 'Your purchase has been restored.',
+  nothingToRestore: 'No Foldwise purchase was found for this account.',
   restoreFailed: 'Could not restore purchases. Check your connection and try again.',
   paywallUnavailable: 'The plans couldn’t be loaded. Check your connection and try again.',
 

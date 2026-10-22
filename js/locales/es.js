@@ -26,6 +26,9 @@ export default {
   newList: 'Lista nueva',
   subscription: 'Suscripción',
   manageSubscription: 'Gestionar suscripción',
+  upgradeLifetime: 'Pásate a de por vida',
+  upgradeLifetimeNote: 'Paga una vez y deja de pagar cada mes.',
+  upgradedCancelMonthly: '¡Ya tienes el plan de por vida! Tu suscripción mensual no se cancela automáticamente. ¿Quieres cancelarla ahora para que no se te vuelva a cobrar?',
   restorePurchases: 'Restaurar compras',
   help: 'Ayuda',
   howToPerform: 'Cómo hacer el truco',
@@ -97,8 +100,8 @@ export default {
   ],
   welcomeStart: 'Pruébalo ahora',
 
-  restored: 'Se restauró tu suscripción.',
-  nothingToRestore: 'No se encontró ninguna suscripción activa en esta cuenta.',
+  restored: 'Se ha restaurado tu compra.',
+  nothingToRestore: 'No se ha encontrado ninguna compra de Foldwise en esta cuenta.',
   restoreFailed: 'No se pudieron restaurar las compras. Revisa tu conexión e inténtalo de nuevo.',
   paywallUnavailable: 'No se han podido cargar los planes. Comprueba tu conexión e inténtalo de nuevo.',
 

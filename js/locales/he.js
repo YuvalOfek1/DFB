@@ -31,6 +31,9 @@ export default {
   newList: 'רשימה חדשה',
   subscription: 'מינוי',
   manageSubscription: 'ניהול המינוי',
+  upgradeLifetime: 'שדרוג למסלול לכל החיים',
+  upgradeLifetimeNote: 'משלמים פעם אחת ומפסיקים לשלם כל חודש.',
+  upgradedCancelMonthly: 'המסלול לכל החיים שלכם! המינוי החודשי לא מתבטל אוטומטית. לבטל אותו עכשיו כדי שלא תחויבו שוב?',
   restorePurchases: 'שחזור רכישות',
   help: 'עזרה',
   howToPerform: 'איך מבצעים',
@@ -102,8 +105,8 @@ export default {
   ],
   welcomeStart: 'לנסות עכשיו',
 
-  restored: 'המינוי שלכם שוחזר.',
-  nothingToRestore: 'לא נמצא מינוי פעיל בחשבון הזה.',
+  restored: 'הרכישה שלכם שוחזרה.',
+  nothingToRestore: 'לא נמצאה רכישה של Foldwise בחשבון הזה.',
   restoreFailed: 'לא ניתן היה לשחזר רכישות. בדקו את החיבור ונסו שוב.',
   paywallUnavailable: 'לא ניתן היה לטעון את המסלולים. בדקו את החיבור ונסו שוב.',
 

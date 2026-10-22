@@ -17,6 +17,9 @@ export const CONFIG = {
   // The tricks only work with it; without it the app shows its home screen (tricks, paywall).
   // A single trick can later be sold on its own as `trick_<id>` without code changes.
   allAccessEntitlement: 'com_yuvalofek_foldwise_pro',
+  // RevenueCat offering shown to Monthly subscribers who tap Upgrade to Lifetime (Lifetime only).
+  // Without it, the current offering's paywall is shown.
+  lifetimeUpgradeOffering: 'lifetime_upgrade',
   // Tricks shown on the home screen: a demo video bundled with the app (media/) and its cover image.
   tricks: [{ id: 'notes', video: 'media/notes-demo.mp4', poster: 'media/notes-demo.jpg' }],
 };
