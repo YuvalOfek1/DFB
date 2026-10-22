@@ -68,6 +68,14 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   let stack = []; // [{ node, refresh }]
   let animating = false;
 
+  // Opens a page outside the app. In the native apps the web view hands any navigation to another
+  // site over to the system (Safari, or the App Store's subscriptions page); a window.open after an
+  // await would be blocked there as a popup.
+  function openExternal(url) {
+    if (purchases.isNative) window.location.href = url;
+    else window.open(url, '_blank');
+  }
+
   function update(mutate) {
     const next = structuredClone(getSettings());
     mutate(next);
@@ -178,7 +186,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
               chevron: true,
               onClick: async () => {
                 const url = await purchases.managementUrl();
-                if (url) window.open(url, '_blank');
+                if (url) openExternal(url);
               },
             }),
             row({ label: t('restorePurchases'), onClick: () => restore() }),
@@ -190,7 +198,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
             row({ label: t('language'), value: languageLabel(getSettings().language), chevron: true, onClick: () => push(languagePage) }),
             ...CONFIG.tricks.map((trick) => row({ label: t(`${trick.id}Trick`), sublabel: t('trickTutorial'), chevron: true, onClick: () => push(() => trickPage(trick, t('setup'))) })),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
-            row({ label: t('welcomeGuide'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
+            row({ label: t('welcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
           ],
         }),
         section({
@@ -373,26 +381,26 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     };
   }
 
+  // The welcome: what Foldwise teaches and, above all, how to open Setup, shown as a looping
+  // long-press on the "Notes" title. Shown once on first use (its button closes the sheet onto the
+  // disguise and points at the title); Setup → Help opens it again.
   function welcomePage(pushed = false) {
+    const start = el('button', 'paywall-buy', t('welcomeStart'));
+    start.type = 'button';
+    start.addEventListener('click', () => close({ hint: true }));
+    const demo = el('div', 'press-demo');
+    demo.setAttribute('aria-hidden', 'true');
+    demo.append(el('span', 'press-demo-title', t('notes')), el('span', 'press-demo-touch'));
     return {
       title: t('welcome'),
       left: pushed ? back(t('setup')) : null,
-      right: done(),
+      right: pushed ? done() : null,
       body: [
         el('h2', 'set-hero', t('welcomeHero')),
-        el('p', 'set-intro', t('welcomeIntro')),
-        section({ header: t('gettingStarted'), children: [steps(t('gettingStartedSteps'))] }),
-        section({
-          header: t('secretMenu'),
-          children: [el('p', 'set-text', t('secretMenuText'))],
-        }),
-        section({
-          children: [
-            ...CONFIG.tricks.map((trick) => row({ label: t(`${trick.id}Trick`), sublabel: t('trickTutorial'), chevron: true, onClick: () => push(() => trickPage(trick, t('welcome'))) })),
-            row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(t('welcome'))) }),
-            ...(pushed ? [] : [row({ label: t('setUpLists'), chevron: true, onClick: () => push(mainPage) })]),
-          ],
-        }),
+        el('p', 'set-intro', t('welcomeTagline')),
+        section({ header: t('welcomeKeyHeader'), children: [demo, el('p', 'set-text', t('welcomeKeyText'))] }),
+        section({ header: t('welcomeLearnHeader'), children: [steps(t('welcomeLearnSteps'))] }),
+        ...(pushed ? [] : [start]),
       ],
     };
   }
@@ -536,7 +544,13 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     for (const text of t('features')) features.append(el('li', null, text));
 
     const links = el('p', 'set-footer paywall-links');
-    const link = (label, url) => { const a = el('a', null, label); a.href = url; a.target = '_blank'; return a; };
+    const link = (label, url) => {
+      const a = el('a', null, label);
+      a.href = url;
+      a.target = '_blank';
+      a.addEventListener('click', (e) => { e.preventDefault(); openExternal(url); });
+      return a;
+    };
     if (CONFIG.termsUrl) links.append(link(t('terms'), CONFIG.termsUrl));
     if (CONFIG.privacyUrl) links.append(link(t('privacy'), CONFIG.privacyUrl));
 

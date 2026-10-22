@@ -78,10 +78,17 @@ export default {
 
   welcome: 'Boas-vindas',
   welcomeHero: 'Boas-vindas ao Foldwise',
-  welcomeIntro: 'Truques de mágica escondidos em apps que parecem comuns. Seu primeiro truque é igualzinho ao app Notas: os espectadores veem listas normais e escolhem qualquer número, e em segredo o item desse número vira a palavra que você previu.',
-  secretMenu: 'O menu secreto',
-  secretMenuText: 'Toque e segure o título grande “Notas” para abrir os ajustes. Lá você escolhe a palavra forçada de cada lista, edita as listas ou cria as suas.',
-  setUpLists: 'Configurar listas',
+  welcomeTagline: 'Mágica de ler mentes, escondida num app igualzinho ao Notas.',
+  welcomeKeyHeader: 'A única coisa para lembrar',
+  welcomeKeyText: 'Toque e segure o título grande “Notas” para abrir os ajustes. É lá que você escolhe a palavra que vai prever, edita as listas e encontra o tutorial. A plateia nunca vê.',
+  welcomeLearnHeader: 'O que você vai aprender',
+  welcomeLearnSteps: [
+    ['O truque das Notas', 'Alguém fala qualquer número e encontra ali a sua previsão.'],
+    ['Como apresentar', 'Um vídeo de demonstração e um guia passo a passo: o que falar, quando fazer o movimento secreto e como revelar.'],
+    ['Suas próprias listas', 'Famosos, filmes, lugares ou o que você escrever.'],
+    ['Novos truques', 'Cada truque novo assim que sair.'],
+  ],
+  welcomeStart: 'Experimente agora',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -113,13 +120,6 @@ export default {
   purchaseFailed: 'Não foi possível concluir a compra. Tente de novo.',
 
   // Welcome page
-  welcomeGuide: 'Boas-vindas e primeiros passos',
-  gettingStarted: 'Primeiros passos',
-  gettingStartedSteps: [
-    ['Abra o Foldwise antes do truque.', 'Abra antes de alguém estar olhando. Ele já abre com a cara do Notas, então ninguém vê o ícone do Foldwise.'],
-    ['Escolha a lista e a palavra.', 'Toque e segure o título grande “Notas” para abrir os ajustes e escolha uma lista e a palavra que você vai prever.'],
-    ['Treine uma vez.', 'Faça a entrada secreta algumas vezes sozinho antes de apresentar para alguém.'],
-  ],
 
   // Free uses and plans
   planMonthly: 'Mensal',

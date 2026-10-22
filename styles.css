@@ -415,3 +415,50 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
   object-fit: contain;
 }
 .demo-caption { text-align: center; }
+
+/* Welcome: a looping long-press on a mock "Notes" title, showing how Setup opens */
+.press-demo {
+  position: relative;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  overflow: hidden;
+  border-bottom: 0.5px solid var(--separator);
+}
+.press-demo-title { font-size: 34px; font-weight: 700; animation: press-demo-title 2.8s ease-in-out infinite; }
+.press-demo-touch {
+  position: absolute;
+  inset-inline-start: 48px;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin-top: -23px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tint) 30%, transparent);
+  border: 2px solid var(--tint);
+  animation: press-demo-touch 2.8s ease-in-out infinite;
+}
+@keyframes press-demo-touch {
+  0%, 10% { opacity: 0; transform: scale(1.5); }
+  22% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--tint) 45%, transparent); }
+  62% { opacity: 1; transform: scale(0.92); box-shadow: 0 0 0 16px transparent; }
+  76%, 100% { opacity: 0; transform: scale(0.92); }
+}
+@keyframes press-demo-title {
+  0%, 30% { opacity: 1; }
+  45%, 62% { opacity: 0.55; }
+  76%, 100% { opacity: 1; }
+}
+
+/* After the welcome: the real title pulses in the accent color to show where to press */
+#folder-title.hint-press { animation: hint-press 1.1s ease-in-out 3; }
+@keyframes hint-press {
+  0%, 100% { color: var(--text); }
+  50% { color: var(--tint); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press-demo-title, .press-demo-touch, #folder-title.hint-press { animation: none; }
+  .press-demo-touch { opacity: 1; }
+}

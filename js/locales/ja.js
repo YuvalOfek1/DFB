@@ -78,10 +78,17 @@ export default {
 
   welcome: 'ようこそ',
   welcomeHero: 'Foldwiseへようこそ',
-  welcomeIntro: '普通のアプリにしか見えないマジック。最初のマジックは「メモ」アプリそっくりです。観客は普通のリストを見て好きな番号を選びますが、その番号の項目は、あなたが予言した言葉にこっそり入れ替わります。',
-  secretMenu: '秘密のメニュー',
-  secretMenuText: '大きな「メモ」のタイトルを長押しすると設定が開きます。各リストのフォースする言葉の選択、リストの編集や追加ができます。',
-  setUpLists: 'リストを設定',
+  welcomeTagline: 'メモアプリにそっくりな画面に隠れた、心を読むマジック。',
+  welcomeKeyHeader: 'いちばん大切なこと',
+  welcomeKeyText: '大きな「メモ」のタイトルを長押しすると設定が開きます。予言する言葉の選択、リストの編集、チュートリアルはすべてここ。観客に見られることはありません。',
+  welcomeLearnHeader: '学べること',
+  welcomeLearnSteps: [
+    ['メモのマジック', '誰かが好きな番号を言うと、そこにあなたの予言が。'],
+    ['演じ方', 'デモ動画と手順ガイド:何を話すか、いつ秘密の操作をするか、どう明かすか。'],
+    ['自分だけのリスト', '有名人、映画、場所、または好きな言葉で。'],
+    ['新しいマジック', '新しいマジックも追加され次第すぐに。'],
+  ],
+  welcomeStart: 'さっそく試す',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -110,13 +117,6 @@ export default {
   purchaseFailed: '購入を完了できませんでした。もう一度お試しください。',
 
   // Welcome page
-  welcomeGuide: 'ようこそ・はじめかた',
-  gettingStarted: 'はじめかた',
-  gettingStartedSteps: [
-    ['マジックの前にFoldwiseを開く。', '誰も見ていないうちに起動しておきます。最初から「メモ」の見た目で開くので、Foldwiseのアイコンは見られません。'],
-    ['リストと言葉を選ぶ。', '大きな「メモ」のタイトルを長押しして設定を開き、リストと予言する言葉を選びます。'],
-    ['一度練習する。', '人前で演じる前に、ひとりで何度かこっそり入力を試してみましょう。'],
-  ],
 
   // Free uses and plans
   planMonthly: '月額',

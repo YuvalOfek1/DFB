@@ -92,8 +92,21 @@ export async function restore() {
   return hasAllAccess();
 }
 
+// The store's own subscriptions page, for when RevenueCat has no management URL (not configured,
+// or nothing bought on this account yet).
+const STORE_SUBSCRIPTIONS = {
+  ios: 'https://apps.apple.com/account/subscriptions',
+  android: `https://play.google.com/store/account/subscriptions?package=${CONFIG.appId}`,
+};
+
 export async function managementUrl() {
-  if (!configured) return null;
-  const { customerInfo } = await Purchases.getCustomerInfo();
-  return customerInfo?.managementURL ?? null;
+  if (configured) {
+    try {
+      const { customerInfo } = await Purchases.getCustomerInfo();
+      if (customerInfo?.managementURL) return customerInfo.managementURL;
+    } catch (err) {
+      console.warn('Could not load the management URL', err);
+    }
+  }
+  return STORE_SUBSCRIPTIONS[platform] ?? null;
 }

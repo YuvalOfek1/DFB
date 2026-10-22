@@ -1,5 +1,7 @@
 // App-wide settings to fill in before publishing.
 export const CONFIG = {
+  // Store app id (capacitor.config.json); used for the Google Play subscriptions link.
+  appId: 'com.yuvalofek.foldwise',
   // RevenueCat public SDK keys (Project settings → API keys). These are meant to ship inside the app.
   revenueCatKeys: {
     ios: '', // appl_...

@@ -469,15 +469,25 @@ const setup = createSetup({
       renderList();
     }
   },
-  close: async () => {
+  close: async ({ hint } = {}) => {
     if (busy || homeShown) return;
     document.activeElement?.blur();
     await dismissSheet(settingsScreen);
     renderList();
     const next = primaryNote();
     if (next) showNoteContent(next);
+    if (hint) hintTitle();
   },
 });
+
+// After the welcome: pulse the "Notes" title so it's clear where Setup lives.
+function hintTitle() {
+  const title = $('folder-title');
+  const stop = () => title.classList.remove('hint-press');
+  title.classList.add('hint-press');
+  title.addEventListener('animationend', stop, { once: true });
+  title.addEventListener('pointerdown', stop, { once: true });
+}
 
 function openSetup(page) {
   if (busy) return;

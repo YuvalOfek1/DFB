@@ -78,10 +78,17 @@ export default {
 
   welcome: 'Benvenuto',
   welcomeHero: 'Benvenuto in Foldwise',
-  welcomeIntro: 'Trucchi di magia nascosti in app dall’aspetto normalissimo. Il tuo primo trucco sembra proprio l’app Note: gli spettatori vedono liste normali e scelgono un numero qualsiasi, e in segreto l’elemento di quel numero diventa la parola che hai previsto.',
-  secretMenu: 'Il menu segreto',
-  secretMenuText: 'Tieni premuto il titolo grande “Note” per aprire le impostazioni. Lì scegli la parola da forzare di ogni lista, modifichi le liste o ne crei di tue.',
-  setUpLists: 'Configura le liste',
+  welcomeTagline: 'Magia di lettura del pensiero, nascosta in un’app identica a Note.',
+  welcomeKeyHeader: 'L’unica cosa da ricordare',
+  welcomeKeyText: 'Tieni premuto il titolo grande “Note” per aprire le impostazioni. Lì scegli la parola che prevederai, modifichi le liste e trovi il tutorial. Il tuo pubblico non le vede mai.',
+  welcomeLearnHeader: 'Cosa imparerai',
+  welcomeLearnSteps: [
+    ['Il trucco delle Note', 'Qualcuno dice un numero qualsiasi e lì trova la tua previsione.'],
+    ['Come eseguirlo', 'Un video dimostrativo e una guida passo passo: cosa dire, quando fare la mossa segreta e come rivelare.'],
+    ['Le tue liste', 'Celebrità, film, luoghi o qualsiasi cosa tu scriva.'],
+    ['Nuovi trucchi', 'Ogni nuovo trucco appena esce.'],
+  ],
+  welcomeStart: 'Provalo ora',
 
   allAccess: 'All Access',
   allAccessHero: 'Foldwise All Access',
@@ -113,13 +120,6 @@ export default {
   purchaseFailed: 'Impossibile completare l’acquisto. Riprova.',
 
   // Welcome page
-  welcomeGuide: 'Benvenuto e primi passi',
-  gettingStarted: 'Primi passi',
-  gettingStartedSteps: [
-    ['Apri Foldwise prima del trucco.', 'Avviala prima che qualcuno guardi. Si apre direttamente con l’aspetto di Note, così nessuno vede l’icona di Foldwise.'],
-    ['Scegli la lista e la parola.', 'Tieni premuto il titolo grande “Note” per aprire le impostazioni, poi scegli una lista e la parola che prevederai.'],
-    ['Esercitati una volta.', 'Prova l’inserimento segreto qualche volta da solo prima di eseguirlo davanti a qualcuno.'],
-  ],
 
   // Free uses and plans
   planMonthly: 'Mensile',

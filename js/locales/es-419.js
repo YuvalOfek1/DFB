@@ -18,17 +18,18 @@ export default {
     ['Ingrésalo en secreto.', 'Justo después de que diga el número, señala la predicción doblada y recuérdales a todos que se escribió antes de que eligiera. Mientras todos la miran, toca cualquier parte de la nota. Se abre el teclado numérico, pero no aparece nada de lo que escribes. Escribe su número y vuelve a tocar la nota.'],
     ['Revela.', 'Gira la pantalla hacia ellos, baja hasta su número y deja que lean el elemento en voz alta. Después abre la predicción.'],
   ],
-  secretMenuText: 'Mantén presionado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra a forzar de cada lista, editas las listas o creas las tuyas.',
   legal: (store) => `El pago se carga a tu ${store}. La suscripción se renueva automáticamente cada mes, a menos que la canceles al menos 24 horas antes de que termine el periodo actual. Puedes administrarla o cancelarla en la configuración de tu cuenta.`,
-
-  // Welcome page
-  gettingStartedSteps: [
-    ['Abre Foldwise antes del truco.', 'Ábrela antes de que alguien esté mirando. Se abre directamente con el aspecto de Notas, así nadie ve el ícono de Foldwise.'],
-    ['Elige tu lista y tu palabra.', 'Mantén presionado el título grande “Notas” para abrir la configuración y elige una lista y la palabra que vas a predecir.'],
-    ['Practica una vez.', 'Prueba la entrada secreta unas cuantas veces a solas antes de hacerla frente a alguien.'],
-  ],
 
   // Home screen
   homeIntro: 'Trucos de adivinación escondidos en apps de apariencia normal. Mira lo que vive tu público y desbloquea Foldwise para ver el video de demostración, el método y el truco.',
   trickTutorial: 'Video de demostración y cómo hacerlo',
+
+  // Welcome
+  welcomeKeyText: 'Mantén presionado el título grande “Notas” para abrir la configuración. Ahí eliges la palabra que vas a predecir, editas las listas y encuentras el tutorial. Tu público nunca la ve.',
+  welcomeLearnSteps: [
+    ['El truco de Notas', 'Alguien dice cualquier número y encuentra ahí tu predicción.'],
+    ['Cómo hacerlo', 'Un video de demostración y una guía paso a paso: qué decir, cuándo hacer el movimiento secreto y cómo revelarlo.'],
+    ['Tus propias listas', 'Famosos, películas, lugares o lo que tú escribas.'],
+    ['Más trucos', 'Cada truco nuevo en cuanto salga.'],
+  ],
 };
