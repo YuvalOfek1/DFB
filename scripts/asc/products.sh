@@ -13,8 +13,8 @@ set -euo pipefail
 
 MODE="${1:-plan}"
 APP="${ASC_APP_ID:?Set ASC_APP_ID to the numeric App Store Connect app id}"
-MONTHLY_ID='com.foldwise.app.allaccess.monthly'
-LIFETIME_ID='com.foldwise.app.lifetime'
+MONTHLY_ID='com.yuvalofek.foldwise.allaccess.monthly'
+LIFETIME_ID='com.yuvalofek.foldwise.lifetime'
 REVIEW_SHOT='store/review/paywall.png'
 
 say() { printf '\n== %s\n' "$*"; }

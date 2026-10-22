@@ -1,4 +1,4 @@
-package com.foldwise.app;
+package com.yuvalofek.foldwise;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.foldwise.app"
+    namespace = "com.yuvalofek.foldwise"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.foldwise.app"
+        applicationId "com.yuvalofek.foldwise"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
