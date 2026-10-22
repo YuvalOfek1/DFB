@@ -35,6 +35,13 @@ export default {
 
   automatic: 'Automatisch',
   languageFooter: 'Automatisch folgt der Sprache deines Telefons, damit die Tarnung wie die echte Notizen-App aussieht.',
+  appIcon: 'App-Symbol',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'Gelber Block',
+  iconIndexCard: 'Karteikarte',
+  iconStickyNote: 'Haftnotiz',
+  appIconFooter: 'Das Symbol auf deinem Home-Bildschirm. Dein Handy zeigt beim Wechsel eventuell kurz eine Meldung an, also wechsle es vor der Vorführung.',
+  appIconFailed: 'Das Symbol konnte nicht geändert werden.',
   replaceListsConfirm: (lang) => `Auch deine Listen durch die mitgelieferten Listen auf ${lang} ersetzen? Änderungen an den aktuellen Listen gehen verloren.`,
 
   list: 'Liste',

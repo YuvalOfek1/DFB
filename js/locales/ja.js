@@ -35,6 +35,13 @@ export default {
 
   automatic: '自動',
   languageFooter: '「自動」はiPhoneの言語に合わせるので、本物の「メモ」アプリと同じ表示になります。',
+  appIcon: 'アプリアイコン',
+  iconFoldwise: 'Foldwise',
+  iconLegalPad: 'イエローパッド',
+  iconIndexCard: '情報カード',
+  iconStickyNote: '付箋',
+  appIconFooter: 'ホーム画面のアイコンです。変更するとスマホに短いメッセージが表示されることがあるので、演じる前に変更しておきましょう。',
+  appIconFailed: 'アイコンを変更できませんでした。',
   replaceListsConfirm: (lang) => `リストも${lang}の標準リストに置き換えますか?今のリストの変更内容は失われます。`,
 
   list: 'リスト',
