@@ -1,7 +1,9 @@
-// Subscription state via RevenueCat. Only the native iOS/Android apps sell the subscription;
-// the web version (and native builds without a key configured, for development) are unlocked.
+// Purchases via RevenueCat. Only the native iOS/Android apps sell Foldwise All Access; the web
+// version is always unlocked. The plans screen is RevenueCat's Paywall (designed in the dashboard,
+// shown for the current offering) and "Manage Subscription" is its Customer Center.
 import { Capacitor } from '@capacitor/core';
-import { Purchases, PURCHASES_ERROR_CODE } from '@revenuecat/purchases-capacitor';
+import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
+import { RevenueCatUI, PAYWALL_RESULT } from '@revenuecat/purchases-capacitor-ui';
 import { CONFIG } from './config.js';
 
 export const isNative = Capacitor.isNativePlatform();
@@ -31,69 +33,97 @@ function apply(customerInfo) {
   for (const fn of listeners) fn();
 }
 
+// Asks RevenueCat for the latest customer info; the cached entitlements stand if it can't answer.
+async function refresh() {
+  try {
+    const { customerInfo } = await Purchases.getCustomerInfo();
+    apply(customerInfo);
+  } catch (err) {
+    console.warn('Could not refresh customer info', err);
+  }
+}
+
+// The store's key for this platform, or the Test Store key until the store keys are set.
+const apiKey = () => CONFIG.revenueCatKeys[platform] || CONFIG.revenueCatKeys.test;
+
 export async function init() {
   if (!isNative) return;
-  const apiKey = CONFIG.revenueCatKeys[platform];
-  if (!apiKey) {
+  if (!apiKey()) {
     console.warn(`No RevenueCat key for ${platform}: running unlocked (development only).`);
     active = new Set([CONFIG.allAccessEntitlement]);
     return;
   }
   try {
-    await Purchases.configure({ apiKey });
+    await Purchases.setLogLevel({ level: LOG_LEVEL.WARN });
+    await Purchases.configure({ apiKey: apiKey() });
     configured = true;
+    if (uiLocale) await Purchases.overridePreferredUILocale({ locale: uiLocale });
     await Purchases.addCustomerInfoUpdateListener((info) => apply(info));
-    const { customerInfo } = await Purchases.getCustomerInfo();
-    apply(customerInfo);
+    await refresh();
   } catch (err) {
     console.warn('RevenueCat init failed', err);
   }
 }
 
+// RevenueCat's Paywall and Customer Center follow the app's language (Setup → Language): the chosen
+// locale, or null for the phone's.
+let uiLocale = null;
+export function setUILocale(locale) {
+  uiLocale = locale;
+  if (configured) Purchases.overridePreferredUILocale({ locale }).catch((err) => console.warn('Could not set the paywall language', err));
+}
+
 export const hasAllAccess = () => active.has(CONFIG.allAccessEntitlement);
 // A trick is unlocked by All Access or by buying that trick alone.
 export const isTrickUnlocked = (trickId) => hasAllAccess() || active.has(`trick_${trickId}`);
-export const canPurchase = () => configured;
 
 export function onChange(fn) {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
 
-// The plans to sell, from RevenueCat's current offering: its Monthly and Lifetime packages.
-// Either can be null if it isn't set up in RevenueCat.
-export async function getPlans() {
-  if (!configured) return { monthly: null, lifetime: null };
+// Shows the RevenueCat Paywall for the current offering (Monthly and Lifetime). Resolves
+// 'unlocked' after a purchase or restore that grants All Access (the onChange listeners have run
+// by then), 'closed' if dismissed, or 'unavailable' if it couldn't be shown (no connection,
+// RevenueCat not set up, or no offering yet).
+export async function presentPaywall() {
+  if (!configured) return 'unavailable';
   try {
-    const offerings = await Purchases.getOfferings();
-    const current = offerings?.current;
-    return { monthly: current?.monthly ?? null, lifetime: current?.lifetime ?? null };
+    const { result } = await RevenueCatUI.presentPaywall({ displayCloseButton: true });
+    if (result === PAYWALL_RESULT.PURCHASED || result === PAYWALL_RESULT.RESTORED) {
+      await refresh();
+      return hasAllAccess() ? 'unlocked' : 'closed';
+    }
+    if (result === PAYWALL_RESULT.ERROR || result === PAYWALL_RESULT.NOT_PRESENTED) return 'unavailable';
+    return 'closed';
   } catch (err) {
-    console.warn('Could not load offerings', err);
-    return { monthly: null, lifetime: null };
+    console.warn('Could not present the paywall', err);
+    return 'unavailable';
   }
 }
 
-// Resolves true when the purchase unlocked the app, false if the user cancelled.
-export async function purchase(aPackage) {
+// Customer Center: manage or cancel the subscription, restore, request a refund, contact support.
+// Resolves false if it couldn't be shown, so the caller can fall back to the store's own page.
+export async function presentCustomerCenter() {
+  if (!configured) return false;
   try {
-    const { customerInfo } = await Purchases.purchasePackage({ aPackage });
-    apply(customerInfo);
-    return hasAllAccess();
+    await RevenueCatUI.presentCustomerCenter();
+    await refresh(); // a cancellation or restore may have changed access
+    return true;
   } catch (err) {
-    if (err?.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) return false;
-    throw err;
+    console.warn('Could not present the Customer Center', err);
+    return false;
   }
 }
 
+// Resolves true when this store account has All Access.
 export async function restore() {
   const { customerInfo } = await Purchases.restorePurchases();
   apply(customerInfo);
   return hasAllAccess();
 }
 
-// The store's own subscriptions page, for when RevenueCat has no management URL (not configured,
-// or nothing bought on this account yet).
+// The store's own subscriptions page, for when the Customer Center can't be shown.
 const STORE_SUBSCRIPTIONS = {
   ios: 'https://apps.apple.com/account/subscriptions',
   android: `https://play.google.com/store/account/subscriptions?package=${CONFIG.appId}`,

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sets up what Foldwise sells on the App Store, once: the app itself is free in every territory,
 # and Foldwise All Access is sold as a monthly subscription ($4.99, no trial) or a one-time
-# Lifetime purchase ($29.99). Both unlock RevenueCat's `all_access` entitlement.
+# Lifetime purchase ($29.99). Both unlock RevenueCat's `com_yuvalofek_foldwise_pro` entitlement.
 #
 #   scripts/asc/products.sh plan    # show what exists and what would be created
 #   scripts/asc/products.sh apply   # create whatever is missing

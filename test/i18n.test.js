@@ -17,7 +17,7 @@ test('Latin American overrides only use known keys', () => {
 });
 
 test('step lists have the same number of steps in every language', () => {
-  for (const key of ['routineSteps', 'goodToKnowSteps', 'welcomeLearnSteps', 'notesEffectSteps', 'features']) {
+  for (const key of ['routineSteps', 'goodToKnowSteps', 'welcomeLearnSteps', 'notesEffectSteps']) {
     const n = STRINGS.en[key].length;
     for (const locale of LOCALES) assert.equal(translate(locale, key).length, n, `${locale}.${key}`);
   }
@@ -49,8 +49,8 @@ test('lookup falls back from region to base language', () => {
 });
 
 test('Hebrew puts a hyphen before Latin words after a prefix letter', () => {
-  assert.match(translate('he', 'legal', translate('he', 'googlePlayAccount')), /יחויב בחשבון Google Play/);
-  assert.match(translate('he', 'legal', 'Google Play'), /יחויב ב-Google Play/);
+  assert.match(translate('he', 'replaceListsConfirm', 'English'), /המובנות ב-English\?/);
+  assert.match(translate('he', 'replaceListsConfirm', 'עברית'), /המובנות בעברית\?/);
 });
 
 test('every language has its own built-in lists with the same ids', () => {

@@ -97,45 +97,10 @@ export default {
   ],
   welcomeStart: 'Provalo ora',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Scegli un piano. Tutti i trucchi e le liste inclusi.',
-  features: [
-    'Tutte le liste incluse: celebrità, film, paesi e altro',
-    'Scegli la parola da forzare di ogni lista o scrivila al momento',
-    'Crea le tue liste',
-    'Ogni nuovo trucco appena esce',
-  ],
-  loading: 'Caricamento…',
-  unavailableNow: 'Non disponibile al momento',
-  subscriptionsUnavailable: 'Abbonamenti non disponibili',
-  subscribeFor: (price) => `Abbonati a ${price} al mese`,
-  period: (n, unit) => {
-    const [one, many] = { DAY: ['giorno', 'giorni'], WEEK: ['settimana', 'settimane'], MONTH: ['mese', 'mesi'], YEAR: ['anno', 'anni'] }[unit] ?? [unit, unit];
-    return `${n} ${n > 1 ? many : one}`;
-  },
-  freeTrial: (length, price) => `Gratis per ${length}, poi ${price} al mese.`,
-  introOffer: (introPrice, length, price) => `${introPrice} per ${length}, poi ${price} al mese.`,
-  legal: (store) => `Il pagamento viene addebitato sul tuo ${store}. L’abbonamento si rinnova automaticamente ogni mese, a meno che non venga disdetto almeno 24 ore prima della fine del periodo in corso. Puoi gestirlo o disdirlo nelle impostazioni del tuo account.`,
-  appleAccount: 'Account Apple',
-  googlePlayAccount: 'account Google Play',
-  terms: 'Condizioni d’uso',
-  privacy: 'Informativa sulla privacy',
   restored: 'Il tuo abbonamento è stato ripristinato.',
   nothingToRestore: 'Non è stato trovato nessun abbonamento attivo per questo account.',
   restoreFailed: 'Impossibile ripristinare gli acquisti. Controlla la connessione e riprova.',
-  purchaseFailed: 'Impossibile completare l’acquisto. Riprova.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: 'Mensile',
-  planLifetime: 'A vita',
-  perMonth: (price) => `${price} al mese`,
-  oneTime: (price) => `${price} una tantum`,
-  lifetimeNote: 'Paghi una volta e tieni tutto per sempre, nuovi trucchi inclusi.',
-  buyLifetime: (price) => `Acquista a ${price}`,
-  lifetimeLegal: 'L’accesso a vita è un acquisto unico, non un abbonamento.',
+  paywallUnavailable: 'Impossibile caricare i piani. Controlla la connessione e riprova.',
 
   // Home screen (without a subscription)
   homeHero: 'La magia in tasca',

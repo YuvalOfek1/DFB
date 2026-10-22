@@ -97,45 +97,10 @@ export default {
   ],
   welcomeStart: 'Jetzt ausprobieren',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Wähle ein Paket. Alle Tricks und Listen inklusive.',
-  features: [
-    'Alle mitgelieferten Listen: Promis, Filme, Länder und mehr',
-    'Wähle das Zielwort jeder Liste oder tippe es spontan ein',
-    'Erstelle eigene Listen',
-    'Jeder neue Trick, sobald er erscheint',
-  ],
-  loading: 'Wird geladen …',
-  unavailableNow: 'Derzeit nicht verfügbar',
-  subscriptionsUnavailable: 'Abos nicht verfügbar',
-  subscribeFor: (price) => `Für ${price}/Monat abonnieren`,
-  period: (n, unit) => {
-    const [one, many] = { DAY: ['Tag', 'Tage'], WEEK: ['Woche', 'Wochen'], MONTH: ['Monat', 'Monate'], YEAR: ['Jahr', 'Jahre'] }[unit] ?? [unit, unit];
-    return `${n} ${n > 1 ? many : one}`;
-  },
-  freeTrial: (length, price) => `${length} kostenlos, danach ${price}/Monat.`,
-  introOffer: (introPrice, length, price) => `${length} für ${introPrice}, danach ${price}/Monat.`,
-  legal: (store) => `Die Zahlung wird über dein ${store} abgerechnet. Das Abo verlängert sich automatisch jeden Monat, sofern es nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums gekündigt wird. Verwalten oder kündigen kannst du es in deinen Accounteinstellungen.`,
-  appleAccount: 'Apple Account',
-  googlePlayAccount: 'Google Play-Konto',
-  terms: 'Nutzungsbedingungen',
-  privacy: 'Datenschutzerklärung',
   restored: 'Dein Abo wurde wiederhergestellt.',
   nothingToRestore: 'Für diesen Account wurde kein aktives Abo gefunden.',
   restoreFailed: 'Käufe konnten nicht wiederhergestellt werden. Prüfe deine Verbindung und versuche es erneut.',
-  purchaseFailed: 'Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: 'Monatlich',
-  planLifetime: 'Lebenslang',
-  perMonth: (price) => `${price}/Monat`,
-  oneTime: (price) => `${price} einmalig`,
-  lifetimeNote: 'Einmal zahlen, alles für immer behalten – inklusive neuer Tricks.',
-  buyLifetime: (price) => `Für ${price} kaufen`,
-  lifetimeLegal: 'Lebenslang ist ein einmaliger Kauf, kein Abo.',
+  paywallUnavailable: 'Die Abos konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.',
 
   // Home screen (without a subscription)
   homeHero: 'Magie für die Hosentasche',

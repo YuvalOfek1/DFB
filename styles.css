@@ -369,26 +369,7 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 .switch:checked::after { transform: translateX(20px); }
 [dir="rtl"] .switch:checked::after { transform: translateX(-20px); }
 
-/* Paywall */
-.paywall-features { margin: 0; padding-block: 12px; padding-inline: 36px 16px; line-height: 1.5; }
-.plans { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
-.plan {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 100%;
-  padding: 14px 16px;
-  text-align: start;
-  color: var(--text);
-  background: var(--cell);
-  border: 2px solid transparent;
-  border-radius: 14px;
-}
-.plan.selected { border-color: var(--tint); }
-.plan:active { opacity: 1; }
-.plan-name { font-weight: 600; }
-.plan-price { font-size: 17px; }
-.plan-note { font-size: 13px; color: var(--secondary); }
+/* Primary button (Unlock Foldwise, Try it now) */
 .paywall-buy {
   display: block;
   width: 100%;
@@ -401,8 +382,6 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
   font-weight: 600;
 }
 .paywall-buy:disabled { opacity: 0.5; }
-.paywall-links { display: flex; gap: 16px; justify-content: center; }
-.paywall-links a { color: var(--tint); text-decoration: none; }
 
 /* Home screen demo video */
 .demo-video {

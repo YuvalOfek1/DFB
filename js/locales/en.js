@@ -106,42 +106,10 @@ export default {
   welcomeStart: 'Try it now',
 
   // Subscription
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Choose a plan. Every trick and list included.',
-  features: [
-    'Every built-in list: celebrities, movies, countries and more',
-    'Choose the force word for each list, or type one on the spot',
-    'Create your own lists',
-    'Every new trick as it’s released',
-  ],
-  loading: 'Loading…',
-  unavailableNow: 'Unavailable right now',
-  subscriptionsUnavailable: 'Subscriptions unavailable',
-  subscribeFor: (price) => `Subscribe for ${price} / month`,
-  period: (n, unit) => `${n} ${{ DAY: 'day', WEEK: 'week', MONTH: 'month', YEAR: 'year' }[unit] ?? unit.toLowerCase()}${n > 1 ? 's' : ''}`,
-  freeTrial: (length, price) => `Free for ${length}, then ${price} / month.`,
-  introOffer: (introPrice, length, price) => `${introPrice} for ${length}, then ${price} / month.`,
-  legal: (store) => `Payment is charged to your ${store}. The subscription renews automatically each month unless cancelled at least 24 hours before the end of the current period. Manage or cancel it in your account settings.`,
-  appleAccount: 'Apple Account',
-  googlePlayAccount: 'Google Play account',
-  terms: 'Terms of Use',
-  privacy: 'Privacy Policy',
   restored: 'Your subscription has been restored.',
   nothingToRestore: 'No active subscription was found for this account.',
   restoreFailed: 'Could not restore purchases. Check your connection and try again.',
-  purchaseFailed: 'The purchase could not be completed. Please try again.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: 'Monthly',
-  planLifetime: 'Lifetime',
-  perMonth: (price) => `${price} / month`,
-  oneTime: (price) => `${price} one time`,
-  lifetimeNote: 'Pay once, keep everything forever, including new tricks.',
-  buyLifetime: (price) => `Buy for ${price}`,
-  lifetimeLegal: 'Lifetime is a one-time purchase, not a subscription.',
+  paywallUnavailable: 'The plans couldn’t be loaded. Check your connection and try again.',
 
   // Home screen (without a subscription)
   homeHero: 'Magic in your pocket',

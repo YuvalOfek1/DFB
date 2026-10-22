@@ -97,45 +97,10 @@ export default {
   ],
   welcomeStart: 'Experimente agora',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Escolha um plano. Todos os truques e listas incluídos.',
-  features: [
-    'Todas as listas prontas: famosos, filmes, países e mais',
-    'Escolha a palavra forçada de cada lista, ou digite na hora',
-    'Crie suas próprias listas',
-    'Cada truque novo assim que sair',
-  ],
-  loading: 'Carregando…',
-  unavailableNow: 'Indisponível no momento',
-  subscriptionsUnavailable: 'Assinaturas indisponíveis',
-  subscribeFor: (price) => `Assinar por ${price}/mês`,
-  period: (n, unit) => {
-    const [one, many] = { DAY: ['dia', 'dias'], WEEK: ['semana', 'semanas'], MONTH: ['mês', 'meses'], YEAR: ['ano', 'anos'] }[unit] ?? [unit, unit];
-    return `${n} ${n > 1 ? many : one}`;
-  },
-  freeTrial: (length, price) => `Grátis por ${length}, depois ${price}/mês.`,
-  introOffer: (introPrice, length, price) => `${introPrice} por ${length}, depois ${price}/mês.`,
-  legal: (store) => `O pagamento é cobrado na sua ${store}. A assinatura é renovada automaticamente todo mês, a menos que seja cancelada pelo menos 24 horas antes do fim do período atual. Gerencie ou cancele nos ajustes da sua conta.`,
-  appleAccount: 'Conta Apple',
-  googlePlayAccount: 'conta do Google Play',
-  terms: 'Termos de Uso',
-  privacy: 'Política de Privacidade',
   restored: 'Sua assinatura foi restaurada.',
   nothingToRestore: 'Nenhuma assinatura ativa foi encontrada nesta conta.',
   restoreFailed: 'Não foi possível restaurar as compras. Verifique a conexão e tente de novo.',
-  purchaseFailed: 'Não foi possível concluir a compra. Tente de novo.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: 'Mensal',
-  planLifetime: 'Vitalício',
-  perMonth: (price) => `${price}/mês`,
-  oneTime: (price) => `${price} uma única vez`,
-  lifetimeNote: 'Pague uma vez e fique com tudo para sempre, incluindo truques novos.',
-  buyLifetime: (price) => `Comprar por ${price}`,
-  lifetimeLegal: 'O vitalício é uma compra única, não uma assinatura.',
+  paywallUnavailable: 'Não foi possível carregar os planos. Verifique a conexão e tente de novo.',
 
   // Home screen (without a subscription)
   homeHero: 'Mágica no seu bolso',

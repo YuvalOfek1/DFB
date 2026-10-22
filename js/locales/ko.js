@@ -97,42 +97,10 @@ export default {
   ],
   welcomeStart: '지금 해 보기',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: '플랜을 선택하세요. 모든 마술과 목록이 포함됩니다.',
-  features: [
-    '모든 기본 목록: 유명인, 영화, 나라 등',
-    '목록마다 포스 단어 선택, 즉석 입력도 가능',
-    '나만의 목록 만들기',
-    '새로운 마술이 나오는 즉시 이용',
-  ],
-  loading: '불러오는 중…',
-  unavailableNow: '지금은 이용할 수 없음',
-  subscriptionsUnavailable: '구독을 이용할 수 없음',
-  subscribeFor: (price) => `월 ${price}에 구독하기`,
-  period: (n, unit) => `${n}${{ DAY: '일', WEEK: '주', MONTH: '개월', YEAR: '년' }[unit] ?? unit}`,
-  freeTrial: (length, price) => `${length} 무료, 이후 월 ${price}`,
-  introOffer: (introPrice, length, price) => `${length} 동안 ${introPrice}, 이후 월 ${price}`,
-  legal: (store) => `결제 금액은 ${store}으로 청구됩니다. 현재 기간이 끝나기 최소 24시간 전에 해지하지 않으면 구독은 매달 자동으로 갱신됩니다. 계정 설정에서 구독을 관리하거나 해지할 수 있습니다.`,
-  appleAccount: 'Apple 계정',
-  googlePlayAccount: 'Google Play 계정',
-  terms: '이용 약관',
-  privacy: '개인정보 처리방침',
   restored: '구독이 복원되었습니다.',
   nothingToRestore: '이 계정에서 활성 구독을 찾을 수 없습니다.',
   restoreFailed: '구입 내역을 복원할 수 없습니다. 연결을 확인한 후 다시 시도하세요.',
-  purchaseFailed: '구입을 완료할 수 없습니다. 다시 시도하세요.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: '월간',
-  planLifetime: '평생',
-  perMonth: (price) => `월 ${price}`,
-  oneTime: (price) => `${price} (1회 결제)`,
-  lifetimeNote: '한 번 결제로 새로운 마술까지 평생 이용하세요.',
-  buyLifetime: (price) => `${price}에 구입하기`,
-  lifetimeLegal: '평생 이용권은 구독이 아닌 1회 구매입니다.',
+  paywallUnavailable: '플랜을 불러올 수 없습니다. 연결을 확인한 후 다시 시도하세요.',
 
   // Home screen (without a subscription)
   homeHero: '주머니 속 마술',

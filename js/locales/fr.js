@@ -97,45 +97,10 @@ export default {
   ],
   welcomeStart: 'Essayer maintenant',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'Choisissez une formule. Tous les tours et toutes les listes inclus.',
-  features: [
-    'Toutes les listes intégrées : célébrités, films, pays et plus',
-    'Choisissez le mot à forcer de chaque liste, ou tapez-le sur le moment',
-    'Créez vos propres listes',
-    'Chaque nouveau tour dès sa sortie',
-  ],
-  loading: 'Chargement…',
-  unavailableNow: 'Indisponible pour le moment',
-  subscriptionsUnavailable: 'Abonnements indisponibles',
-  subscribeFor: (price) => `S’abonner pour ${price} par mois`,
-  period: (n, unit) => {
-    const [one, many] = { DAY: ['jour', 'jours'], WEEK: ['semaine', 'semaines'], MONTH: ['mois', 'mois'], YEAR: ['an', 'ans'] }[unit] ?? [unit, unit];
-    return `${n} ${n > 1 ? many : one}`;
-  },
-  freeTrial: (length, price) => `Gratuit pendant ${length}, puis ${price} par mois.`,
-  introOffer: (introPrice, length, price) => `${introPrice} pendant ${length}, puis ${price} par mois.`,
-  legal: (store) => `Le paiement est débité sur votre ${store}. L’abonnement se renouvelle automatiquement chaque mois, sauf résiliation au moins 24 heures avant la fin de la période en cours. Vous pouvez le gérer ou le résilier dans les réglages de votre compte.`,
-  appleAccount: 'compte Apple',
-  googlePlayAccount: 'compte Google Play',
-  terms: 'Conditions d’utilisation',
-  privacy: 'Politique de confidentialité',
   restored: 'Votre abonnement a été restauré.',
   nothingToRestore: 'Aucun abonnement actif n’a été trouvé pour ce compte.',
   restoreFailed: 'Impossible de restaurer les achats. Vérifiez votre connexion et réessayez.',
-  purchaseFailed: 'L’achat n’a pas pu aboutir. Veuillez réessayer.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: 'Mensuel',
-  planLifetime: 'À vie',
-  perMonth: (price) => `${price} par mois`,
-  oneTime: (price) => `${price} en une fois`,
-  lifetimeNote: 'Payez une fois, gardez tout pour toujours, nouveaux tours compris.',
-  buyLifetime: (price) => `Acheter pour ${price}`,
-  lifetimeLegal: 'L’accès à vie est un achat unique, pas un abonnement.',
+  paywallUnavailable: 'Impossible de charger les formules. Vérifiez votre connexion et réessayez.',
 
   // Home screen (without a subscription)
   homeHero: 'La magie dans votre poche',
