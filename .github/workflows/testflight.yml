@@ -1,9 +1,10 @@
 name: TestFlight
 
 # Run by hand from the Actions tab: builds a signed iOS release and uploads it to TestFlight.
-# Signing is automatic: Xcode uses the App Store Connect API key (the same secrets as the
-# App Store setup workflow) to create the distribution certificate and profile it needs, so no
-# certificates live in the repo. The build number is this workflow's run number.
+# Signing is automatic at export: Xcode uses the App Store Connect API key (the same secrets as
+# the App Store setup workflow) to create the distribution certificate and App Store profile it
+# needs, so no certificates live in the repo and no devices need registering. The build number
+# is this workflow's run number.
 on:
   workflow_dispatch:
     inputs:
@@ -56,14 +57,15 @@ jobs:
           echo "TEAM_ID=$team" >> "$GITHUB_ENV"
           xcodebuild -version
 
+      # The archive is built unsigned: signing it here would need a development profile, which
+      # Apple only issues to teams with registered devices. Export signs it for the App Store.
       - name: Archive
         run: |
           xcodebuild archive \
             -project ios/App/App.xcodeproj -scheme App -configuration Release \
             -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
-            DEVELOPMENT_TEAM="$TEAM_ID" CODE_SIGN_STYLE=Automatic CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+            DEVELOPMENT_TEAM="$TEAM_ID" CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
 
       - name: Export the IPA
         run: |
