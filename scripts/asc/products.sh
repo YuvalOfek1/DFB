@@ -96,8 +96,10 @@ if asc iap pricing availability view --iap-id "$iap" >/dev/null 2>&1; then
 else
   asc iap pricing availability set --iap-id "$iap" --territories "$ALL"
 fi
-if asc iap review-screenshots view --iap-id "$iap" --output json 2>/dev/null | jq -e '.data' >/dev/null; then
-  echo 'Review screenshot already uploaded.'
+# Apple answers this lookup even when no image was uploaded, so check for an uploaded file.
+shot=$(asc iap review-screenshots view --iap-id "$iap" --output json 2>/dev/null | jq -r '.data.attributes.fileName // empty' || true)
+if [ -n "$shot" ]; then
+  echo "Review screenshot already uploaded ($shot)."
 else
   asc iap review-screenshots create --iap-id "$iap" --file "$REVIEW_SHOT"
 fi
