@@ -34,6 +34,8 @@ export default {
   upgradeLifetime: 'שדרוג למסלול לכל החיים',
   upgradeLifetimeNote: 'משלמים פעם אחת ומפסיקים לשלם כל חודש.',
   upgradedCancelMonthly: 'המסלול לכל החיים שלכם! המינוי החודשי לא מתבטל אוטומטית. לבטל אותו עכשיו כדי שלא תחויבו שוב?',
+  cancelMonthly: 'ביטול המנוי החודשי',
+  cancelMonthlyNote: 'יש לך גישה לכל החיים, כך שהמנוי החודשי כבר לא נחוץ.',
   restorePurchases: 'שחזור רכישות',
   help: 'עזרה',
   howToPerform: 'איך מבצעים',

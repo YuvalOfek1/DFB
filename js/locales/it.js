@@ -29,6 +29,8 @@ export default {
   upgradeLifetime: 'Passa all’accesso a vita',
   upgradeLifetimeNote: 'Paga una volta e smetti di pagare ogni mese.',
   upgradedCancelMonthly: 'L’accesso a vita è tuo! L’abbonamento mensile non si disdice automaticamente. Vuoi disdirlo ora per non pagarlo di nuovo?',
+  cancelMonthly: 'Annulla il mensile',
+  cancelMonthlyNote: 'Hai l’accesso a vita, quindi l’abbonamento mensile non ti serve più.',
   restorePurchases: 'Ripristina acquisti',
   help: 'Aiuto',
   howToPerform: 'Come eseguire il trucco',

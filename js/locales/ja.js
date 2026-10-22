@@ -29,6 +29,8 @@ export default {
   upgradeLifetime: '買い切りにアップグレード',
   upgradeLifetimeNote: '一度の支払いで、毎月の支払いが不要に。',
   upgradedCancelMonthly: '買い切りを購入しました!月額サブスクリプションは自動では解約されません。再度請求されないよう、今すぐ解約しますか?',
+  cancelMonthly: '月額プランを解約',
+  cancelMonthlyNote: '買い切りプランをお持ちのため、月額プランは不要です。',
   restorePurchases: '購入を復元',
   help: 'ヘルプ',
   howToPerform: '演じ方',

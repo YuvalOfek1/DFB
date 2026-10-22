@@ -186,15 +186,13 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         ...(purchases.isNative && allAccess ? [section({
           header: t('subscription'),
           children: [
-            row({
-              label: t('manageSubscription'),
-              chevron: true,
-              onClick: async () => {
-                if (await purchases.presentCustomerCenter()) return;
-                const url = await purchases.managementUrl();
-                if (url) openExternal(url);
-              },
-            }),
+            row({ label: t('manageSubscription'), chevron: true, onClick: () => manageSubscription() }),
+            ...(purchases.hasRedundantSubscription() ? [row({
+              label: t('cancelMonthly'),
+              sublabel: t('cancelMonthlyNote'),
+              tone: 'danger',
+              onClick: () => manageSubscription(),
+            })] : []),
             ...(purchases.currentPlan() === 'subscription' ? [row({
               label: t('upgradeLifetime'),
               sublabel: t('upgradeLifetimeNote'),
@@ -454,11 +452,16 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       return;
     }
     stack.at(-1)?.refresh();
-    if (purchases.currentPlan() === 'lifetime' && confirm(t('upgradedCancelMonthly'))) {
-      if (await purchases.presentCustomerCenter()) return;
-      const url = await purchases.managementUrl();
-      if (url) openExternal(url);
+    if (purchases.currentPlan() === 'lifetime' && confirm(t('upgradedCancelMonthly'))) await manageSubscription();
+  }
+
+  async function manageSubscription() {
+    if (await purchases.presentCustomerCenter()) {
+      stack.at(-1)?.refresh(); // a cancellation may hide Cancel Monthly
+      return;
     }
+    const url = await purchases.managementUrl();
+    if (url) openExternal(url);
   }
 
   async function restore() {
@@ -479,6 +482,9 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     button.type = 'button';
     button.addEventListener('click', async () => {
       button.disabled = true;
+      // On a fresh install the launch sync may still be finding an existing purchase.
+      await purchases.ready;
+      if (purchases.hasAllAccess()) return;
       // A purchase unlocks the app through purchases.onChange, which switches to the welcome.
       const outcome = await purchases.presentPaywall();
       button.disabled = false;

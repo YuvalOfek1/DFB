@@ -32,6 +32,8 @@ export default {
   upgradeLifetime: 'Upgrade to Lifetime',
   upgradeLifetimeNote: 'Pay once and stop paying every month.',
   upgradedCancelMonthly: 'Lifetime is yours! Your monthly subscription doesn’t cancel automatically. Cancel it now so you aren’t charged again?',
+  cancelMonthly: 'Cancel Monthly',
+  cancelMonthlyNote: 'You own Lifetime, so you no longer need the monthly subscription.',
   restorePurchases: 'Restore Purchases',
   help: 'Help',
   howToPerform: 'How to Perform',
