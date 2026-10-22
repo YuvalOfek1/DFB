@@ -5,7 +5,7 @@ export const CONFIG = {
   // RevenueCat public SDK keys (Project settings → API keys). These are meant to ship inside the app.
   // With no key for the platform, a native build runs unlocked (development only).
   revenueCatKeys: {
-    ios: '', // appl_...
+    ios: 'appl_WAcxLsEQWmFpBSFwECpmTZvxkAg',
     android: '', // goog_...
   },
   // RevenueCat Test Store key (simulated purchases). RevenueCat deliberately crashes any Release
