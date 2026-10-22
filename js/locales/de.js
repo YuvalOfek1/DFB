@@ -30,7 +30,7 @@ export default {
   upgradeLifetimeNote: 'Einmal zahlen und nicht mehr jeden Monat.',
   upgradedCancelMonthly: 'Lebenslang gehört dir! Dein Monatsabo wird nicht automatisch gekündigt. Jetzt kündigen, damit es nicht erneut abgebucht wird?',
   cancelMonthly: 'Monatsabo kündigen',
-  cancelMonthlyNote: 'Du hast lebenslangen Zugang und brauchst das Monatsabo nicht mehr.',
+  cancelMonthlyNote: 'Du hast lebenslangen Zugang, aber das Monatsabo verlängert sich weiter und wird berechnet. Kündige es, um nicht mehr zu zahlen.',
   restorePurchases: 'Käufe wiederherstellen',
   help: 'Hilfe',
   howToPerform: 'So führst du den Trick vor',
