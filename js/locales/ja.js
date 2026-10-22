@@ -90,42 +90,10 @@ export default {
   ],
   welcomeStart: 'さっそく試す',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'プランを選んでください。すべてのマジックとリストが使えます。',
-  features: [
-    '標準リストすべて:有名人、映画、国など',
-    'リストごとにフォースする言葉を選べる、その場で入力も可能',
-    '自分だけのリストを作成',
-    '新しいマジックも追加され次第すぐに',
-  ],
-  loading: '読み込み中…',
-  unavailableNow: '現在利用できません',
-  subscriptionsUnavailable: 'サブスクリプションは利用できません',
-  subscribeFor: (price) => `${price}/月で登録`,
-  period: (n, unit) => `${n}${{ DAY: '日間', WEEK: '週間', MONTH: 'か月', YEAR: '年間' }[unit] ?? unit}`,
-  freeTrial: (length, price) => `${length}無料、その後${price}/月`,
-  introOffer: (introPrice, length, price) => `${length}は${introPrice}、その後${price}/月`,
-  legal: (store) => `お支払いは${store}に請求されます。現在の期間が終了する24時間前までに解約しない限り、サブスクリプションは毎月自動更新されます。管理や解約はアカウント設定から行えます。`,
-  appleAccount: 'Appleアカウント',
-  googlePlayAccount: 'Google Playアカウント',
-  terms: '利用規約',
-  privacy: 'プライバシーポリシー',
   restored: 'サブスクリプションを復元しました。',
   nothingToRestore: 'このアカウントで有効なサブスクリプションが見つかりませんでした。',
   restoreFailed: '購入を復元できませんでした。接続を確認して、もう一度お試しください。',
-  purchaseFailed: '購入を完了できませんでした。もう一度お試しください。',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: '月額',
-  planLifetime: '買い切り',
-  perMonth: (price) => `${price}/月`,
-  oneTime: (price) => `${price}(1回のみ)`,
-  lifetimeNote: '一度の支払いで、新しいマジックも含めてずっと使えます。',
-  buyLifetime: (price) => `${price}で購入`,
-  lifetimeLegal: '買い切りは1回限りの購入で、サブスクリプションではありません。',
+  paywallUnavailable: 'プランを読み込めませんでした。接続を確認して、もう一度お試しください。',
 
   // Home screen (without a subscription)
   homeHero: 'ポケットの中のマジック',

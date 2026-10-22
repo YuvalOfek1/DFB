@@ -95,45 +95,10 @@ export default {
   ],
   welcomeStart: 'לנסות עכשיו',
 
-  allAccess: 'All Access',
-  allAccessHero: 'Foldwise All Access',
-  allAccessIntro: 'בחרו מסלול. כל הטריקים והרשימות כלולים.',
-  features: [
-    'כל הרשימות המובנות: מפורסמים, סרטים, מדינות ועוד',
-    'בחירת המילה הנבחרת לכל רשימה, או הקלדה שלה ברגע האחרון',
-    'יצירת רשימות משלכם',
-    'כל טריק חדש ברגע שהוא יוצא',
-  ],
-  loading: 'טוען…',
-  unavailableNow: 'לא זמין כרגע',
-  subscriptionsUnavailable: 'מינויים לא זמינים',
-  subscribeFor: (price) => `הרשמה ב-${price} לחודש`,
-  period: (n, unit) => {
-    const [one, many] = { DAY: ['יום', 'ימים'], WEEK: ['שבוע', 'שבועות'], MONTH: ['חודש', 'חודשים'], YEAR: ['שנה', 'שנים'] }[unit] ?? [unit, unit];
-    return n === 1 ? one : `${n} ${many}`;
-  },
-  freeTrial: (length, price) => `${length} בחינם, ואחר כך ${price} לחודש.`,
-  introOffer: (introPrice, length, price) => `${introPrice} ל${length}, ואחר כך ${price} לחודש.`,
-  legal: (store) => `התשלום יחויב ${prefix('ב', store)}. המינוי מתחדש אוטומטית כל חודש, אלא אם מבטלים אותו לפחות 24 שעות לפני סוף התקופה הנוכחית. אפשר לנהל או לבטל אותו בהגדרות החשבון.`,
-  appleAccount: 'חשבון Apple',
-  googlePlayAccount: 'חשבון Google Play',
-  terms: 'תנאי שימוש',
-  privacy: 'מדיניות פרטיות',
   restored: 'המינוי שלכם שוחזר.',
   nothingToRestore: 'לא נמצא מינוי פעיל בחשבון הזה.',
   restoreFailed: 'לא ניתן היה לשחזר רכישות. בדקו את החיבור ונסו שוב.',
-  purchaseFailed: 'לא ניתן היה להשלים את הרכישה. נסו שוב.',
-
-  // Welcome page
-
-  // Free uses and plans
-  planMonthly: 'חודשי',
-  planLifetime: 'לכל החיים',
-  perMonth: (price) => `${price} לחודש`,
-  oneTime: (price) => `${price} בתשלום אחד`,
-  lifetimeNote: 'משלמים פעם אחת ונשאר לכם הכול לתמיד, כולל טריקים חדשים.',
-  buyLifetime: (price) => `קנייה ב-${price}`,
-  lifetimeLegal: 'מסלול לכל החיים הוא רכישה חד-פעמית, לא מינוי.',
+  paywallUnavailable: 'לא ניתן היה לטעון את המסלולים. בדקו את החיבור ונסו שוב.',
 
   // Home screen (without a subscription)
   homeHero: 'קסם בכיס',

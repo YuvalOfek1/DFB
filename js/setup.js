@@ -185,6 +185,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
               label: t('manageSubscription'),
               chevron: true,
               onClick: async () => {
+                if (await purchases.presentCustomerCenter()) return;
                 const url = await purchases.managementUrl();
                 if (url) openExternal(url);
               },
@@ -421,7 +422,13 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   function unlockButton() {
     const button = el('button', 'paywall-buy', t('unlockFoldwise'));
     button.type = 'button';
-    button.addEventListener('click', () => push(() => paywallPage(true, BRAND)));
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      // A purchase unlocks the app through purchases.onChange, which switches to the welcome.
+      const outcome = await purchases.presentPaywall();
+      button.disabled = false;
+      if (outcome === 'unavailable') alert(t('paywallUnavailable'));
+    });
     return button;
   }
 
@@ -477,98 +484,6 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       section({ children: [row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage(name)) })] }),
     );
     return { title: name, left: back(backLabel), body };
-  }
-
-  function paywallPage(pushed = false, backLabel = t('setup')) {
-    const store = t(purchases.platform === 'android' ? 'googlePlayAccount' : 'appleAccount');
-    const buy = el('button', 'paywall-buy', t('loading'));
-    buy.type = 'button';
-    buy.disabled = true;
-    const plansBox = el('div', 'plans');
-    const legal = el('p', 'set-footer paywall-legal', t('legal', store));
-
-    let plans = { monthly: null, lifetime: null };
-    let chosen = 'monthly';
-
-    function planCard(kind, pkg) {
-      const product = pkg.product;
-      const card = el('button', 'plan');
-      card.type = 'button';
-      card.dataset.plan = kind;
-      card.append(el('span', 'plan-name', t(kind === 'monthly' ? 'planMonthly' : 'planLifetime')));
-      card.append(el('span', 'plan-price', kind === 'monthly' ? t('perMonth', product.priceString) : t('oneTime', product.priceString)));
-      let note = kind === 'lifetime' ? t('lifetimeNote') : '';
-      if (kind === 'monthly' && product.introPrice) {
-        const intro = product.introPrice;
-        const length = t('period', intro.periodNumberOfUnits, intro.periodUnit);
-        note = intro.price === 0 ? t('freeTrial', length, product.priceString) : t('introOffer', intro.priceString, length, product.priceString);
-      }
-      if (note) card.append(el('span', 'plan-note', note));
-      card.addEventListener('click', () => choose(kind));
-      return card;
-    }
-
-    function choose(kind) {
-      chosen = kind;
-      for (const card of plansBox.children) card.classList.toggle('selected', card.dataset.plan === kind);
-      const product = plans[kind].product;
-      buy.textContent = kind === 'monthly' ? t('subscribeFor', product.priceString) : t('buyLifetime', product.priceString);
-      buy.disabled = false;
-    }
-
-    purchases.getPlans().then((found) => {
-      plans = found;
-      const kinds = ['monthly', 'lifetime'].filter((kind) => plans[kind]);
-      if (!kinds.length) {
-        buy.textContent = purchases.canPurchase() ? t('unavailableNow') : t('subscriptionsUnavailable');
-        return;
-      }
-      plansBox.replaceChildren(...kinds.map((kind) => planCard(kind, plans[kind])));
-      if (plans.lifetime) legal.textContent = `${t('legal', store)} ${t('lifetimeLegal')}`;
-      choose(kinds[0]);
-    });
-    buy.addEventListener('click', async () => {
-      const pkg = plans[chosen];
-      if (!pkg) return;
-      buy.disabled = true;
-      try {
-        await purchases.purchase(pkg); // unlocking switches the app to the welcome guide
-      } catch {
-        alert(t('purchaseFailed'));
-      } finally {
-        buy.disabled = false;
-      }
-    });
-
-    const features = el('ul', 'paywall-features');
-    for (const text of t('features')) features.append(el('li', null, text));
-
-    const links = el('p', 'set-footer paywall-links');
-    const link = (label, url) => {
-      const a = el('a', null, label);
-      a.href = url;
-      a.target = '_blank';
-      a.addEventListener('click', (e) => { e.preventDefault(); openExternal(url); });
-      return a;
-    };
-    if (CONFIG.termsUrl) links.append(link(t('terms'), CONFIG.termsUrl));
-    if (CONFIG.privacyUrl) links.append(link(t('privacy'), CONFIG.privacyUrl));
-
-    return {
-      title: t('allAccess'),
-      left: pushed ? back(backLabel) : null,
-      right: pushed ? null : { label: t('close'), onClick: () => close() },
-      body: [
-        el('h2', 'set-hero', t('allAccessHero')),
-        el('p', 'set-intro', t('allAccessIntro')),
-        section({ children: [features] }),
-        plansBox,
-        buy,
-        section({ children: [row({ label: t('restorePurchases'), tone: 'accent', onClick: () => restore() })] }),
-        legal,
-        links,
-      ],
-    };
   }
 
   return {
