@@ -44,35 +44,74 @@ group=$(asc subscriptions groups list --app "$APP" --paginate --output json \
   | jq -r --arg n "$GROUP_NAME" '.data[] | select(.attributes.referenceName == $n) | .id')
 [ -n "$sub" ] && [ -n "$iap" ] && [ -n "$group" ] || { echo 'Run products.sh first: a product or the group is missing.' >&2; exit 1; }
 
-# Translations belong to a version of each product; use the newest one.
-sub_version=$(asc subscriptions versions list --subscription-id "$sub" --output json | jq -r '.data[0].id // empty')
-iap_version=$(asc iap versions list --iap-id "$iap" --output json | jq -r '.data[0].id // empty')
-group_version=$(asc subscriptions groups versions list --group-id "$group" --output json | jq -r '.data[0].id // empty')
-[ -n "$sub_version" ] && [ -n "$iap_version" ] && [ -n "$group_version" ] \
-  || { echo 'A product has no version to translate yet. Check it in App Store Connect.' >&2; exit 1; }
+# Translations belong to a version of each product, and only a version still being prepared
+# (PREPARE_FOR_SUBMISSION) can change; one that is ready for or in review can't. Use the editable
+# version, or create one (apply only).
+editable_version() { # what (for messages), list command..., -- create command...
+  local what=$1; shift
+  local list=() create=()
+  while [ "$1" != -- ]; do list+=("$1"); shift; done; shift; create=("$@")
+  local versions id
+  versions=$("${list[@]}" --paginate --output json)
+  echo "$what versions: $(jq -r '[.data[] | "\(.attributes.version // "?"):\(.attributes.state)"] | join(", ")' <<<"$versions")" >&2
+  id=$(jq -r '[.data[] | select(.attributes.state == "PREPARE_FOR_SUBMISSION")][0].id // empty' <<<"$versions")
+  if [ -z "$id" ] && [ "$MODE" = apply ]; then
+    echo "$what: no editable version, creating one" >&2
+    id=$("${create[@]}" --output json | jq -r '.data.id // empty') || id=''
+  fi
+  echo "$id"
+}
+say 'Product versions'
+group_version=$(editable_version Group asc subscriptions groups versions list --group-id "$group" -- \
+  asc subscriptions groups versions create --group-id "$group")
+sub_version=$(editable_version Monthly asc subscriptions versions list --subscription-id "$sub" -- \
+  asc subscriptions versions create --subscription-id "$sub")
+iap_version=$(editable_version Lifetime asc iap versions list --iap-id "$iap" -- \
+  asc iap versions create --iap-id "$iap")
+if [ "$MODE" = apply ] && { [ -z "$group_version" ] || [ -z "$sub_version" ] || [ -z "$iap_version" ]; }; then
+  echo '::error::App Store Connect has no editable version of a product and refused to create one (see above). Add these translations in App Store Connect instead.' >&2
+  exit 1
+fi
+# Plan only reads: with no editable version yet, compare against nothing (everything is listed).
+list_locales() { [ -n "$2" ] && "$1" "$2" || true; }
 
-have_sub=$(asc subscriptions versions localizations list --version-id "$sub_version" --paginate --output json | locales)
-have_iap=$(asc iap versions localizations list --version-id "$iap_version" --paginate --output json | locales)
-have_group=$(asc subscriptions groups versions localizations list --version-id "$group_version" --paginate --output json | locales)
+sub_locales() { asc subscriptions versions localizations list --version-id "$1" --paginate --output json | locales; }
+iap_locales() { asc iap versions localizations list --version-id "$1" --paginate --output json | locales; }
+group_locales() { asc subscriptions groups versions localizations list --version-id "$1" --paginate --output json | locales; }
+have_sub=$(list_locales sub_locales "$sub_version")
+have_iap=$(list_locales iap_locales "$iap_version")
+have_group=$(list_locales group_locales "$group_version")
 
 missing=0
+failed=0
 while IFS='|' read -r locale m_name m_desc l_name l_desc; do
   say "$locale"
   if grep -qx "$locale" <<<"$have_group"; then echo "Group: already translated"; else
     missing=$((missing + 1)); echo "Group: add \"$GROUP_NAME\""
-    [ "$MODE" = apply ] && asc subscriptions groups versions localizations create --version-id "$group_version" \
-      --locale "$locale" --name "$GROUP_NAME" --output table
+    if [ "$MODE" = apply ]; then
+      asc subscriptions groups versions localizations create --version-id "$group_version" \
+      --locale "$locale" --name "$GROUP_NAME" --output table || failed=$((failed + 1))
+    fi
   fi
   if grep -qx "$locale" <<<"$have_sub"; then echo "Monthly: already translated"; else
     missing=$((missing + 1)); echo "Monthly: add \"$m_name\" / \"$m_desc\""
-    [ "$MODE" = apply ] && asc subscriptions versions localizations create --version-id "$sub_version" \
-      --locale "$locale" --name "$m_name" --description "$m_desc" --output table
+    if [ "$MODE" = apply ]; then
+      asc subscriptions versions localizations create --version-id "$sub_version" \
+      --locale "$locale" --name "$m_name" --description "$m_desc" --output table || failed=$((failed + 1))
+    fi
   fi
   if grep -qx "$locale" <<<"$have_iap"; then echo "Lifetime: already translated"; else
     missing=$((missing + 1)); echo "Lifetime: add \"$l_name\" / \"$l_desc\""
-    [ "$MODE" = apply ] && asc iap versions localizations create --version-id "$iap_version" \
-      --locale "$locale" --name "$l_name" --description "$l_desc" --output table
+    if [ "$MODE" = apply ]; then
+      asc iap versions localizations create --version-id "$iap_version" \
+      --locale "$locale" --name "$l_name" --description "$l_desc" --output table || failed=$((failed + 1))
+    fi
   fi
 done <<<"$TRANSLATIONS"
 
-say "Done: $missing translation(s) $([ "$MODE" = apply ] && echo added || echo 'to add (run apply)')"
+if [ "$MODE" = apply ]; then
+  say "Done: $((missing - failed)) of $missing translation(s) added"
+  [ "$failed" -eq 0 ] || { echo "::error::$failed translation(s) failed; see the errors above." >&2; exit 1; }
+else
+  say "Done: $missing translation(s) to add (run apply)"
+fi
