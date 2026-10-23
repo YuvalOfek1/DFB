@@ -1,7 +1,7 @@
 // Purchases via RevenueCat. Only the native iOS/Android apps sell Foldwise All Access; the web
 // version is always unlocked. The plans screen is RevenueCat's Paywall (designed in the dashboard,
 // shown for the current offering) and "Manage Subscription" is its Customer Center.
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import { RevenueCatUI, PAYWALL_RESULT } from '@revenuecat/purchases-capacitor-ui';
 import { CONFIG } from './config.js';
@@ -193,6 +193,27 @@ export async function restore() {
   const { customerInfo } = await Purchases.restorePurchases();
   apply(customerInfo);
   return hasAllAccess();
+}
+
+// Apple's own Manage Subscriptions sheet (SubscriptionsPlugin), over the app: one tap cancels the
+// monthly plan. Apps can't cancel a subscription themselves. Resolves false where the sheet isn't
+// available (Android, or it failed), so the caller can fall back to the Customer Center.
+const Subscriptions = registerPlugin('Subscriptions');
+
+export async function showCancelSheet() {
+  if (platform !== 'ios') return false;
+  try {
+    await Subscriptions.showManageSubscriptions();
+  } catch (err) {
+    console.warn('Could not show the subscriptions sheet', err);
+    return false;
+  }
+  // Ask again rather than trust RevenueCat's cached answer, so a cancellation shows at once.
+  if (configured) {
+    await Purchases.invalidateCustomerInfoCache().catch(() => {});
+    await refresh();
+  }
+  return true;
 }
 
 // The store's own subscriptions page, for when the Customer Center can't be shown.

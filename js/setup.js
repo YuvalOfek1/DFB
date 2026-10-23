@@ -191,7 +191,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
               label: t('cancelMonthly'),
               sublabel: t('cancelMonthlyNote'),
               tone: 'danger',
-              onClick: () => manageSubscription(),
+              onClick: () => cancelMonthly(),
             })] : []),
             ...(purchases.currentPlan() === 'subscription' ? [row({
               label: t('upgradeLifetime'),
@@ -444,7 +444,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   }
 
   // Monthly subscribers can buy Lifetime. The store doesn't cancel the monthly subscription by
-  // itself, so after the purchase offer to open the Customer Center to cancel it.
+  // itself, so right after the purchase offer Apple's cancel sheet.
   async function upgradeToLifetime() {
     const outcome = await purchases.presentPaywall(CONFIG.lifetimeUpgradeOffering);
     if (outcome === 'unavailable') {
@@ -452,7 +452,12 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       return;
     }
     stack.at(-1)?.refresh();
-    if (purchases.currentPlan() === 'lifetime' && confirm(t('upgradedCancelMonthly'))) await manageSubscription();
+    if (purchases.hasRedundantSubscription() && confirm(t('upgradedCancelMonthly'))) await cancelMonthly();
+  }
+
+  async function cancelMonthly() {
+    if (await purchases.showCancelSheet()) stack.at(-1)?.refresh();
+    else await manageSubscription();
   }
 
   async function manageSubscription() {
