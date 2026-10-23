@@ -343,6 +343,7 @@ function primaryNote() {
 // as a "hover"), and taps often land right as the slide ends. So never redraw here when nothing
 // changed, and when something did, wait for a quiet moment.
 function afterClose() {
+  if (relockPending && !purchases.hasAllAccess()) relockWhenSafe();
   if (openList) shownWords = [...openList.items];
   const next = primaryNote();
   if (!next || renderedKey === contentKey(next)) return;
@@ -531,8 +532,27 @@ function leaveHome() {
   setup.show('welcome');
 }
 
+// Access ended (a lapsed or refunded plan) while a note is open: the disguise mustn't turn into the
+// Foldwise home screen in a spectator's hands. Relock as soon as the note is closed or the app goes
+// to the background, so it opens locked next time.
+let relockPending = false;
+
+function relockWhenSafe() {
+  if (!document.hidden && (noteScreen.classList.contains('active') || secretActive || busy)) {
+    relockPending = true;
+    return;
+  }
+  relockPending = false;
+  showHome();
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && relockPending && !purchases.hasAllAccess()) relockWhenSafe();
+});
+
 purchases.onChange(() => {
-  if (!purchases.hasAllAccess()) return showHome();
+  if (!purchases.hasAllAccess()) return relockWhenSafe();
+  relockPending = false;
   if (homeShown) return leaveHome();
   if (noteScreen.classList.contains('active')) return;
   renderList();
@@ -547,7 +567,8 @@ if (!purchases.hasAllAccess()) {
   // First launch with access: explain how to start, open setup and perform.
   settings.welcomed = true;
   store.save(settings);
-  setTimeout(() => openSetup('welcome'), 400);
+  // Unless access turned out to have ended in the meantime (the home screen is showing then).
+  setTimeout(() => { if (!homeShown && purchases.hasAllAccess()) openSetup('welcome'); }, 400);
 }
 
 // The native apps bundle their files, so only the web version needs the offline cache.

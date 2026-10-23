@@ -10,9 +10,13 @@ export const isNative = Capacitor.isNativePlatform();
 export const platform = Capacitor.getPlatform();
 
 // The last known entitlements and plan are kept on the phone, so a subscriber opens straight into
-// the trick (no flash of the locked screen while RevenueCat answers) and stays unlocked with no signal.
+// the trick (no flash of the locked screen while RevenueCat answers) and stays unlocked with no
+// signal. Offline, a subscription is trusted until a few days past the end of its paid period, so
+// cancelling and then keeping the phone off RevenueCat doesn't keep the app unlocked for good.
 const CACHE_KEY = 'foldwise.entitlements';
 const PLAN_KEY = 'foldwise.plan';
+const EXPIRES_KEY = 'foldwise.expires';
+const OFFLINE_GRACE_MS = 3 * 24 * 60 * 60 * 1000;
 
 function cached(key, fallback) {
   try {
@@ -22,7 +26,10 @@ function cached(key, fallback) {
   }
 }
 
-let active = new Set(isNative ? cached(CACHE_KEY, []) : [CONFIG.allAccessEntitlement]); // active entitlement ids
+// When the cached access runs out (ms), or null if it doesn't (Lifetime).
+const expires = cached(EXPIRES_KEY, null);
+const expiredOffline = expires != null && Date.now() > expires + OFFLINE_GRACE_MS;
+let active = new Set(!isNative ? [CONFIG.allAccessEntitlement] : expiredOffline ? [] : cached(CACHE_KEY, [])); // active entitlement ids
 // How All Access is held: 'subscription' (Monthly, it expires and renews), 'lifetime' (bought
 // once, no expiry) or null.
 let plan = isNative ? cached(PLAN_KEY, null) : null;
@@ -40,9 +47,12 @@ function apply(customerInfo) {
   // A cancelled subscription stays active until its period ends, but no longer renews.
   const nextRenewing = Object.values(customerInfo?.subscriptionsByProductIdentifier ?? {})
     .some((sub) => sub.isActive && sub.willRenew);
+  const ends = Object.values(entitlements).map((e) => (e.expirationDate ? Date.parse(e.expirationDate) : null));
+  const nextExpires = ends.length && !ends.includes(null) ? Math.max(...ends) : null;
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify([...next]));
     localStorage.setItem(PLAN_KEY, JSON.stringify(nextPlan));
+    localStorage.setItem(EXPIRES_KEY, JSON.stringify(nextExpires));
   } catch { /* ignore */ }
   if ([...next].sort().join() === [...active].sort().join() && nextPlan === plan && nextRenewing === renewing) return;
   active = next;
@@ -77,8 +87,8 @@ export function init() {
 async function start() {
   if (!isNative) return;
   if (!apiKey()) {
-    console.warn(`No RevenueCat key for ${platform}: running unlocked (development only).`);
-    active = new Set([CONFIG.allAccessEntitlement]);
+    // Stays locked: a build without a key mustn't give the tricks away.
+    console.warn(`No RevenueCat key for ${platform}: nothing can be bought.`);
     return;
   }
   try {
@@ -103,17 +113,15 @@ export function setUILocale(locale) {
 }
 
 // A fresh install starts as a new anonymous RevenueCat customer, so someone who reinstalls or moves
-// to a new phone would see the paywall and could pay twice. Once per install, if the app opens
-// locked, hand the store account's existing purchases to RevenueCat; unlike Restore, this doesn't
-// ask the user to sign in.
+// to a new phone would see the paywall and could pay twice. Once per install (retried on later
+// launches until it succeeds), if the app opens locked, hand the store account's existing purchases
+// to RevenueCat; unlike Restore, this doesn't ask the user to sign in.
 const SYNCED_KEY = 'foldwise.synced';
 async function syncOnFreshInstall() {
   if (hasAllAccess() || cached(SYNCED_KEY, false)) return;
   try {
-    localStorage.setItem(SYNCED_KEY, 'true');
-  } catch { /* ignore */ }
-  try {
     await Purchases.syncPurchases();
+    localStorage.setItem(SYNCED_KEY, 'true');
     await refresh();
   } catch (err) {
     console.warn('Could not sync existing purchases', err);
@@ -151,7 +159,8 @@ export async function presentPaywall(offeringId) {
       await refresh();
       return hasAllAccess() ? 'unlocked' : 'closed';
     }
-    if (result === PAYWALL_RESULT.ERROR || result === PAYWALL_RESULT.NOT_PRESENTED) return 'unavailable';
+    // ERROR is a failed purchase (a declined card, say), which the paywall itself has explained.
+    if (result === PAYWALL_RESULT.NOT_PRESENTED) return 'unavailable';
     return 'closed';
   } catch (err) {
     console.warn('Could not present the paywall', err);

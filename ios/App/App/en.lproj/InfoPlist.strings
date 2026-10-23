@@ -1,0 +1,2 @@
+/* The home-screen name is "Foldwise" in every language. This file also tells the App Store which languages the app supports. */
+"CFBundleDisplayName" = "Foldwise";

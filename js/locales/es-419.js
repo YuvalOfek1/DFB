@@ -1,6 +1,7 @@
 // Latin American Spanish: only the words that differ from Spain.
 // Spain uses es.js as written; Latin America differs in a few everyday words.
 export default {
+  restoreFailed: 'No se pudieron restaurar las compras. Revisa tu conexión e inténtalo de nuevo.',
   setupIntro: 'Los espectadores nunca ven esta pantalla. Mantén presionado el título “Notas” para volver a abrirla.',
   addList: 'Agregar lista',
   manageSubscription: 'Administrar suscripción',
