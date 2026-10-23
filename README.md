@@ -4,13 +4,13 @@ Magic tricks hidden in ordinary-looking apps. The first trick looks exactly like
 
 The store apps (iOS and Android) are branded **Foldwise**; the web version keeps the "Notes" name and icon as a personal disguise.
 
-**Live:** https://yuvalofek1.github.io/DFB/
+**Support, privacy and terms:** https://yuvalofek1.github.io/DFB/legal/support.html
 
 ## Install
 
 Foldwise is distributed only as the iOS and Android store apps. Until they are published, test with TestFlight on iPhone or the debug APK from CI on Android. The first launch shows a short welcome and getting-started guide.
 
-The GitHub Pages web version is a personal preview for development only (always unlocked, no store features) and will be taken down. GitHub Pages must keep serving `legal/` (the Privacy Policy and Terms of Use the apps and store listings link to).
+GitHub Pages serves only `legal/` (Support, Privacy Policy and Terms of Use, which the store listings link to) plus `pages/` (a redirect, and a `sw.js` that removes the old web app from browsers that installed it). To try the web build locally, run `npm start`; it is always unlocked.
 
 ## Performing
 
@@ -89,4 +89,4 @@ npm start         # build www/ and serve it on http://localhost:8080
 - `sw.js`: offline cache. **Bump `VERSION` whenever you change a file**, or installed copies keep the old version.
 - `scripts/make_icons.py`: regenerates `icons/` (needs Pillow)
 
-Pushing to `main` runs the tests, builds `www/` and deploys it to GitHub Pages (`.github/workflows/pages.yml`).
+Pushing to `main` runs the tests and deploys the legal pages to GitHub Pages (`.github/workflows/pages.yml`).
