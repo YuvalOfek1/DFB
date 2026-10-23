@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - products
+          - product translations
           - metadata
       mode:
         description: plan shows the changes, apply makes them
@@ -50,6 +51,10 @@ jobs:
       - name: Products (app price and availability, subscription, Lifetime)
         if: inputs.task == 'products'
         run: bash scripts/asc/products.sh "${{ inputs.mode }}"
+
+      - name: Product names in every language (Apple's purchase sheets)
+        if: inputs.task == 'product translations'
+        run: bash scripts/asc/product_localizations.sh "${{ inputs.mode }}"
 
       - name: Store listing in every language
         if: inputs.task == 'metadata'

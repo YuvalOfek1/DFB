@@ -5,6 +5,8 @@ import { defaultLists, newList, parseItems } from './store.js';
 import { t, getLocale, LOCALES, LANGUAGE_NAMES, resolveLocale } from './i18n.js';
 import { CONFIG } from './config.js';
 import * as appIcon from './appicon.js';
+import { alertDialog, confirmDialog } from './dialog.js';
+import { legalText } from './legal/index.js';
 
 const PAGE_MS = 450;
 
@@ -209,14 +211,15 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
             ...CONFIG.tricks.map((trick) => row({ label: t(`${trick.id}Trick`), sublabel: t('trickTutorial'), chevron: true, onClick: () => push(() => trickPage(trick, t('setup'))) })),
             row({ label: t('howToPerform'), chevron: true, onClick: () => push(() => howToPage()) }),
             row({ label: t('welcome'), chevron: true, onClick: () => push(() => welcomePage(true)) }),
+            ...legalRows(t('setup')),
           ],
         }),
         section({
           children: [row({
             label: t('restoreDefaults'),
             tone: 'danger',
-            onClick: () => {
-              if (!confirm(t('restoreDefaultsConfirm'))) return;
+            onClick: async () => {
+              if (!await confirmDialog(t('restoreDefaultsConfirm'), { confirm: t('restoreAction'), destructive: true })) return;
               update((s) => { s.lists = defaultLists(getLocale()); });
               stack.at(-1).refresh();
             },
@@ -285,8 +288,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
           children: [row({
             label: t('deleteList'),
             tone: 'danger',
-            onClick: () => {
-              if (!confirm(t('deleteListConfirm', list.title))) return;
+            onClick: async () => {
+              if (!await confirmDialog(t('deleteListConfirm', list.title), { confirm: t('deleteAction'), destructive: true })) return;
               update((s) => { s.lists = s.lists.filter((l) => l.id !== id); });
               pop();
             },
@@ -341,13 +344,13 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
 
   function languagePage(backLabel = t('setup')) {
     const current = getSettings().language;
-    const choose = (pref) => {
+    const choose = async (pref) => {
       if (pref === current) return pop();
       const before = getLocale();
       update((s) => { s.language = pref; });
       // Offer the new language's built-in lists, asked in the new language.
       const after = resolveLocale(pref, navigator.languages ?? []);
-      if (after !== before && confirm(t('replaceListsConfirm', LANGUAGE_NAMES[after]))) {
+      if (after !== before && await confirmDialog(t('replaceListsConfirm', LANGUAGE_NAMES[after]), { confirm: t('replaceAction'), cancel: t('keepLists') })) {
         update((s) => { s.lists = defaultLists(after); });
       }
       pop();
@@ -373,7 +376,8 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
         await appIcon.set(icon);
         iconName = icon;
       } catch (err) {
-        alert(err?.message ? `${t('appIconFailed')}\n\n${err.message}` : t('appIconFailed'));
+        console.warn('Could not change the icon', err);
+        await alertDialog(t('appIconFailed'));
       }
       stack.at(-1)?.refresh();
     };
@@ -400,6 +404,34 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
       ol.append(li);
     }
     return ol;
+  }
+
+  // ----- Terms of Use and Privacy Policy, in the app's language -----
+
+  const legalRows = (backLabel) => [
+    row({ label: t('termsOfUse'), chevron: true, onClick: () => push(() => legalPage('terms', t('termsOfUse'), backLabel)) }),
+    row({ label: t('privacyPolicy'), chevron: true, onClick: () => push(() => legalPage('privacy', t('privacyPolicy'), backLabel)) }),
+  ];
+
+  function legalPage(kind, title, backLabel) {
+    const doc = legalText(kind);
+    const block = (b) => {
+      if (!Array.isArray(b)) return el('p', 'set-text', b);
+      const ul = el('ul', 'set-text legal-list');
+      for (const item of b) ul.append(el('li', null, item));
+      return ul;
+    };
+    const notes = [doc.effective];
+    if (getLocale() !== 'en') notes.push(t('legalTranslationNote'));
+    return {
+      title,
+      left: back(backLabel),
+      body: [
+        el('p', 'set-intro', doc.summary),
+        ...doc.sections.map(([header, ...blocks]) => section({ header, children: blocks.map(block) })),
+        ...notes.map((note) => el('p', 'set-footer', note)),
+      ],
+    };
   }
 
   function howToPage(backLabel = t('setup')) {
@@ -448,11 +480,14 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   async function upgradeToLifetime() {
     const outcome = await purchases.presentPaywall(CONFIG.lifetimeUpgradeOffering);
     if (outcome === 'unavailable') {
-      alert(t('paywallUnavailable'));
+      await alertDialog(t('paywallUnavailable'));
       return;
     }
     stack.at(-1)?.refresh();
-    if (purchases.hasRedundantSubscription() && confirm(t('upgradedCancelMonthly'))) await cancelMonthly();
+    if (purchases.hasRedundantSubscription()
+      && await confirmDialog(t('upgradedCancelMonthly'), { confirm: t('cancelMonthlyAction'), cancel: t('notNow') })) {
+      await cancelMonthly();
+    }
   }
 
   async function cancelMonthly() {
@@ -472,9 +507,9 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
   async function restore() {
     try {
       const unlocked = await purchases.restore();
-      alert(unlocked ? t('restored') : t('nothingToRestore'));
+      await alertDialog(unlocked ? t('restored') : t('nothingToRestore'));
     } catch {
-      alert(t('restoreFailed'));
+      await alertDialog(t('restoreFailed'));
     }
   }
 
@@ -487,15 +522,18 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
     button.type = 'button';
     button.addEventListener('click', async () => {
       button.disabled = true;
-      // On a fresh install the launch sync may still be finding an existing purchase.
-      await purchases.ready;
+      button.classList.add('busy');
+      // On a fresh install the launch sync may still be finding an existing purchase; on a slow
+      // network, don't wait for it for long.
+      await Promise.race([purchases.ready, new Promise((resolve) => { setTimeout(resolve, 5000); })]);
       if (purchases.hasAllAccess()) return;
       // A purchase unlocks the app through purchases.onChange, which switches to the welcome.
       const outcome = await purchases.presentPaywall();
       button.disabled = false;
+      button.classList.remove('busy');
       if (outcome === 'unavailable') {
-        const detail = await purchases.paywallProblem();
-        alert(detail ? `${t('paywallUnavailable')}\n\n${detail}` : t('paywallUnavailable'));
+        purchases.paywallProblem().then((detail) => detail && console.warn('Paywall unavailable:', detail));
+        await alertDialog(t('paywallUnavailable'));
       }
     });
     return button;
@@ -522,6 +560,7 @@ export function createSetup({ root, purchases, getSettings, setSettings, close }
             row({ label: t('restorePurchases'), tone: 'accent', onClick: () => restore() }),
           ],
         }),
+        section({ children: legalRows(BRAND) }),
       ],
     };
   }

@@ -8,6 +8,8 @@
   --search: rgba(118, 118, 128, 0.12);
   --tint: #e0a30a;
   --danger: #ff3b30;
+  --tint-text: #b8860b;
+  --dialog-bg: rgba(242, 242, 242, 0.85);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -22,6 +24,8 @@
     --separator: rgba(84, 84, 88, 0.6);
     --search: rgba(118, 118, 128, 0.24);
     --tint: #f5bd0b;
+    --tint-text: #f5bd0b;
+    --dialog-bg: rgba(37, 37, 37, 0.85);
   }
 }
 
@@ -99,28 +103,16 @@ button:active { opacity: 0.3; transition: none; }
   width: 18px;
   background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
   pointer-events: none;
+  visibility: hidden;
 }
+/* The edge shadow shows only while the note slides; at rest it would peek into the list. */
+.shade.active ~ #note-screen::before { visibility: visible; }
 
 /* Right-to-left (Hebrew): iOS mirrors navigation, so notes push in from the left */
 [dir="rtl"] #note-screen:not(.active) { transform: translate3d(-100%, 0, 0); }
 [dir="rtl"] #note-screen::before { left: auto; right: -18px; background: linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent); }
 [dir="rtl"] .chevron, [dir="rtl"] .row-chevron svg { transform: scaleX(-1); }
 #settings-screen { z-index: 5; }
-
-.shade {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  background: #000;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-.shade.active { visibility: visible; }
-
-/* iOS-style press feedback: dim instantly on touch, fade back on release */
-button { transition: opacity 0.3s ease; }
-button:active { opacity: 0.3; transition: none; }
 
 .scroll {
   flex: 1;
@@ -221,6 +213,7 @@ button:active { opacity: 0.3; transition: none; }
   margin: 4px 0 14px;
 }
 .note-body {
+  overflow-wrap: anywhere; /* a very long word wraps instead of running off the screen */
   font-size: 17px;
   line-height: 1.32;
 }
@@ -315,10 +308,10 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 /* A colored action with an explanation reads as a regular row: left-aligned, the note wrapping. */
 .set-row.described { justify-content: flex-start; }
 .set-row.described .row-text { flex: 1; }
-.set-row.danger.described .row-sub, .set-row.accent.described .row-sub { white-space: normal; }
+.set-row.described .row-label { white-space: normal; }
 .row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .row-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.row-sub { font-size: 13px; color: var(--secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-sub { font-size: 13px; color: var(--secondary); margin-top: 2px; }
 .row-value { color: var(--secondary); font-variant-numeric: tabular-nums; }
 .row-chevron svg { width: 8px; height: 14px; color: var(--secondary); stroke-width: 2; opacity: 0.6; }
 .row-check svg { width: 16px; height: 13px; color: var(--tint); stroke-width: 2.4; }
@@ -339,6 +332,8 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 .set-textarea { resize: none; line-height: 1.35; min-height: 260px; }
 .set-search { margin-top: 8px; border-radius: 10px; background: var(--search); padding: 8px 12px; }
 .set-text { margin: 0; padding: 11px 16px; line-height: 1.4; }
+.set-text + .set-text { padding-top: 0; }
+.legal-list { padding-inline-start: 34px; display: flex; flex-direction: column; gap: 6px; }
 .set-steps { margin: 0; padding-block: 12px; padding-inline: 36px 16px; line-height: 1.4; }
 .set-steps li + li { margin-top: 10px; }
 .set-steps strong { display: block; }
@@ -381,11 +376,24 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
   padding: 15px;
   border-radius: 14px;
   background: var(--tint);
-  color: #fff;
+  color: #000; /* white on gold is too faint to read */
   font-size: 17px;
   font-weight: 600;
 }
 .paywall-buy:disabled { opacity: 0.5; }
+.paywall-buy.busy::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-inline-start: 10px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -2px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Home screen demo video */
 .demo-video {
@@ -448,3 +456,51 @@ button.set-row:active { opacity: 1; background: var(--separator); transition: no
 
 /* Setup → App Icon */
 .icon-thumb { width: 40px; height: 40px; border-radius: 9px; flex: none; box-shadow: 0 0 0 0.5px var(--separator); }
+
+/* App-drawn alerts (js/dialog.js), styled like iOS's */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.dialog-backdrop.shown { opacity: 1; }
+.dialog {
+  width: 270px;
+  max-width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--dialog-bg);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  text-align: center;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+.dialog-backdrop.shown .dialog { transform: none; }
+.dialog-text { padding: 19px 16px; display: flex; flex-direction: column; gap: 4px; }
+.dialog-title { margin: 0; font-size: 17px; font-weight: 600; }
+.dialog-message { margin: 0; font-size: 13px; line-height: 1.35; white-space: pre-line; }
+.dialog-text.no-title .dialog-message { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.dialog-actions { display: flex; flex-direction: column; border-top: 0.5px solid var(--separator); }
+.dialog-actions.row { flex-direction: row; }
+.dialog-button {
+  flex: 1;
+  min-height: 44px;
+  padding: 10px 8px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 17px;
+  color: var(--tint-text);
+}
+.dialog-button + .dialog-button { border-top: 0.5px solid var(--separator); }
+.dialog-actions.row .dialog-button + .dialog-button { border-top: 0; border-inline-start: 0.5px solid var(--separator); }
+.dialog-button.preferred { font-weight: 600; }
+.dialog-button.destructive { color: var(--danger); }
