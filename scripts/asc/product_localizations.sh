@@ -68,10 +68,12 @@ sub_version=$(editable_version Monthly asc subscriptions versions list --subscri
   asc subscriptions versions create --subscription-id "$sub")
 iap_version=$(editable_version Lifetime asc iap versions list --iap-id "$iap" -- \
   asc iap versions create --iap-id "$iap")
-if [ "$MODE" = apply ] && { [ -z "$group_version" ] || [ -z "$sub_version" ] || [ -z "$iap_version" ]; }; then
-  echo '::error::App Store Connect has no editable version of a product and refused to create one (see above). Add these translations in App Store Connect instead.' >&2
-  exit 1
-fi
+# A product whose only version is ready for review can't get another until that one is reviewed:
+# skip it, and add its translations in App Store Connect instead.
+locked=()
+[ -n "$group_version" ] || locked+=(Group)
+[ -n "$sub_version" ] || locked+=(Monthly)
+[ -n "$iap_version" ] || locked+=(Lifetime)
 # Plan only reads: with no editable version yet, compare against nothing (everything is listed).
 list_locales() { [ -n "$2" ] && "$1" "$2" || true; }
 
@@ -88,21 +90,21 @@ while IFS='|' read -r locale m_name m_desc l_name l_desc; do
   say "$locale"
   if grep -qx "$locale" <<<"$have_group"; then echo "Group: already translated"; else
     missing=$((missing + 1)); echo "Group: add \"$GROUP_NAME\""
-    if [ "$MODE" = apply ]; then
+    if [ "$MODE" = apply ] && [ -n "$group_version" ]; then
       asc subscriptions groups versions localizations create --version-id "$group_version" \
       --locale "$locale" --name "$GROUP_NAME" --output table || failed=$((failed + 1))
     fi
   fi
   if grep -qx "$locale" <<<"$have_sub"; then echo "Monthly: already translated"; else
     missing=$((missing + 1)); echo "Monthly: add \"$m_name\" / \"$m_desc\""
-    if [ "$MODE" = apply ]; then
+    if [ "$MODE" = apply ] && [ -n "$sub_version" ]; then
       asc subscriptions versions localizations create --version-id "$sub_version" \
       --locale "$locale" --name "$m_name" --description "$m_desc" --output table || failed=$((failed + 1))
     fi
   fi
   if grep -qx "$locale" <<<"$have_iap"; then echo "Lifetime: already translated"; else
     missing=$((missing + 1)); echo "Lifetime: add \"$l_name\" / \"$l_desc\""
-    if [ "$MODE" = apply ]; then
+    if [ "$MODE" = apply ] && [ -n "$iap_version" ]; then
       asc iap versions localizations create --version-id "$iap_version" \
       --locale "$locale" --name "$l_name" --description "$l_desc" --output table || failed=$((failed + 1))
     fi
@@ -110,7 +112,10 @@ while IFS='|' read -r locale m_name m_desc l_name l_desc; do
 done <<<"$TRANSLATIONS"
 
 if [ "$MODE" = apply ]; then
-  say "Done: $((missing - failed)) of $missing translation(s) added"
+  # A locked product's translations (every language, as it has no version to compare with) were skipped.
+  skipped=$(( ${#locked[@]} * $(grep -c . <<<"$TRANSLATIONS") ))
+  say "Done: $((missing - failed - skipped)) of $missing translation(s) added"
+  [ ${#locked[@]} -eq 0 ] || echo "::warning::Skipped ${locked[*]}: no editable version (one is already waiting for review). Add those translations in App Store Connect."
   [ "$failed" -eq 0 ] || { echo "::error::$failed translation(s) failed; see the errors above." >&2; exit 1; }
 else
   say "Done: $missing translation(s) to add (run apply)"
